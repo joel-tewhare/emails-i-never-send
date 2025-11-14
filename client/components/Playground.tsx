@@ -9,7 +9,6 @@ import {
   SelectValue,
   SelectItem,
 } from '@/components/ui/select'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -303,6 +302,15 @@ export default function ComponentPlayground() {
             public/assets/images
           </p>
 
+          {/* EMAIL ACTION BUTTON */}
+          <Card className="bg-email-white h-16 max-w-xl rounded-none">
+            <div className="flex h-full flex-row items-center justify-end">
+              <CardContent className="pr-6 pt-2 text-sm font-bold">
+                [Action Button here]
+              </CardContent>
+            </div>
+          </Card>
+
           {/* PROFILE HEADER */}
           <Card className="bg-email-white max-w-xl rounded-none">
             <div className="flex flex-row justify-center">
@@ -312,11 +320,28 @@ export default function ComponentPlayground() {
             </div>
           </Card>
 
-          {/* EMAIL ACTION BUTTON */}
-          <Card className="bg-email-white h-16 max-w-xl rounded-none">
-            <div className="flex h-full flex-row items-center justify-end">
-              <CardContent className="pr-6 pt-2 text-sm font-bold">
-                [Action Button here]
+          {/* SAVED EMAIL COLOUR KEY */}
+          <Card className="bg-email-white max-w-xxl rounded-none">
+            <div className="flex flex-row justify-center">
+              <CardContent className="flex flex-row space-x-2 p-3 text-sm font-bold">
+                <div className="bg-email-blue h-4 w-4 rounded-sm"></div>
+                <p>Work</p>
+              </CardContent>
+              <CardContent className="flex flex-row space-x-2 p-3 text-sm font-bold">
+                <div className="bg-email-gold h-4 w-4 rounded-sm"></div>
+                <p>Relationships</p>
+              </CardContent>
+              <CardContent className="flex flex-row space-x-2 p-3 text-sm font-bold">
+                <div className="bg-email-mauve h-4 w-4 rounded-sm"></div>
+                <p>Customer Service</p>
+              </CardContent>
+              <CardContent className="flex flex-row space-x-2 p-3 text-sm font-bold">
+                <div className="bg-email-mint h-4 w-4 rounded-sm"></div>
+                <p>Emotional Honesty</p>
+              </CardContent>
+              <CardContent className="flex flex-row space-x-2 p-3 text-sm font-bold">
+                <div className="bg-email-white border-email-charcoal/50 h-4 w-4 rounded-sm border"></div>
+                <p>Conflict Resolution</p>
               </CardContent>
             </div>
           </Card>
@@ -348,26 +373,6 @@ export default function ComponentPlayground() {
             </div>
           </Card>
         </div>
-      </section>
-
-      <Separator />
-
-      {/* ------------------------------------- */}
-      {/* TABS */}
-      {/* ------------------------------------- */}
-
-      <section>
-        <h2 className="mb-4 font-serif text-2xl">Tabs</h2>
-
-        <Tabs defaultValue="one" className="w-full max-w-xl">
-          <TabsList>
-            <TabsTrigger value="one">One</TabsTrigger>
-            <TabsTrigger value="two">Two</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="one">Content for tab one</TabsContent>
-          <TabsContent value="two">Content for tab two</TabsContent>
-        </Tabs>
       </section>
     </div>
   )
