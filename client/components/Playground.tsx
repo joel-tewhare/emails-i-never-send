@@ -1,4 +1,4 @@
-import { Button } from '../../components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -31,26 +31,75 @@ import { Form } from '@/components/ui/form'
 export default function ComponentPlayground() {
   return (
     <div className="space-y-12 p-8">
+      {/* TAILWIND NOTES
+        - rounded-xl for rounded corners
+        - hover:underline for underline highlight of link
+        - px / py is padding for sides / top & bottom
+        - hover:bg ... /80 sets opacity of 80% for bg when hovering over button
+      
+      */}
+
       {/* ------------------------------------- */}
       {/* NAVIGATION MENU */}
       {/* ------------------------------------- */}
 
       <section>
         <h2 className="mb-4 font-serif text-2xl">Navigation Menu</h2>
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuLink className="px-4 py-2">
-                Home
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className="px-4 py-2">
-                Playground
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        {/* WHOLE navbar */}
+        <div className="flex w-full items-center py-4">
+          {/* LEFT section */}
+          <div className="flex-1">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href=""
+                    className="decoration-email-charcoal px-4 py-2 underline-offset-2 hover:underline"
+                  >
+                    {'< back to compose'}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+
+          {/* MIDDLE section */}
+          <div className="flex flex-1 justify-center">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href=""
+                    className="px-4 py-2 text-sm font-bold"
+                  >
+                    EMAILS I NEVER SEND
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+
+          {/* RIGHT SECTION */}
+          <div className="flex flex-1 justify-end">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink href="" className="px-4 py-2">
+                    Log In
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href=""
+                    className="bg-email-charcoal text-email-white hover:bg-email-charcoal/80 rounded-xl px-4 py-3 hover:shadow-md"
+                  >
+                    Get Started
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+        </div>
       </section>
 
       <Separator />
@@ -62,10 +111,50 @@ export default function ComponentPlayground() {
       <section>
         <h2 className="mb-4 font-serif text-2xl">Buttons</h2>
         <div className="flex gap-4">
-          <Button>Default</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
+          {/* BUTTON 1 */}
+          <Button className="bg-email-mint text-email-charcoal rounded-xl px-4 py-3 hover:shadow-md">
+            Action 1
+          </Button>
+
+          {/* BUTTON 2 */}
+          <Button className="bg-email-charcoal text-email-white hover:bg-email-charcoal/80 rounded-xl px-4 py-3 hover:shadow-md">
+            Action 2
+          </Button>
+
+          {/* BUTTON - DISABLED */}
+          <Button
+            disabled
+            className="bg-email-charcoal text-email-white hover:bg-email-charcoal/80 rounded-xl px-4 py-3 hover:shadow-md disabled:pointer-events-none disabled:opacity-50"
+          >
+            Disabled
+          </Button>
+        </div>
+      </section>
+
+      <Separator />
+
+      {/* ------------------------------------- */}
+      {/* DROPDOWN MENU */}
+      {/* ------------------------------------- */}
+
+      <section>
+        <h2 className="mb-4 font-serif text-2xl">Dropdown Menu</h2>
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-email-white text-email-charcoal hover:bg-email-charcoal/80 border-email-charcoal hover:text-email-white border-2 px-4 py-3 hover:shadow-md">
+                Username
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem className="hover:bg-email-charcoal/80 hover:text-email-white justify-end py-2 pl-5">
+                View Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-email-charcoal/80 hover:text-email-white justify-end py-2 pl-5">
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
 
@@ -78,26 +167,45 @@ export default function ComponentPlayground() {
       <section>
         <h2 className="mb-4 font-serif text-2xl">Inputs & Form Fields</h2>
 
+        {/* SIMPLE LABEL & FORM */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input placeholder="name@example.com" />
+            <Input
+              className="py-2 pl-2 text-sm"
+              placeholder="name@example.com"
+            />
           </div>
 
+          {/* TEXT BOX */}
           <div className="space-y-2">
-            <Label>Your Message</Label>
-            <Textarea placeholder="Write something..." />
+            <Label>Email Text Area</Label>
+            <Textarea
+              className="h-80 px-2 py-2 text-sm"
+              placeholder="Write your email here..."
+            />
           </div>
 
+          {/* DROPDOWN SELECT */}
           <div className="space-y-2">
             <Label>Choose an option</Label>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="one">Option One</SelectItem>
-                <SelectItem value="two">Option Two</SelectItem>
+                <SelectItem
+                  className="hover:bg-email-charcoal/80 hover:text-email-white px-2 py-1"
+                  value="one"
+                >
+                  Option One
+                </SelectItem>
+                <SelectItem
+                  className="hover:bg-email-charcoal/80 hover:text-email-white px-2 py-1"
+                  value="two"
+                >
+                  Option Two
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -170,27 +278,6 @@ export default function ComponentPlayground() {
         <h2 className="mb-4 font-serif text-2xl">Badge</h2>
 
         <Badge>Badge</Badge>
-      </section>
-
-      <Separator />
-
-      {/* ------------------------------------- */}
-      {/* DROPDOWN MENU */}
-      {/* ------------------------------------- */}
-
-      <section>
-        <h2 className="mb-4 font-serif text-2xl">Dropdown Menu</h2>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button>Open Menu</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Sign Out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </section>
     </div>
   )
