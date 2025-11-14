@@ -12,7 +12,6 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -26,7 +25,6 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
-import { Form } from '@/components/ui/form'
 
 export default function ComponentPlayground() {
   return (
@@ -49,7 +47,7 @@ export default function ComponentPlayground() {
       <section>
         <h2 className="mb-4 font-serif text-2xl">Navigation Menu</h2>
         {/* WHOLE navbar */}
-        <div className="flex w-full items-center py-4">
+        <div className="border-email-charcoal flex w-full items-center border-b py-4">
           {/* LEFT section */}
           <div className="flex-1">
             <NavigationMenu>
