@@ -1,34 +1,40 @@
-# Boilerplate: Fullstack with Sass
+# Emails I Never Send
 
-## Setup
+A writing-practice app that lets users choose from different email scenarios and improve their communication style by reviewing their responses.
 
-### What's included
+## Overview
+This project started as a proposal for our final group projects at Dev Academy. Although it wasn’t selected, I decided to continue developing the idea as a personal project. As a creative approach to writing practice, I’ve also been curious about interesting uses of AI and wanted to explore integrating the OpenAI API to provide feedback on written responses.
 
-This repo includes:
+## Current Progress
+- Built Playground.tsx to explore UI components and Tailwind styling
+- Created Figma wireframes to map out the MVP user flow
 
-* a single, simple API endpoint (`/api/v1/fruits`)
-* frontend routing via react-router
-* an auth0 setup waiting to be configured
-* an example database module (`server/db/fruits.js`)
-* an API client module (`client/apis/fruits.js`)
-* configuration for Vitest and testing library
-* configuration for server-side debugging in VS Code
-* configuration for preprocessing css with tailwind support
+## Planned Features
+- State-managed options that are used to generate a scenario for the user
+- User limits to apply such as word limit or time restraint
+- Responses are submitted for review and sent to the OpenAI API using a predefined prompt
+- Auth0 authentication and user accounts to be able to save favourite email responses
 
-### Installation
+## Planned Tech Stack
+- JavaScript / TypeScript
+- React
+- Node.js / Express
+- Tailwind / shadcn/ui
+- SQLite
+- OpenAI API
 
-#### **From the Github UI**
+## What I'm Learning
+- What’s required to set up and use an OpenAI API key
+- How to use license-free icons as effective styling elements
 
-See the instructions [here](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) to use Github's feature to create a new repo from a template.
+## Project Status
+In progress
 
-```
-git clone [your-project-ssh-address]
-cd [your-project-name]
-npm install # to install dependencies
-npm run dev # to start the dev server
-```
+## Next steps
+- Creating migrations and seed data
+- Building out components using wireframes as a guide
 
-You can find the server running on [http://localhost:3000](http://localhost:3000) and the client running on [http://localhost:5173](http://localhost:5173).
-
----
-[Provide feedback on this repo](https://docs.google.com/forms/d/e/1FAIpQLSfw4FGdWkLwMLlUaNQ8FtP2CTJdGDUv6Xoxrh19zIrJSkvT4Q/viewform?usp=pp_url&entry.1958421517=boilerplate-fullstack)
+## Running the Project Locally
+```bash
+npm install
+npm run dev
