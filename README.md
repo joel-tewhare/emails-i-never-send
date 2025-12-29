@@ -9,6 +9,8 @@ This project started as a proposal for our final group projects at Dev Academy. 
 - Built Playground.tsx to explore UI components and Tailwind styling
 - Created Figma wireframes to map out the MVP user flow
 
+  ![Emails I Never Send wireframes](screenshots/emails-i-never-send-wireframes.png)
+
 ## Planned Features
 - State-managed options that are used to generate a scenario for the user
 - User limits to apply such as word limit or time restraint
