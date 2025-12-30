@@ -1,10 +1,11 @@
 import { Outlet } from 'react-router'
+import Navbar from './Navbar'
 
 export default function Layout() {
   return (
     <>
       <header>
-        <h1>Emails I Never Send</h1>
+        <Navbar />
       </header>
       <main>
         <Outlet />
