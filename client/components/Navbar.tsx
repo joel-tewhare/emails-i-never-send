@@ -14,7 +14,7 @@ export default function Navbar() {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  href=""
+                  href="/compose"
                   className="px-4 py-2 decoration-email-charcoal underline-offset-2 hover:underline"
                 >
                   {'< back to compose'}
@@ -29,7 +29,7 @@ export default function Navbar() {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  href=""
+                  href="/"
                   className="px-4 py-2 text-sm font-bold"
                 >
                   EMAILS I NEVER SEND
@@ -49,7 +49,7 @@ export default function Navbar() {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  href=""
+                  href="/compose"
                   className="rounded-xl bg-email-charcoal px-4 py-3 text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
                 >
                   Get Started
