@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -10,6 +10,8 @@ import {
 import scenarios from '../../public/assets/icons/scenarios.svg'
 import moods from '../../public/assets/icons/prompt-moods.svg'
 import limits from '../../public/assets/icons/word-time-limits.svg'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function Compose() {
   return (
@@ -59,7 +61,48 @@ export default function Compose() {
             </CardTitle>
           </Card>
         </div>
-        <div className="w-full flex-1">Prompt and text area here</div>
+        <div className="w-full flex-1">
+          <Card className="max-w-xl bg-email-white">
+            <CardHeader className="pl-3 pt-2 font-serif">
+              <CardTitle>Prompt:</CardTitle>
+            </CardHeader>
+            <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
+              Write an email to your colleague Jamie. Congratulate them on
+              completing a challenging project and highlight a moment where
+              their leadership stood out.
+            </CardContent>
+          </Card>
+
+          <Card className="max-w-xl rounded-none bg-email-white">
+            <div className="flex flex-row justify-end">
+              <CardContent className="pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
+                Word Limit:
+              </CardContent>
+              <CardContent className="pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
+                Timer:
+              </CardContent>
+            </div>
+          </Card>
+          <p>
+            * Word Limit and Timer can be replaced with graphics in
+            public/assets/images
+          </p>
+
+          <Textarea
+            className="h-80 px-2 py-2 text-sm"
+            placeholder="Write your email here..."
+          />
+
+          <Card className="h-16 max-w-xl rounded-none bg-email-white">
+            <div className="flex h-full flex-row items-center justify-end">
+              <CardContent className="pr-6 pt-2 text-sm font-bold">
+                <Button className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md">
+                  Review
+                </Button>
+              </CardContent>
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   )
