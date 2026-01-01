@@ -7,6 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import scenarios from '../../public/assets/icons/scenarios.svg'
+import moods from '../../public/assets/icons/prompt-moods.svg'
+import limits from '../../public/assets/icons/word-time-limits.svg'
 
 export default function Compose() {
   return (
@@ -15,7 +18,9 @@ export default function Compose() {
         <div className="m-4 w-full space-y-8 md:w-80">
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
             <CardHeader>
-              <CardTitle>icon graphic here</CardTitle>
+              <CardTitle>
+                <img src={scenarios} alt="scenario icons" />
+              </CardTitle>
             </CardHeader>
           </Card>
 
@@ -43,15 +48,15 @@ export default function Compose() {
           </div>
 
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-mauve p-4">
-            <CardHeader>
-              <CardTitle>icon graphic here</CardTitle>
-            </CardHeader>
+            <CardTitle className="p-10">
+              <img src={moods} alt="mood icons" />
+            </CardTitle>
           </Card>
 
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-gold p-4">
-            <CardHeader>
-              <CardTitle>icon graphic here</CardTitle>
-            </CardHeader>
+            <CardTitle className="p-10">
+              <img src={limits} alt="word and time icons" />
+            </CardTitle>
           </Card>
         </div>
         <div className="w-full flex-1">Prompt and text area here</div>
