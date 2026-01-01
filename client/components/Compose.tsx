@@ -60,9 +60,13 @@ export default function Compose() {
               <img src={limits} alt="word and time icons" />
             </CardTitle>
           </Card>
+
+          <Button className="rounded-xl bg-email-charcoal px-4 py-3 text-email-charcoal text-email-white hover:shadow-md">
+            Get Prompt
+          </Button>
         </div>
         <div className="w-full flex-1">
-          <Card className="max-w-xl bg-email-white">
+          <Card className="mb-8 max-w-xl bg-email-white">
             <CardHeader className="pl-3 pt-2 font-serif">
               <CardTitle>Prompt:</CardTitle>
             </CardHeader>
