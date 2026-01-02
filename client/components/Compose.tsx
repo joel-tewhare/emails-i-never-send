@@ -250,11 +250,15 @@ export default function Compose() {
           <Button
             onClick={handleGetPrompt}
             disabled={
-              !selectedScenarioId || !selectedMoodId || isPendingPrompts
+              !selectedScenarioId ||
+              !selectedMoodId ||
+              isPendingPrompts ||
+              !selectedWordLimitId ||
+              !selectedTimeLimitId
             }
             className="rounded-xl bg-email-charcoal px-4 py-3 text-email-charcoal text-email-white hover:shadow-md disabled:opacity-50"
           >
-            {isPendingPrompts ? 'Loading...' : 'Get Prompt'}
+            {isPendingPrompts ? 'Choose Options' : 'Get Prompt'}
           </Button>
         </div>
         <div className="w-full flex-1">
