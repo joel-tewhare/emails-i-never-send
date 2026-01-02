@@ -8,9 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import scenarios from '../../public/assets/icons/scenarios.svg'
-import moods from '../../public/assets/icons/prompt-moods.svg'
-import limits from '../../public/assets/icons/word-time-limits.svg'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { getScenarios } from '../apis/scenarios'
@@ -64,7 +61,7 @@ export default function Compose() {
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
             <CardHeader>
               <CardTitle>
-                <img src={scenarios} alt="scenario icons" />
+                <img src="/assets/icons/scenarios.svg" alt="scenario icons" />
               </CardTitle>
             </CardHeader>
           </Card>
@@ -76,31 +73,31 @@ export default function Compose() {
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  className="px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
-                  value="one"
-                >
-                  Option One
-                </SelectItem>
-                <SelectItem
-                  className="px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
-                  value="two"
-                >
-                  Option Two
-                </SelectItem>
+                {scenariosData.map((scenario) => (
+                  <SelectItem
+                    key={scenario.id}
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    value={String(scenario.id)}
+                  >
+                    {scenario.description}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-mauve p-4">
             <CardTitle className="p-10">
-              <img src={moods} alt="mood icons" />
+              <img src="/assets/icons/prompt-moods.svg" alt="mood icons" />
             </CardTitle>
           </Card>
 
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-gold p-4">
             <CardTitle className="p-10">
-              <img src={limits} alt="word and time icons" />
+              <img
+                src="/assets/icons/word-time-limits.svg"
+                alt="word and time icons"
+              />
             </CardTitle>
           </Card>
 
