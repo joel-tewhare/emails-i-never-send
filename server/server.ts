@@ -3,6 +3,7 @@ import * as Path from 'node:path'
 
 import scenariosRoutes from './routes/scenarios.ts'
 import moodsRoutes from './routes/moods.ts'
+import wordLimitsRoutes from './routes/word-limits.ts'
 
 const server = express()
 
@@ -10,6 +11,7 @@ server.use(express.json())
 
 server.use('/api/v1/scenarios', scenariosRoutes)
 server.use('/api/v1/moods', moodsRoutes)
+server.use('/api/v1/word-limits', wordLimitsRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   server.use(express.static(Path.resolve('public')))
