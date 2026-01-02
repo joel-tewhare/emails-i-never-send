@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
@@ -12,8 +13,50 @@ import moods from '../../public/assets/icons/prompt-moods.svg'
 import limits from '../../public/assets/icons/word-time-limits.svg'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { getScenarios } from '../apis/scenarios'
+import { getMoods } from '../apis/moods'
+import { getWordLimits } from '../apis/word-limits'
 
 export default function Compose() {
+  const {
+    data: scenariosData,
+    isPending: isPendingScenarios,
+    error: scenariosError,
+  } = useQuery({
+    queryKey: ['scenarios'],
+    queryFn: getScenarios,
+  })
+
+  const {
+    data: moodsData,
+    isPending: isPendingMoods,
+    error: moodsError,
+  } = useQuery({
+    queryKey: ['moods'],
+    queryFn: getMoods,
+  })
+
+  const {
+    data: wordLimitsData,
+    isPending: isPendingWordLimits,
+    error: wordLimitsError,
+  } = useQuery({
+    queryKey: ['wordLimits'],
+    queryFn: getWordLimits,
+  })
+
+  if (isPendingScenarios || isPendingMoods || isPendingWordLimits) {
+    return <div>Loading...</div>
+  }
+
+  if (scenariosError || moodsError || wordLimitsError) {
+    return <div>Error loading data</div>
+  }
+
+  if (!scenariosData || !moodsData || !wordLimitsData) {
+    return <div>No data available</div>
+  }
+
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
       <div className="flex flex-col gap-6 md:flex-row">
