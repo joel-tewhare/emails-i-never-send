@@ -14,8 +14,36 @@ import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
+import { useState } from 'react'
 
 export default function Compose() {
+  const [selectedScenarioId, setSelectedScenarioId] = useState<number | null>(
+    null,
+  )
+  const [selectedMoodId, setSelectedMoodId] = useState<number | null>(null)
+  const [selectedWordLimitId, setSelectedWordLimitId] = useState<number | null>(
+    null,
+  )
+  const [selectedTimeLimitId, setSelectedTimeLimitId] = useState<number | null>(
+    null,
+  )
+
+  const handleScenarioChange = (value: string) => {
+    setSelectedScenarioId(Number(value))
+  }
+
+  const handleMoodChange = (value: string) => {
+    setSelectedMoodId(Number(value))
+  }
+
+  const handleWordLimitChange = (value: string) => {
+    setSelectedWordLimitId(Number(value))
+  }
+
+  const handleTimeLimitChange = (value: string) => {
+    setSelectedTimeLimitId(Number(value))
+  }
+
   const {
     data: scenariosData,
     isPending: isPendingScenarios,
@@ -83,11 +111,16 @@ export default function Compose() {
 
           <div className="space-y-2">
             <Label>Scenario</Label>
-            <Select>
-              <SelectTrigger className="bg-email-white px-2">
+            <Select
+              value={
+                selectedScenarioId ? String(selectedScenarioId) : undefined
+              }
+              onValueChange={handleScenarioChange}
+            >
+              <SelectTrigger className="w-full bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-[var(--radix-select-trigger-width)]">
                 {scenariosData.map((scenario) => (
                   <SelectItem
                     key={scenario.id}
@@ -109,11 +142,14 @@ export default function Compose() {
 
           <div className="space-y-2">
             <Label>Mood</Label>
-            <Select>
-              <SelectTrigger className="bg-email-white px-2">
+            <Select
+              value={selectedMoodId ? String(selectedMoodId) : undefined}
+              onValueChange={handleMoodChange}
+            >
+              <SelectTrigger className="w-full bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-[var(--radix-select-trigger-width)]">
                 {moodsData.map((mood) => (
                   <SelectItem
                     key={mood.id}
@@ -138,11 +174,16 @@ export default function Compose() {
 
           <div className="space-y-2">
             <Label>Word Limit</Label>
-            <Select>
-              <SelectTrigger className="bg-email-white px-2">
+            <Select
+              value={
+                selectedWordLimitId ? String(selectedWordLimitId) : undefined
+              }
+              onValueChange={handleWordLimitChange}
+            >
+              <SelectTrigger className="w-full bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-[var(--radix-select-trigger-width)]">
                 {wordLimitsData.map((wordLimit) => (
                   <SelectItem
                     key={wordLimit.id}
@@ -158,11 +199,16 @@ export default function Compose() {
 
           <div className="space-y-2">
             <Label>Time Limit</Label>
-            <Select>
-              <SelectTrigger className="bg-email-white px-2">
+            <Select
+              value={
+                selectedTimeLimitId ? String(selectedTimeLimitId) : undefined
+              }
+              onValueChange={handleTimeLimitChange}
+            >
+              <SelectTrigger className="w-full bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-[var(--radix-select-trigger-width)]">
                 {timeLimitsData.map((timeLimit) => (
                   <SelectItem
                     key={timeLimit.id}
