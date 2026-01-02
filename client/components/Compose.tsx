@@ -15,6 +15,7 @@ import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
 import { useState } from 'react'
+import { usePrompt } from '../hooks/usePrompt'
 
 export default function Compose() {
   const [selectedScenarioId, setSelectedScenarioId] = useState<number | null>(
@@ -79,6 +80,30 @@ export default function Compose() {
     queryKey: ['timeLimits'],
     queryFn: getTimeLimits,
   })
+
+  // Custom hook for fetching prompts - only fetches when both IDs are selected
+  // React Query automatically caches based on scenarioId + moodId combination
+  const { isPending: isPendingPrompts, refetch: fetchPrompts } = usePrompt(
+    selectedScenarioId,
+    selectedMoodId,
+  )
+
+  const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
+
+  const handleGetPrompt = async () => {
+    if (selectedScenarioId && selectedMoodId) {
+      try {
+        const result = await fetchPrompts()
+        if (result.data && result.data.length > 0) {
+          // Randomly select a prompt from the array
+          const randomIndex = Math.floor(Math.random() * result.data.length)
+          setSelectedPrompt(result.data[randomIndex].prompt)
+        }
+      } catch (error) {
+        console.error('Error fetching prompts:', error)
+      }
+    }
+  }
 
   if (
     isPendingScenarios ||
@@ -222,8 +247,14 @@ export default function Compose() {
             </Select>
           </div>
 
-          <Button className="rounded-xl bg-email-charcoal px-4 py-3 text-email-charcoal text-email-white hover:shadow-md">
-            Get Prompt
+          <Button
+            onClick={handleGetPrompt}
+            disabled={
+              !selectedScenarioId || !selectedMoodId || isPendingPrompts
+            }
+            className="rounded-xl bg-email-charcoal px-4 py-3 text-email-charcoal text-email-white hover:shadow-md disabled:opacity-50"
+          >
+            {isPendingPrompts ? 'Loading...' : 'Get Prompt'}
           </Button>
         </div>
         <div className="w-full flex-1">
@@ -232,9 +263,8 @@ export default function Compose() {
               <CardTitle>Prompt:</CardTitle>
             </CardHeader>
             <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
-              Write an email to your colleague Jamie. Congratulate them on
-              completing a challenging project and highlight a moment where
-              their leadership stood out.
+              {selectedPrompt ||
+                'Select a scenario and mood, then click "Get Prompt" to generate a writing prompt.'}
             </CardContent>
           </Card>
 
