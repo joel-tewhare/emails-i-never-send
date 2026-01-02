@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
+import { getTimeLimits } from '../apis/time-limits'
 
 export default function Compose() {
   const {
@@ -42,15 +43,29 @@ export default function Compose() {
     queryFn: getWordLimits,
   })
 
-  if (isPendingScenarios || isPendingMoods || isPendingWordLimits) {
+  const {
+    data: timeLimitsData,
+    isPending: isPendingTimeLimits,
+    error: timeLimitsError,
+  } = useQuery({
+    queryKey: ['timeLimits'],
+    queryFn: getTimeLimits,
+  })
+
+  if (
+    isPendingScenarios ||
+    isPendingMoods ||
+    isPendingWordLimits ||
+    isPendingTimeLimits
+  ) {
     return <div>Loading...</div>
   }
 
-  if (scenariosError || moodsError || wordLimitsError) {
+  if (scenariosError || moodsError || wordLimitsError || timeLimitsError) {
     return <div>Error loading data</div>
   }
 
-  if (!scenariosData || !moodsData || !wordLimitsData) {
+  if (!scenariosData || !moodsData || !wordLimitsData || !timeLimitsData) {
     return <div>No data available</div>
   }
 
@@ -92,6 +107,26 @@ export default function Compose() {
             </CardTitle>
           </Card>
 
+          <div className="space-y-2">
+            <Label>Mood</Label>
+            <Select>
+              <SelectTrigger className="bg-email-white px-2">
+                <SelectValue placeholder="Select…" />
+              </SelectTrigger>
+              <SelectContent>
+                {moodsData.map((mood) => (
+                  <SelectItem
+                    key={mood.id}
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    value={String(mood.id)}
+                  >
+                    {mood.mood}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-gold p-4">
             <CardTitle className="p-10">
               <img
@@ -100,6 +135,46 @@ export default function Compose() {
               />
             </CardTitle>
           </Card>
+
+          <div className="space-y-2">
+            <Label>Word Limit</Label>
+            <Select>
+              <SelectTrigger className="bg-email-white px-2">
+                <SelectValue placeholder="Select…" />
+              </SelectTrigger>
+              <SelectContent>
+                {wordLimitsData.map((wordLimit) => (
+                  <SelectItem
+                    key={wordLimit.id}
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    value={String(wordLimit.id)}
+                  >
+                    {wordLimit.wordLimit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Time Limit</Label>
+            <Select>
+              <SelectTrigger className="bg-email-white px-2">
+                <SelectValue placeholder="Select…" />
+              </SelectTrigger>
+              <SelectContent>
+                {timeLimitsData.map((timeLimit) => (
+                  <SelectItem
+                    key={timeLimit.id}
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    value={String(timeLimit.id)}
+                  >
+                    {timeLimit.timeLimit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <Button className="rounded-xl bg-email-charcoal px-4 py-3 text-email-charcoal text-email-white hover:shadow-md">
             Get Prompt
