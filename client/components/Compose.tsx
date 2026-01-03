@@ -275,17 +275,21 @@ export default function Compose() {
           <Card className="max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
               <CardContent className="pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
-                Word Limit:
+                <img
+                  src="/assets/images/word-limit.svg"
+                  alt="word limit icon"
+                  className="h-8 w-8"
+                />
               </CardContent>
               <CardContent className="pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
-                Timer:
+                <img
+                  src="/assets/images/time-limit.svg"
+                  alt="timer icon"
+                  className="h-8 w-8"
+                />
               </CardContent>
             </div>
           </Card>
-          <p>
-            * Word Limit and Timer can be replaced with graphics in
-            public/assets/images
-          </p>
 
           <Textarea
             className="h-80 px-2 py-2 text-sm"
