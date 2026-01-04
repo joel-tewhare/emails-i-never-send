@@ -122,6 +122,11 @@ export default function Compose() {
     return <div>No data available</div>
   }
 
+  // Extract computed values outside JSX for better performance and readability
+  const selectedWordLimit = wordLimitsData.find(
+    (wordLimit) => wordLimit.id === selectedWordLimitId,
+  )?.wordLimit
+
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
       <div className="flex flex-col gap-6 md:flex-row">
@@ -215,7 +220,7 @@ export default function Compose() {
                     className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
                     value={String(wordLimit.id)}
                   >
-                    {wordLimit.wordLimit}
+                    {`${wordLimit.wordLimit} words`}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -274,12 +279,13 @@ export default function Compose() {
 
           <Card className="max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
-              <CardContent className="pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
+              <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
                 <img
                   src="/assets/images/word-limit.svg"
                   alt="word limit icon"
                   className="h-8 w-8"
                 />
+                <p>{selectedWordLimit}</p>
               </CardContent>
               <CardContent className="pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
                 <img
