@@ -122,7 +122,6 @@ export default function Compose() {
     return <div>No data available</div>
   }
 
-  // Extract computed values outside JSX for better performance and readability
   const selectedWordLimit = wordLimitsData.find(
     (wordLimit) => wordLimit.id === selectedWordLimitId,
   )?.wordLimit
@@ -287,7 +286,7 @@ export default function Compose() {
                 />
                 <p>{selectedWordLimit}</p>
               </CardContent>
-              <CardContent className="pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
+              <CardContent className="flex flex-row pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
                 <img
                   src="/assets/images/time-limit.svg"
                   alt="timer icon"
