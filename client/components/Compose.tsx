@@ -135,7 +135,7 @@ export default function Compose() {
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
-      <div className="flex flex-col gap-6 md:flex-row">
+      <div className="flex flex-col gap-2 md:flex-row">
         <div className="m-4 w-full space-y-8 md:w-80">
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
             <CardHeader>
@@ -153,14 +153,14 @@ export default function Compose() {
               }
               onValueChange={handleScenarioChange}
             >
-              <SelectTrigger className="w-full bg-email-white px-2">
+              <SelectTrigger className="w-64 bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent className="w-[var(--radix-select-trigger-width)]">
+              <SelectContent className="w-64">
                 {scenariosData.map((scenario) => (
                   <SelectItem
                     key={scenario.id}
-                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
                     value={String(scenario.id)}
                   >
                     {scenario.description}
@@ -182,14 +182,14 @@ export default function Compose() {
               value={selectedMoodId ? String(selectedMoodId) : undefined}
               onValueChange={handleMoodChange}
             >
-              <SelectTrigger className="w-full bg-email-white px-2">
+              <SelectTrigger className="w-64 bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent className="w-[var(--radix-select-trigger-width)]">
+              <SelectContent className="w-64">
                 {moodsData.map((mood) => (
                   <SelectItem
                     key={mood.id}
-                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
                     value={String(mood.id)}
                   >
                     {mood.mood}
@@ -216,14 +216,14 @@ export default function Compose() {
               }
               onValueChange={handleWordLimitChange}
             >
-              <SelectTrigger className="w-full bg-email-white px-2">
+              <SelectTrigger className="w-64 bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent className="w-[var(--radix-select-trigger-width)]">
+              <SelectContent className="w-64">
                 {wordLimitsData.map((wordLimit) => (
                   <SelectItem
                     key={wordLimit.id}
-                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
                     value={String(wordLimit.id)}
                   >
                     {`${wordLimit.wordLimit} words`}
@@ -241,14 +241,14 @@ export default function Compose() {
               }
               onValueChange={handleTimeLimitChange}
             >
-              <SelectTrigger className="w-full bg-email-white px-2">
+              <SelectTrigger className="w-64 bg-email-white px-2">
                 <SelectValue placeholder="Select…" />
               </SelectTrigger>
-              <SelectContent className="w-[var(--radix-select-trigger-width)]">
+              <SelectContent className="w-64">
                 {timeLimitsData.map((timeLimit) => (
                   <SelectItem
                     key={timeLimit.id}
-                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal/80 hover:text-email-white"
+                    className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
                     value={String(timeLimit.id)}
                   >
                     {timeLimit.timeLimit}
@@ -306,7 +306,7 @@ export default function Compose() {
           <Textarea
             value={emailContent}
             onChange={handleEmailContentChange}
-            className="h-80 px-2 py-2 text-sm"
+            className="h-80 max-w-xl px-2 py-2 text-sm"
             placeholder="Write your email here..."
           />
 
