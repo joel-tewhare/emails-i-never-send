@@ -122,13 +122,13 @@ export default function Home() {
 
       <Button
         asChild
-        className="m-4 rounded-xl bg-email-charcoal px-4 py-3 text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
+        className="m-4 rounded-xl bg-email-charcoal px-4 py-3 text-lg text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
       >
         <Link to="">Create Account</Link>
       </Button>
       <Button
         asChild
-        className="m-4 rounded-xl bg-email-charcoal px-4 py-3 text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
+        className="m-4 rounded-xl bg-email-charcoal px-4 py-3 text-lg text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
       >
         <Link to="/compose">Get Started Now</Link>
       </Button>
