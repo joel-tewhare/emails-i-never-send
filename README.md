@@ -33,8 +33,8 @@ This project started as a proposal for our final group projects at Dev Academy. 
 In progress
 
 ## Next steps
-- Creating migrations and seed data
-- Building out components using wireframes as a guide
+- Build MVP
+- Layer OpenAI API review/responses
 
 ## Running the Project Locally
 ```bash
