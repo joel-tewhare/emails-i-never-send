@@ -28,6 +28,7 @@ export default function Compose() {
   const [selectedTimeLimitId, setSelectedTimeLimitId] = useState<number | null>(
     null,
   )
+  const [emailContent, setEmailContent] = useState<string>('')
 
   const handleScenarioChange = (value: string) => {
     setSelectedScenarioId(Number(value))
@@ -43,6 +44,12 @@ export default function Compose() {
 
   const handleTimeLimitChange = (value: string) => {
     setSelectedTimeLimitId(Number(value))
+  }
+
+  const handleEmailContentChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setEmailContent(e.target.value)
   }
 
   const {
@@ -297,6 +304,8 @@ export default function Compose() {
           </Card>
 
           <Textarea
+            value={emailContent}
+            onChange={handleEmailContentChange}
             className="h-80 px-2 py-2 text-sm"
             placeholder="Write your email here..."
           />
