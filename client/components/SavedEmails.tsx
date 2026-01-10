@@ -1,14 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { getSavedEmails } from '../apis/saved-emails'
+import { getEmailById, getSavedEmails } from '../apis/saved-emails'
 import { getPromptById } from '../apis/prompts'
 import { useQuery } from '@tanstack/react-query'
 import { formatDate, getScenarioColor } from '@/lib/utils'
 import { useState } from 'react'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function SavedEmails() {
   const userId = 1 //hardcoded until auth0 setup
 
-  const [selectedEmail, setSelectedEmail] = useState<string>('')
+  const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
+  const [selectedEmailText, setSelectedEmailText] = useState<string | null>(
+    null,
+  )
 
   const { data, isPending, error } = useQuery({
     queryKey: ['emails'],
@@ -27,9 +31,12 @@ export default function SavedEmails() {
     return <div>No data available</div>
   }
 
-  const handleGetPrompt = async (promptId: number) => {
-    const selected = await getPromptById(promptId)
-    setSelectedEmail(selected.prompt)
+  const handleGetEmailData = async (promptId: number, emailId: number) => {
+    const selectedPrompt = await getPromptById(promptId)
+    setSelectedPrompt(selectedPrompt.prompt)
+
+    const selectedEmail = await getEmailById(emailId)
+    setSelectedEmailText(selectedEmail.content)
   }
 
   return (
@@ -67,7 +74,7 @@ export default function SavedEmails() {
           <div className="w-full">
             {data.map((email) => (
               <button
-                onClick={() => handleGetPrompt(email.promptId)}
+                onClick={() => handleGetEmailData(email.promptId, email.id)}
                 key={email.id}
                 className={`w-full rounded-sm p-3 text-left ${getScenarioColor(email.scenarioId)}`}
               >
@@ -83,9 +90,15 @@ export default function SavedEmails() {
             <CardTitle>Prompt was:</CardTitle>
           </CardHeader>
           <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
-            {selectedEmail}
+            {selectedPrompt}
           </CardContent>
         </Card>
+
+        <Textarea
+          value={selectedEmailText || 'No email selected'}
+          className="h-80 max-w-xl px-2 py-2 text-sm"
+          disabled
+        />
       </div>
     </div>
   )

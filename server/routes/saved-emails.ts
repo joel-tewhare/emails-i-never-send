@@ -16,4 +16,14 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/:emailId', async (req, res) => {
+  try {
+    const emailId = Number(req.params.emailId)
+    const email = await db.getEmailById(emailId)
+    res.json(email)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get email' })
+  }
+})
+
 export default router

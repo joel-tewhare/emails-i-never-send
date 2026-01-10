@@ -1,4 +1,4 @@
-import { SavedEmail } from '@/models/saved-emails'
+import { SavedEmail, SavedEmailText } from '@/models/saved-emails'
 import db from '../db/connection'
 
 export async function getSavedEmails(userId: number): Promise<SavedEmail[]> {
@@ -14,4 +14,12 @@ export async function getSavedEmails(userId: number): Promise<SavedEmail[]> {
       'saved_emails.created_at as createdAt',
     )
   return savedEmails
+}
+
+export async function getEmailById(emailId: number): Promise<SavedEmailText> {
+  const email = await db('saved_emails')
+    .where({ id: emailId })
+    .select('content')
+    .first()
+  return email
 }

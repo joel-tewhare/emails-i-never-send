@@ -6,3 +6,8 @@ export interface SavedEmail {
   content: string
   createdAt: string
 }
+
+export interface SavedEmailText {
+  id: number
+  content: string
+}
