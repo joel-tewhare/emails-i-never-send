@@ -50,7 +50,7 @@ export default function SavedEmails() {
         </div>
       </Card>
 
-      <Card className="h-96 max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
+      <Card className="h-2xl max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
         <CardHeader className="py-6 pl-3 text-center text-lg font-bold">
           <CardTitle>SAVED EMAILS</CardTitle>
         </CardHeader>
