@@ -1,6 +1,7 @@
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSavedEmails } from '../apis/saved-emails'
 import { useQuery } from '@tanstack/react-query'
+import { formatDate, getScenarioColor } from '@/lib/utils'
 
 export default function SavedEmails() {
   const userId = 1 //hardcoded until auth0 setup
@@ -46,6 +47,23 @@ export default function SavedEmails() {
             <div className="h-4 w-4 rounded-sm border border-email-charcoal/50 bg-email-white"></div>
             <p>Conflict Resolution</p>
           </CardContent>
+        </div>
+      </Card>
+
+      <Card className="h-96 max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
+        <CardHeader className="py-6 pl-3 text-center text-lg font-bold">
+          <CardTitle>SAVED EMAILS</CardTitle>
+        </CardHeader>
+        <div className="w-full">
+          {data.map((email) => (
+            <button
+              key={email.id}
+              className={`w-full rounded-sm p-3 text-left ${getScenarioColor(email.scenarioId)}`}
+            >
+              <p className="font-bold">{formatDate(email.createdAt)}</p>
+              <p>{email.content.slice(0, 100)}...</p>
+            </button>
+          ))}
         </div>
       </Card>
     </div>
