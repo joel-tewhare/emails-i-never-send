@@ -12,3 +12,8 @@ export async function getPrompts(
     .query({ scenarioId, moodId })
   return response.body
 }
+
+export async function getPromptById(promptId: number): Promise<Prompt> {
+  const response = await request.get(`${rootURL}/prompts/${promptId}`)
+  return response.body
+}

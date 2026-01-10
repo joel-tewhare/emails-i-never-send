@@ -4,3 +4,8 @@ export interface Prompt {
   moodId: number
   prompt: string
 }
+
+export interface PromptTextOnly {
+  id: number
+  prompt: string
+}

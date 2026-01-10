@@ -2,9 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSavedEmails } from '../apis/saved-emails'
 import { useQuery } from '@tanstack/react-query'
 import { formatDate, getScenarioColor } from '@/lib/utils'
+import { useState } from 'react'
 
 export default function SavedEmails() {
   const userId = 1 //hardcoded until auth0 setup
+
+  const [selectedEmail, setSelectedEmail] = useState<string>('')
 
   const { data, isPending, error } = useQuery({
     queryKey: ['emails'],
@@ -57,6 +60,7 @@ export default function SavedEmails() {
         <div className="w-full">
           {data.map((email) => (
             <button
+              onClick={() => setSelectedEmail(email.promptId.toString())}
               key={email.id}
               className={`w-full rounded-sm p-3 text-left ${getScenarioColor(email.scenarioId)}`}
             >
@@ -65,6 +69,15 @@ export default function SavedEmails() {
             </button>
           ))}
         </div>
+      </Card>
+
+      <Card className="mb-8 max-w-xl bg-email-white">
+        <CardHeader className="pl-3 pt-2 font-serif">
+          <CardTitle>Prompt:</CardTitle>
+        </CardHeader>
+        <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
+          {selectedEmail}
+        </CardContent>
       </Card>
     </div>
   )

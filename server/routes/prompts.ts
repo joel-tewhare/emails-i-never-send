@@ -22,4 +22,14 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/:id', async (req, res) => {
+  try {
+    const promptId = Number(req.params.id)
+    const prompt = await db.getPromptById(promptId)
+    res.json(prompt)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get prompt' })
+  }
+})
+
 export default router

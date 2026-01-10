@@ -1,4 +1,4 @@
-import { Prompt } from '@/models/prompts'
+import { Prompt, PromptTextOnly } from '@/models/prompts'
 import db from '../db/connection'
 
 export async function getPrompts(
@@ -9,4 +9,12 @@ export async function getPrompts(
     .where({ scenario_id: scenarioId, mood_id: moodId })
     .select('id', 'scenario_id as scenarioId', 'mood_id as moodId', 'prompt')
   return prompts
+}
+
+export async function getPromptById(promptId: number): Promise<PromptTextOnly> {
+  const prompt = await db('prompts')
+    .where({ id: promptId })
+    .select('id', 'prompt')
+    .first()
+  return prompt
 }
