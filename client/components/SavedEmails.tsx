@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSavedEmails } from '../apis/saved-emails'
+import { getPromptById } from '../apis/prompts'
 import { useQuery } from '@tanstack/react-query'
 import { formatDate, getScenarioColor } from '@/lib/utils'
 import { useState } from 'react'
@@ -24,6 +25,11 @@ export default function SavedEmails() {
 
   if (!data) {
     return <div>No data available</div>
+  }
+
+  const handleGetPrompt = async (promptId: number) => {
+    const selected = await getPromptById(promptId)
+    setSelectedEmail(selected.prompt)
   }
 
   return (
@@ -53,32 +59,34 @@ export default function SavedEmails() {
         </div>
       </Card>
 
-      <Card className="h-2xl max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
-        <CardHeader className="py-6 pl-3 text-center text-lg font-bold">
-          <CardTitle>SAVED EMAILS</CardTitle>
-        </CardHeader>
-        <div className="w-full">
-          {data.map((email) => (
-            <button
-              onClick={() => setSelectedEmail(email.promptId.toString())}
-              key={email.id}
-              className={`w-full rounded-sm p-3 text-left ${getScenarioColor(email.scenarioId)}`}
-            >
-              <p className="font-bold">{formatDate(email.createdAt)}</p>
-              <p>{email.content.slice(0, 100)}...</p>
-            </button>
-          ))}
-        </div>
-      </Card>
+      <div className="flex w-full flex-row flex-wrap items-center justify-center">
+        <Card className="h-2xl m-2 max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
+          <CardHeader className="py-6 pl-3 text-center text-lg font-bold">
+            <CardTitle>SAVED EMAILS</CardTitle>
+          </CardHeader>
+          <div className="w-full">
+            {data.map((email) => (
+              <button
+                onClick={() => handleGetPrompt(email.promptId)}
+                key={email.id}
+                className={`w-full rounded-sm p-3 text-left ${getScenarioColor(email.scenarioId)}`}
+              >
+                <p className="font-bold">{formatDate(email.createdAt)}</p>
+                <p>{email.content.slice(0, 100)}...</p>
+              </button>
+            ))}
+          </div>
+        </Card>
 
-      <Card className="mb-8 max-w-xl bg-email-white">
-        <CardHeader className="pl-3 pt-2 font-serif">
-          <CardTitle>Prompt:</CardTitle>
-        </CardHeader>
-        <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
-          {selectedEmail}
-        </CardContent>
-      </Card>
+        <Card className="m-2 mb-8 max-w-xl bg-email-white">
+          <CardHeader className="pl-3 pt-2 font-serif">
+            <CardTitle>Prompt was:</CardTitle>
+          </CardHeader>
+          <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
+            {selectedEmail}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
