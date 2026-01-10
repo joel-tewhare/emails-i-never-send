@@ -78,7 +78,7 @@ export default function SavedEmails() {
           </div>
         </Card>
 
-        <Card className="m-2 mb-8 max-w-xl bg-email-white">
+        <Card className="m-2 mb-8 w-full max-w-xl bg-email-white">
           <CardHeader className="pl-3 pt-2 font-serif">
             <CardTitle>Prompt was:</CardTitle>
           </CardHeader>
