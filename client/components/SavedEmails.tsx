@@ -85,20 +85,21 @@ export default function SavedEmails() {
           </div>
         </Card>
 
-        <Card className="m-2 mb-8 w-full max-w-xl bg-email-white">
-          <CardHeader className="pl-3 pt-2 font-serif">
-            <CardTitle>Prompt was:</CardTitle>
-          </CardHeader>
-          <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
-            {selectedPrompt}
-          </CardContent>
-        </Card>
+        <div className="m-2 flex flex-col items-center">
+          <Card className="m-2 mb-8 w-full max-w-xl bg-email-white">
+            <CardHeader className="pl-3 pt-2 font-serif">
+              <CardTitle>Prompt was:</CardTitle>
+            </CardHeader>
+            <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
+              {selectedPrompt}
+            </CardContent>
+          </Card>
 
-        <Textarea
-          value={selectedEmailText || 'No email selected'}
-          className="h-80 max-w-xl px-2 py-2 text-sm"
-          disabled
-        />
+          <Textarea
+            value={selectedEmailText || 'No email selected'}
+            className="text-md h-80 max-w-xl px-2 py-2"
+          />
+        </div>
       </div>
     </div>
   )
