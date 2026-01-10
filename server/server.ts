@@ -6,6 +6,7 @@ import moodsRoutes from './routes/moods.ts'
 import wordLimitsRoutes from './routes/word-limits.ts'
 import timeLimitsRoutes from './routes/time-limits.ts'
 import promptsRoutes from './routes/prompts.ts'
+import savedEmailsRoutes from './routes/saved-emails.ts'
 
 const server = express()
 
@@ -16,6 +17,7 @@ server.use('/api/v1/moods', moodsRoutes)
 server.use('/api/v1/word-limits', wordLimitsRoutes)
 server.use('/api/v1/time-limits', timeLimitsRoutes)
 server.use('/api/v1/prompts', promptsRoutes)
+server.use('/api/v1/saved-emails', savedEmailsRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   server.use(express.static(Path.resolve('public')))
