@@ -6,8 +6,14 @@ export async function getUserByAuthId(
 ): Promise<User | undefined> {
   const user = await db('users')
     .where({ auth_id: authId })
-    .select('id', 'auth_id', 'username', 'first_name', 'last_name')
+    .select(
+      'id',
+      'auth_id as authId',
+      'username',
+      'first_name as firstName',
+      'last_name as lastName',
+    )
     .first()
   if (!user) return undefined
-  return
+  return user
 }
