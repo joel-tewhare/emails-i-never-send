@@ -17,9 +17,12 @@ import { getTimeLimits } from '../apis/time-limits'
 import { useState } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
+import { useNavigate } from 'react-router'
 
 export default function Compose() {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
   const [selectedScenarioId, setSelectedScenarioId] = useState<number | null>(
     null,
   )
@@ -110,6 +113,7 @@ export default function Compose() {
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
+      navigate('/review')
     },
   })
 

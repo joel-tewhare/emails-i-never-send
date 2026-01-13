@@ -12,9 +12,14 @@ router.post('/', async (req, res) => {
     const promptText = req.body.promptText
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Review the following email for tone, clarity, effectiveness and empathy. The email is: ${emailContent}. The prompt is: ${promptText}. Return the review in markdown format.`,
+      contents: `Review the following email for tone, clarity, effectiveness and empathy. The email is: ${emailContent}. The prompt is: ${promptText}. Return the review in markdown format. No more than 325 words`,
     })
-    res.json(response)
+
+    // Extract the text from the Google GenAI response
+    // The response structure may vary - adjust based on actual API response
+    const reviewText = response.text || JSON.stringify(response)
+
+    res.json({ review: reviewText })
   } catch (error) {
     console.error('Error generating review:', error)
     res.status(500).json({ error: 'Failed to generate review' })
