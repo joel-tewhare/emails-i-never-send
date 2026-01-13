@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     const promptText = req.body.promptText
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Review the following email for tone, clarity, effectiveness and empathy. The email is: ${emailContent}. The prompt is: ${promptText}. Return the review in markdown format. No more than 325 words`,
+      contents: `Review the following email for tone, clarity, effectiveness and empathy. The email is: ${emailContent}. The prompt is: ${promptText}. Return like a teacher giving feedback with suggestions. No more than 250 words`,
     })
 
     // Extract the text from the Google GenAI response
