@@ -19,8 +19,8 @@ router.post('/', async (req, res) => {
     })
     res.json(response)
   } catch (error) {
-    console.error('Error generating email review:', error)
-    res.status(500).json({ error: 'Failed to generate email review' })
+    console.error('Error generating review:', error)
+    res.status(500).json({ error: 'Failed to generate review' })
   }
 })
 
