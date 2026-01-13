@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
@@ -19,6 +19,7 @@ import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 
 export default function Compose() {
+  const queryClient = useQueryClient()
   const [selectedScenarioId, setSelectedScenarioId] = useState<number | null>(
     null,
   )
@@ -98,6 +99,20 @@ export default function Compose() {
 
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
 
+  const reviewMutation = useMutation({
+    mutationFn: ({
+      emailContent,
+      promptText,
+    }: {
+      emailContent: string
+      promptText: string
+    }) => getEmailReview(emailContent, promptText),
+    onSuccess: (data) => {
+      // Store review result in query cache for persistence
+      queryClient.setQueryData(['emailReview'], data)
+    },
+  })
+
   const handleGetPrompt = async () => {
     if (selectedScenarioId && selectedMoodId) {
       try {
@@ -110,6 +125,15 @@ export default function Compose() {
       } catch (error) {
         console.error('Error fetching prompts:', error)
       }
+    }
+  }
+
+  const handleReviewEmail = () => {
+    if (selectedPrompt && emailContent !== '') {
+      reviewMutation.mutate({
+        emailContent,
+        promptText: selectedPrompt,
+      })
     }
   }
 
@@ -133,16 +157,6 @@ export default function Compose() {
   const selectedWordLimit = wordLimitsData.find(
     (wordLimit) => wordLimit.id === selectedWordLimitId,
   )?.wordLimit
-
-  const handleReviewEmail = async () => {
-    if (selectedPrompt && emailContent !== '') {
-      try {
-        const result = await getEmailReview(emailContent, selectedPrompt)
-      } catch (error) {
-        console.error('Error reviewing email:', error)
-      }
-    }
-  }
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
