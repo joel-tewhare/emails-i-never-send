@@ -1,5 +1,4 @@
 import express from 'express'
-import 'dotenv/config'
 import { GoogleGenAI } from '@google/genai'
 
 const router = express.Router()
