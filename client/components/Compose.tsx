@@ -16,6 +16,7 @@ import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
 import { useState } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
+import { getEmailReview } from '../apis/email-review'
 
 export default function Compose() {
   const [selectedScenarioId, setSelectedScenarioId] = useState<number | null>(
@@ -132,6 +133,16 @@ export default function Compose() {
   const selectedWordLimit = wordLimitsData.find(
     (wordLimit) => wordLimit.id === selectedWordLimitId,
   )?.wordLimit
+
+  const handleReviewEmail = async () => {
+    if (selectedPrompt && emailContent !== '') {
+      try {
+        const result = await getEmailReview(emailContent, selectedPrompt)
+      } catch (error) {
+        console.error('Error reviewing email:', error)
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
@@ -313,7 +324,10 @@ export default function Compose() {
           <Card className="h-16 max-w-xl rounded-none bg-email-white">
             <div className="flex h-full flex-row items-center justify-end">
               <CardContent className="pr-6 pt-2 text-sm font-bold">
-                <Button className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md">
+                <Button
+                  onClick={handleReviewEmail}
+                  className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md"
+                >
                   Review
                 </Button>
               </CardContent>

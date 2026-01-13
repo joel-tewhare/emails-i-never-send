@@ -5,10 +5,10 @@ const rootURL = new URL(`/api/v1`, document.body.baseURI)
 
 export async function getEmailReview(
   emailContent: string,
-  promptId: number,
+  promptText: string,
 ): Promise<EmailReview> {
   const response = await request
     .post(`${rootURL}/email-review`)
-    .send({ emailContent, promptId })
+    .send({ emailContent, promptText })
   return response.body
 }
