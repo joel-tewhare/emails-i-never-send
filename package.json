@@ -48,6 +48,7 @@
     "jwks-rsa": "^2.1.5",
     "knex": "^2.5.1",
     "lucide-react": "^0.553.0",
+    "react-audio-voice-recorder": "^2.2.0",
     "react-hook-form": "^7.66.0",
     "sqlite3": "^5.1.7",
     "superagent": "^10.2.2",
