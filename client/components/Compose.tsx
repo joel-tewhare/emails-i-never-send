@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
+import VoiceNote from './VoiceNote'
 
 export default function Compose() {
   const queryClient = useQueryClient()
@@ -338,6 +339,8 @@ export default function Compose() {
             className="h-80 max-w-xl px-2 py-2 text-sm"
             placeholder="Write your email here..."
           />
+
+          <VoiceNote />
 
           <Card className="h-16 max-w-xl rounded-none bg-email-white">
             <div className="flex h-full flex-row items-center justify-end">
