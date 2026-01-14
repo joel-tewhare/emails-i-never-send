@@ -23,7 +23,7 @@ This project started as a proposal for our final group projects at Dev Academy. 
 - Node.js / Express
 - Tailwind / shadcn/ui
 - SQLite
-- OpenAI API
+- Google Gemini API
 
 ## What I'm Learning
 - What’s required to set up and use a Gemini API key
@@ -34,7 +34,7 @@ In progress
 
 ## Next steps
 - Build MVP
-- Layer OpenAI API review/responses
+- Layer Gemini API review/responses
 
 ## Running the Project Locally
 ```bash
