@@ -82,11 +82,11 @@ export default function VoiceNote() {
     recorderStatus === 'recording' || recorderStatus === 'finalizing'
 
   return (
-    <Card className="my-8 max-w-xl bg-email-white">
+    <Card className="my-8 max-w-xl bg-email-white p-4">
       <CardHeader className="pl-3 pt-2 font-serif">
-        <CardTitle>Voice Note:</CardTitle>
+        <CardTitle className="text-xl italic">Voice Note:</CardTitle>
       </CardHeader>
-      <CardContent className="pb-3 pl-3 pt-2 font-serif text-xl italic">
+      <CardContent className="pb-3 pl-3 pt-2 font-serif text-lg">
         Record a 20 second (max) audio clip about how you hope the recipient
         will feel receiving the email you have written. This will be sent as
         part of your review.
