@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 type RecorderStatus = 'idle' | 'recording' | 'finalizing' | 'recorded' | 'error'
 
-export default function VoiceNote() {
+interface VoiceNoteProps {
+  onAudioRecorded?: (audioBlob: Blob | null) => void
+}
+
+export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
   const [audio, setAudio] = useState<Blob | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>('idle')
@@ -50,6 +54,7 @@ export default function VoiceNote() {
       return null
     })
     setRecorderStatus('idle')
+    onAudioRecorded?.(null)
   }
 
   //time limit managed, recording stopped with ref once timeout reached
@@ -76,6 +81,7 @@ export default function VoiceNote() {
       return URL.createObjectURL(blob)
     })
     setRecorderStatus('recorded')
+    onAudioRecorded?.(blob)
   }
 
   const showRecorder =
