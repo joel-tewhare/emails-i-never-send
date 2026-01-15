@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { EmailReview } from '@/models/email-review'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { WordLimit } from '@/models/word-limits'
 import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -23,11 +22,6 @@ export default function Review() {
 
   const { data: emailReviewData } = useQuery<EmailReview>({
     queryKey: ['emailReview'],
-    enabled: false,
-  })
-
-  const { data: wordLimitData } = useQuery<WordLimit>({
-    queryKey: ['wordLimit'],
     enabled: false,
   })
 
@@ -61,11 +55,8 @@ export default function Review() {
     return <div>Missing review data</div>
   }
 
-  if (!wordLimitData) {
-    return <div>No word limit data available</div>
-  }
-
-  const paragraphs = emailReviewData?.review.split(/\n\s*\n+/)
+  const reviewParagraphs = emailReviewData?.review.split(/\n\s*\n+/)
+  const originalParagraphs = emailReviewData?.emailOriginal.split(/\n\s*\n+/)
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
@@ -76,7 +67,7 @@ export default function Review() {
               <CardTitle>Here&apos;s your review,</CardTitle>
             </CardHeader>
             <ScrollArea className="text-md h-80 p-3 px-6 font-serif">
-              {paragraphs.map((para, index) => (
+              {reviewParagraphs.map((para, index) => (
                 <p key={index} className="mb-3">
                   {para.trim()}
                 </p>
@@ -90,7 +81,11 @@ export default function Review() {
               <CardTitle>Original email:</CardTitle>
             </CardHeader>
             <ScrollArea className="font-style: h-64 p-3 text-sm ">
-              {emailReviewData.emailOriginal}
+              {originalParagraphs.map((para, index) => (
+                <p key={index} className="mb-3">
+                  {para.trim()}
+                </p>
+              ))}
             </ScrollArea>
           </Card>
 
@@ -102,7 +97,7 @@ export default function Review() {
                   alt="word limit icon"
                   className="h-8 w-8"
                 />
-                <p>{wordLimitData?.wordLimit}</p>
+                <p>{emailReviewData?.wordLimit}</p>
               </CardContent>
               <CardContent className="flex flex-row pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
                 <img

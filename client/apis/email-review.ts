@@ -7,10 +7,12 @@ export async function getEmailReview(
   emailContent: string,
   promptText: string,
   audioBlob: Blob | null,
+  wordLimit: number,
 ): Promise<EmailReview> {
   const form = new FormData()
   form.append('emailContent', emailContent)
   form.append('promptText', promptText)
+  form.append('wordLimit', String(wordLimit))
 
   if (audioBlob) {
     //extension is browser-based, variable checks possible types and adds to form with webm as default

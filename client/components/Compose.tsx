@@ -109,11 +109,13 @@ export default function Compose() {
       emailContent,
       promptText,
       audioBlob,
+      wordLimit,
     }: {
       emailContent: string
       promptText: string
       audioBlob: Blob | null
-    }) => getEmailReview(emailContent, promptText, audioBlob),
+      wordLimit: number
+    }) => getEmailReview(emailContent, promptText, audioBlob, wordLimit),
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
@@ -142,6 +144,7 @@ export default function Compose() {
         emailContent,
         promptText: selectedPrompt,
         audioBlob,
+        wordLimit: selectedWordLimit,
       })
     }
   }

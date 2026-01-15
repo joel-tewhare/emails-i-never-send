@@ -30,6 +30,7 @@ router.post('/', upload.single('audio'), async (req, res) => {
   try {
     const emailContent = req.body.emailContent
     const promptText = req.body.promptText
+    const wordLimit = req.body.wordLimit
     const audioFile = req.file
 
     if (!emailContent || !promptText) {
@@ -101,7 +102,12 @@ ${promptText}
 
     const reviewText = response.text || JSON.stringify(response)
 
-    res.json({ review: reviewText, emailOriginal: emailContent, promptText })
+    res.json({
+      review: reviewText,
+      emailOriginal: emailContent,
+      promptText,
+      wordLimit,
+    })
   } catch (error) {
     console.error('Error generating review:', error)
     res.status(500).json({ error: 'Failed to generate review' })
