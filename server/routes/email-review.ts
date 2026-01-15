@@ -101,7 +101,7 @@ ${promptText}
 
     const reviewText = response.text || JSON.stringify(response)
 
-    res.json({ review: reviewText })
+    res.json({ review: reviewText, emailOriginal: emailContent, promptText })
   } catch (error) {
     console.error('Error generating review:', error)
     res.status(500).json({ error: 'Failed to generate review' })
