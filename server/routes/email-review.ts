@@ -41,7 +41,37 @@ router.post('/', upload.single('audio'), async (req, res) => {
     //Build parts array for user's message
     const parts: Part[] = [
       {
-        text: `Review the following email for tone, clarity, effectiveness and empathy. The email is: ${emailContent}. The prompt is: ${promptText}. Return like a teacher giving feedback with suggestions. No more than 250 words`,
+        text: `You will receive:
+- an email draft (text)
+- an optional voice note (the sender explaining how they hope the recipient will feel when reading the email)
+
+If a voice note is provided:
+1. Infer the sender’s intended emotional impact from the voice note (do not transcribe it verbatim).
+2. Give an impact rating out of 10, based on how well the email achieves the intended emotional impact described in the voice note. This should be a separate opening line at the beginning of the response.
+3. Briefly note any mismatch between the intended feeling and the tone of the written email.
+
+Then review the email draft for tone, clarity, effectiveness, and empathy.
+
+Provide:
+- Specific feedback tied to the sender’s intended emotional impact
+- Concrete suggestions for improvement
+- Optional example rewrites for key sentences (only where helpful)
+
+If no voice note is provided, base feedback on the written email alone.
+
+Write in a calm, conversational, supportive tone that would sound natural when read aloud using text-to-speech.
+Avoid heavy formatting, excessive bullet points, or long nested lists.
+Don't section off original and suggested text - if using, describe as part of full sentences.
+Don't offer full rewrites of the email - just suggest improvements.
+
+Keep the entire response under 250 words, in the style of a thoughtful teacher giving constructive feedback.
+
+EMAIL:
+${emailContent}
+
+PROMPT CONTEXT:
+${promptText}
+`.trim(),
       },
     ]
 
