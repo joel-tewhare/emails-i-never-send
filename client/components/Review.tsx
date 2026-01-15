@@ -97,7 +97,7 @@ export default function Review() {
                   alt="word limit icon"
                   className="h-8 w-8"
                 />
-                <p>{emailReviewData?.wordLimit}</p>
+                <p>{Number(emailReviewData?.wordLimit)}</p>
               </CardContent>
               <CardContent className="flex flex-row pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
                 <img
