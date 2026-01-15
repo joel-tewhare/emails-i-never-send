@@ -8,8 +8,22 @@ export async function getEmailReview(
   promptText: string,
   audioBlob: Blob | null,
 ): Promise<EmailReview> {
-  const response = await request
-    .post(`${rootURL}/email-review`)
-    .send({ emailContent, promptText, audioBlob })
+  const form = new FormData()
+  form.append('emailContent', emailContent)
+  form.append('promptText', promptText)
+
+  if (audioBlob) {
+    //extension is browser-based, variable checks possible types and adds to form with webm as default
+    const extension = audioBlob.type.includes('webm')
+      ? 'webm'
+      : audioBlob.type.includes('mp4')
+        ? 'mp4'
+        : audioBlob.type.includes('aac') || audioBlob.type.includes('m4a')
+          ? 'm4a'
+          : 'webm'
+    form.append('audio', audioBlob, `voice-note.${extension}`)
+  }
+
+  const response = await request.post(`${rootURL}/email-review`).send(form)
   return response.body
 }
