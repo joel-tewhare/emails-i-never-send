@@ -40,10 +40,12 @@ export default function Review() {
     mutationFn: ({
       emailRewrite,
       promptText,
+      emailOriginal,
     }: {
       emailRewrite: string
       promptText: string | undefined
-    }) => getEmailRewriteReview(emailRewrite, promptText),
+      emailOriginal: string
+    }) => getEmailRewriteReview(emailRewrite, promptText, emailOriginal),
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailRewrite'], data)
@@ -56,6 +58,7 @@ export default function Review() {
       rewriteReviewMutation.mutate({
         emailRewrite,
         promptText: promptData.prompt,
+        emailOriginal,
       })
     }
   }
