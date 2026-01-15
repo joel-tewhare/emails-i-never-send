@@ -66,7 +66,7 @@ ${promptText}`.trim(),
       ],
     })
     const rewriteReviewText = response.text || JSON.stringify(response)
-    res.json({ review: rewriteReviewText })
+    res.json({ review: rewriteReviewText, promptText })
   } catch (error) {
     console.error('Error rewriting email:', error)
     res.status(500).json({ error: 'Failed to rewrite email' })
