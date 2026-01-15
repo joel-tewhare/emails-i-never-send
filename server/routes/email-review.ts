@@ -47,7 +47,7 @@ router.post('/', upload.single('audio'), async (req, res) => {
 
 If a voice note is provided:
 1. Infer the sender’s intended emotional impact from the voice note (do not transcribe it verbatim).
-2. Give an impact rating out of 10, based on how well the email achieves the intended emotional impact described in the voice note. This should be a separate opening line at the beginning of the response.
+2. Give an impact rating out of 100 as a percentage, based on how well the email achieves the intended emotional impact described in the voice note. This should be a separate opening line at the beginning of the response.
 3. Briefly note any mismatch between the intended feeling and the tone of the written email.
 
 Then review the email draft for tone, clarity, effectiveness, and empathy.
