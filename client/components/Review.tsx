@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { WordLimit } from '@/models/word-limits'
 import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
-import { Prompt } from '@/models/prompts'
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 
@@ -26,11 +25,6 @@ export default function Review() {
     enabled: false,
   })
 
-  const { data: promptData } = useQuery<Prompt>({
-    queryKey: ['prompt'],
-    enabled: false,
-  })
-
   const { data: wordLimitData } = useQuery<WordLimit>({
     queryKey: ['wordLimit'],
     enabled: false,
@@ -44,7 +38,7 @@ export default function Review() {
     }: {
       emailRewrite: string
       promptText: string | undefined
-      emailOriginal: string
+      emailOriginal: string | undefined
     }) => getEmailRewriteReview(emailRewrite, promptText, emailOriginal),
     onSuccess: (data) => {
       // Store review result in query cache for persistence
@@ -54,20 +48,24 @@ export default function Review() {
   })
 
   const handleReviewEmail = () => {
-    if (promptData && emailRewrite !== '') {
+    if (emailReviewData && emailRewrite !== '') {
       rewriteReviewMutation.mutate({
         emailRewrite,
-        promptText: promptData.prompt,
-        emailOriginal,
+        promptText: emailReviewData.promptText,
+        emailOriginal: emailReviewData.emailOriginal,
       })
     }
   }
 
-  if (!emailReviewData || !wordLimitData || !promptData) {
-    return <div>No data available</div>
+  if (!emailReviewData) {
+    return <div>Missing review data</div>
   }
 
-  const paragraphs = emailReviewData.review.split(/\n\s*\n+/)
+  if (!wordLimitData) {
+    return <div>No word limit data available</div>
+  }
+
+  const paragraphs = emailReviewData?.review.split(/\n\s*\n+/)
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
@@ -92,7 +90,7 @@ export default function Review() {
               <CardTitle>Original email:</CardTitle>
             </CardHeader>
             <ScrollArea className="font-style: h-64 p-3 text-sm ">
-              Original email content goes here...
+              {emailReviewData.emailOriginal}
             </ScrollArea>
           </Card>
 
