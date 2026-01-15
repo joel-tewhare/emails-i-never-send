@@ -108,10 +108,12 @@ export default function Compose() {
     mutationFn: ({
       emailContent,
       promptText,
+      audioBlob,
     }: {
       emailContent: string
       promptText: string
-    }) => getEmailReview(emailContent, promptText),
+      audioBlob: Blob | null
+    }) => getEmailReview(emailContent, promptText, audioBlob),
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
@@ -139,6 +141,7 @@ export default function Compose() {
       reviewMutation.mutate({
         emailContent,
         promptText: selectedPrompt,
+        audioBlob,
       })
     }
   }
