@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { EmailReview } from '@/models/email-review'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -6,9 +6,13 @@ import { WordLimit } from '@/models/word-limits'
 import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
 import { Prompt } from '@/models/prompts'
+import { useNavigate } from 'react-router'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
+
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const handleEmailRewriteChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
@@ -30,6 +34,30 @@ export default function Review() {
     queryKey: ['wordLimit'],
     enabled: false,
   })
+
+  const rewriteReviewMutation = useMutation({
+    mutationFn: ({
+      emailRewrite,
+      promptText,
+    }: {
+      emailRewrite: string
+      promptText: string | undefined
+    }) => getEmailRewriteReview(emailRewrite, promptText),
+    onSuccess: (data) => {
+      // Store review result in query cache for persistence
+      queryClient.setQueryData(['emailRewrite'], data)
+      navigate('/final')
+    },
+  })
+
+  const handleReviewEmail = () => {
+    if (promptData && emailRewrite !== '') {
+      rewriteReviewMutation.mutate({
+        emailRewrite,
+        promptText: promptData.prompt,
+      })
+    }
+  }
 
   if (!emailReviewData || !wordLimitData || !promptData) {
     return <div>No data available</div>
