@@ -8,12 +8,12 @@ import { useState } from 'react'
 import { Prompt } from '@/models/prompts'
 
 export default function Review() {
-  const [emailContent, setEmailContent] = useState<string>('')
+  const [emailRewrite, setEmailRewrite] = useState<string>('')
 
-  const handleEmailContentChange = (
+  const handleEmailRewriteChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setEmailContent(e.target.value)
+    setEmailRewrite(e.target.value)
   }
 
   const { data: emailReviewData } = useQuery<EmailReview>({
@@ -85,8 +85,8 @@ export default function Review() {
           </Card>
 
           <Textarea
-            value={emailContent}
-            onChange={handleEmailContentChange}
+            value={emailRewrite}
+            onChange={handleEmailRewriteChange}
             className="h-80 max-w-xl px-2 py-2 text-sm"
             placeholder="Write your email here..."
           />
