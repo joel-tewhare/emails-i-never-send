@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
+import { getEmailRewriteReview } from '../apis/email-rewrite'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
@@ -37,8 +38,8 @@ export default function Review() {
       emailOriginal,
     }: {
       emailRewrite: string
-      promptText: string | undefined
-      emailOriginal: string | undefined
+      promptText: string
+      emailOriginal: string
     }) => getEmailRewriteReview(emailRewrite, promptText, emailOriginal),
     onSuccess: (data) => {
       queryClient.setQueryData(['emailRewrite'], data)
@@ -46,7 +47,7 @@ export default function Review() {
     },
   })
 
-  const handleReviewEmail = () => {
+  const handleRewriteReview = () => {
     if (emailReviewData && emailRewrite !== '') {
       rewriteReviewMutation.mutate({
         emailRewrite,
@@ -124,10 +125,10 @@ export default function Review() {
             <div className="flex h-full flex-row items-center justify-end">
               <CardContent className="pr-6 pt-2 text-sm font-bold">
                 <Button
-                  onClick={handleReviewEmail}
+                  onClick={handleRewriteReview}
                   className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md"
                 >
-                  Get Review
+                  Get Final Review
                 </Button>
               </CardContent>
             </div>
