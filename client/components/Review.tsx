@@ -41,7 +41,6 @@ export default function Review() {
       emailOriginal: string | undefined
     }) => getEmailRewriteReview(emailRewrite, promptText, emailOriginal),
     onSuccess: (data) => {
-      // Store review result in query cache for persistence
       queryClient.setQueryData(['emailRewrite'], data)
       navigate('/final')
     },
