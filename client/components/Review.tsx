@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
 import { Prompt } from '@/models/prompts'
 import { useNavigate } from 'react-router'
+import { Button } from '@/components/ui/button'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
