@@ -60,13 +60,16 @@ export default function Review() {
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
-      <div className="flex flex-col gap-2 md:flex-row">
-        <div className="m-4 w-full space-y-8 md:w-80">
-          <Card className="h-96 max-w-md overflow-y-auto rounded-none bg-email-charcoal text-email-white">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
+        <div className="m-4 w-full space-y-8 md:w-96">
+          <Card className="max-w-md flex-1 overflow-y-auto rounded-none bg-email-charcoal text-email-white">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle>Here&apos;s your review,</CardTitle>
+              <CardTitle className="mb-3 mt-2 text-center">
+                Here&apos;s your review,
+              </CardTitle>
             </CardHeader>
-            <ScrollArea className="text-md h-80 p-3 px-6 font-serif">
+
+            <ScrollArea className="h-[40rem] p-3 px-6 font-serif text-[15px] leading-relaxed md:h-[calc(100vh-14rem)]">
               {reviewParagraphs.map((para, index) => (
                 <p key={index} className="mb-3">
                   {para.trim()}
@@ -76,7 +79,16 @@ export default function Review() {
           </Card>
         </div>
         <div className="w-full flex-1">
-          <Card className="max-w-xl overflow-y-auto rounded-none bg-email-mint">
+          <Card className="mb-8 max-w-xl bg-email-white p-3">
+            <CardHeader className="pl-3 pt-2 font-serif">
+              <CardTitle className="text-xl italic">Prompt:</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-3 pl-3 pt-2 font-serif text-lg">
+              {emailReviewData?.promptText}
+            </CardContent>
+          </Card>
+
+          <Card className="mb-8 max-w-xl overflow-y-auto rounded-none bg-email-mint">
             <CardHeader className="pl-3 pt-2">
               <CardTitle>Original email:</CardTitle>
             </CardHeader>
@@ -99,13 +111,6 @@ export default function Review() {
                 />
                 <p>{Number(emailReviewData?.wordLimit)}</p>
               </CardContent>
-              <CardContent className="flex flex-row pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
-                <img
-                  src="/assets/images/time-limit.svg"
-                  alt="timer icon"
-                  className="h-8 w-8"
-                />
-              </CardContent>
             </div>
           </Card>
 
@@ -113,7 +118,7 @@ export default function Review() {
             value={emailRewrite}
             onChange={handleEmailRewriteChange}
             className="h-80 max-w-xl px-2 py-2 text-sm"
-            placeholder="Write your email here..."
+            placeholder="Rewrite your email here..."
           />
 
           <Card className="h-16 max-w-xl border-none">

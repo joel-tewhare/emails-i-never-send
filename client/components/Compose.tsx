@@ -144,7 +144,7 @@ export default function Compose() {
         emailContent,
         promptText: selectedPrompt,
         audioBlob,
-        wordLimit: selectedWordLimit,
+        wordLimit: selectedWordLimit ?? 250,
       })
     }
   }
