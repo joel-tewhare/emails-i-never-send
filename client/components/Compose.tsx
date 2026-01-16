@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
+import VoiceNote from './VoiceNote'
 
 export default function Compose() {
   const queryClient = useQueryClient()
@@ -34,6 +35,7 @@ export default function Compose() {
     null,
   )
   const [emailContent, setEmailContent] = useState<string>('')
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
 
   const handleScenarioChange = (value: string) => {
     setSelectedScenarioId(Number(value))
@@ -106,10 +108,14 @@ export default function Compose() {
     mutationFn: ({
       emailContent,
       promptText,
+      audioBlob,
+      wordLimit,
     }: {
       emailContent: string
       promptText: string
-    }) => getEmailReview(emailContent, promptText),
+      audioBlob: Blob | null
+      wordLimit: number
+    }) => getEmailReview(emailContent, promptText, audioBlob, wordLimit),
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
@@ -137,6 +143,8 @@ export default function Compose() {
       reviewMutation.mutate({
         emailContent,
         promptText: selectedPrompt,
+        audioBlob,
+        wordLimit: selectedWordLimit ?? 250,
       })
     }
   }
@@ -302,11 +310,11 @@ export default function Compose() {
           </Button>
         </div>
         <div className="w-full flex-1">
-          <Card className="mb-8 max-w-xl bg-email-white">
+          <Card className="mb-8 max-w-xl bg-email-white p-3">
             <CardHeader className="pl-3 pt-2 font-serif">
-              <CardTitle>Prompt:</CardTitle>
+              <CardTitle className="text-xl italic">Prompt:</CardTitle>
             </CardHeader>
-            <CardContent className="font-style: pb-3 pl-3 pt-2 font-serif text-xl italic">
+            <CardContent className="pb-3 pl-3 pt-2 font-serif text-lg">
               {selectedPrompt ||
                 'Select a scenario and mood, then click "Get Prompt" to generate a writing prompt.'}
             </CardContent>
@@ -339,14 +347,16 @@ export default function Compose() {
             placeholder="Write your email here..."
           />
 
-          <Card className="h-16 max-w-xl rounded-none bg-email-white">
+          <VoiceNote onAudioRecorded={(blob) => setAudioBlob(blob)} />
+
+          <Card className="h-16 max-w-xl border-none">
             <div className="flex h-full flex-row items-center justify-end">
               <CardContent className="pr-6 pt-2 text-sm font-bold">
                 <Button
                   onClick={handleReviewEmail}
                   className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md"
                 >
-                  Review
+                  Get Review
                 </Button>
               </CardContent>
             </div>
