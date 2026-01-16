@@ -3,13 +3,17 @@ import { EmailReview } from '@/models/email-review'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getEmailRewriteReview } from '../apis/email-rewrite'
+import { generateTtsAudio } from '../apis/tts'
+import { Play } from 'lucide-react'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -23,6 +27,19 @@ export default function Review() {
   const { data: emailReviewData } = useQuery<EmailReview>({
     queryKey: ['emailReview'],
     enabled: false,
+  })
+
+  const ttsMutation = useMutation({
+    mutationFn: (text: string) => generateTtsAudio(text),
+    onSuccess: (audioBlob) => {
+      const url = URL.createObjectURL(audioBlob)
+      setAudioUrl(url)
+      // Auto-play when audio is ready
+      if (audioRef.current) {
+        audioRef.current.src = url
+        audioRef.current.play()
+      }
+    },
   })
 
   const rewriteReviewMutation = useMutation({
@@ -40,6 +57,27 @@ export default function Review() {
       navigate('/final')
     },
   })
+
+  // Cleanup audio URL on unmount
+  useEffect(() => {
+    return () => {
+      if (audioUrl) {
+        URL.revokeObjectURL(audioUrl)
+      }
+    }
+  }, [audioUrl])
+
+  const handlePlayTts = () => {
+    if (!emailReviewData?.review) return
+
+    if (audioUrl && audioRef.current) {
+      // If audio already generated, just play it
+      audioRef.current.play()
+    } else {
+      // Generate new audio
+      ttsMutation.mutate(emailReviewData.review)
+    }
+  }
 
   const handleRewriteReview = () => {
     if (emailReviewData && emailRewrite !== '') {
@@ -64,9 +102,32 @@ export default function Review() {
         <div className="m-4 w-full space-y-8 md:w-96">
           <Card className="max-w-md flex-1 overflow-y-auto rounded-none bg-email-charcoal text-email-white">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-3 mt-2 text-center">
-                Here&apos;s your review,
-              </CardTitle>
+              <div className="mb-3 mt-2 flex items-center justify-center gap-3">
+                <CardTitle className="text-center">
+                  Here&apos;s your review,
+                </CardTitle>
+                <button
+                  onClick={handlePlayTts}
+                  disabled={ttsMutation.isPending}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80 disabled:opacity-50"
+                  aria-label="Play audio review"
+                >
+                  {ttsMutation.isPending ? (
+                    <span className="text-xs">...</span>
+                  ) : (
+                    <Play className="h-5 w-5" fill="currentColor" />
+                  )}
+                </button>
+              </div>
+              {audioUrl && (
+                // eslint-disable-next-line jsx-a11y/media-has-caption
+                <audio
+                  ref={audioRef}
+                  src={audioUrl}
+                  controls
+                  className="mt-2 w-full"
+                />
+              )}
             </CardHeader>
 
             <ScrollArea className="h-[40rem] p-3 px-6 font-serif text-[15px] leading-relaxed md:h-[calc(100vh-14rem)]">
