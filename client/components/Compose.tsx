@@ -172,7 +172,7 @@ export default function Compose() {
 
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
-      <div className="flex flex-col gap-2 md:flex-row">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
         <div className="m-4 w-full space-y-8 md:w-80">
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
             <CardHeader>
@@ -183,7 +183,7 @@ export default function Compose() {
           </Card>
 
           <div className="space-y-2">
-            <Label>Scenario</Label>
+            <Label className="font-serif text-lg">1. Choose a Scenario</Label>
             <Select
               value={
                 selectedScenarioId ? String(selectedScenarioId) : undefined
@@ -214,7 +214,7 @@ export default function Compose() {
           </Card>
 
           <div className="space-y-2">
-            <Label>Mood</Label>
+            <Label className="font-serif text-lg">2. Select Mood</Label>
             <Select
               value={selectedMoodId ? String(selectedMoodId) : undefined}
               onValueChange={handleMoodChange}
@@ -246,7 +246,7 @@ export default function Compose() {
           </Card>
 
           <div className="space-y-2">
-            <Label>Word Limit</Label>
+            <Label className="font-serif text-lg">3. Set Word Limit</Label>
             <Select
               value={
                 selectedWordLimitId ? String(selectedWordLimitId) : undefined
@@ -271,7 +271,7 @@ export default function Compose() {
           </div>
 
           <div className="space-y-2">
-            <Label>Time Limit</Label>
+            <Label className="font-serif text-lg">4. Set Time Limit</Label>
             <Select
               value={
                 selectedTimeLimitId ? String(selectedTimeLimitId) : undefined
@@ -304,29 +304,38 @@ export default function Compose() {
               !selectedWordLimitId ||
               !selectedTimeLimitId
             }
-            className="rounded-xl bg-email-charcoal px-4 py-3 text-email-charcoal text-email-white hover:shadow-md disabled:opacity-50"
+            className="flex h-12 items-center justify-center rounded-xl bg-email-charcoal px-4 py-5 text-sm font-bold text-email-white hover:shadow-md disabled:opacity-50"
           >
             {isPendingPrompts ? 'Choose Options' : 'Get Prompt'}
           </Button>
         </div>
         <div className="w-full flex-1">
-          <Card className="mb-8 max-w-xl bg-email-white p-3">
-            <CardHeader className="pl-3 pt-2 font-serif">
-              <CardTitle className="text-xl italic">Prompt:</CardTitle>
+          <Card className="mb-4 max-w-xl border-none p-3">
+            <CardHeader className="mb-4 w-60 border-2 border-email-charcoal p-2 text-center font-serif">
+              <CardTitle className="text-xl">
+                Here&apos;s your prompt:
+              </CardTitle>
             </CardHeader>
-            <CardContent className="pb-3 pl-3 pt-2 font-serif text-lg">
+            <CardContent className="text-md pb-3 pl-3 pt-2 font-sans">
               {selectedPrompt ||
                 'Select a scenario and mood, then click "Get Prompt" to generate a writing prompt.'}
             </CardContent>
           </Card>
 
-          <Card className="max-w-xl rounded-none bg-email-white">
+          <Textarea
+            value={emailContent}
+            onChange={handleEmailContentChange}
+            className="h-80 max-w-xl border-2 border-email-charcoal px-3 py-3 text-sm"
+            placeholder="Write your email here..."
+          />
+
+          <Card className="max-w-xl rounded-none border-none">
             <div className="flex flex-row justify-end">
               <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
                 <img
                   src="/assets/images/word-limit.svg"
                   alt="word limit icon"
-                  className="h-8 w-8"
+                  className="h-9 w-9"
                 />
                 <p>{selectedWordLimit}</p>
               </CardContent>
@@ -334,18 +343,11 @@ export default function Compose() {
                 <img
                   src="/assets/images/time-limit.svg"
                   alt="timer icon"
-                  className="h-8 w-8"
+                  className="h-9 w-9"
                 />
               </CardContent>
             </div>
           </Card>
-
-          <Textarea
-            value={emailContent}
-            onChange={handleEmailContentChange}
-            className="h-80 max-w-xl px-2 py-2 text-sm"
-            placeholder="Write your email here..."
-          />
 
           <VoiceNote onAudioRecorded={(blob) => setAudioBlob(blob)} />
 
@@ -354,7 +356,8 @@ export default function Compose() {
               <CardContent className="pr-6 pt-2 text-sm font-bold">
                 <Button
                   onClick={handleReviewEmail}
-                  className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md"
+                  className="flex h-14 items-center justify-center rounded-xl bg-email-mint px-6 py-5 text-lg font-bold text-email-charcoal hover:shadow-md"
+                  disabled={!emailContent}
                 >
                   Get Review
                 </Button>

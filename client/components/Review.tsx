@@ -100,10 +100,10 @@ export default function Review() {
     <div className="min-h-screen w-full bg-email-grey p-4">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
         <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
-          <Card className="h-64 max-w-md rounded-none bg-email-charcoal p-4 text-email-white">
+          <Card className="h-64 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
               <CardTitle className="mb-4 text-center">
-                Listen to your review
+                Let&apos;s review:
               </CardTitle>
               <div className="flex flex-col items-center gap-4 pb-4">
                 <button
@@ -131,7 +131,7 @@ export default function Review() {
             </CardHeader>
           </Card>
 
-          <Card className="h-[40rem] max-w-md overflow-y-auto rounded-none bg-email-charcoal text-email-white">
+          <Card className="h-[40rem] max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
               <CardTitle className="mb-3 mt-2 text-center">
                 Transcript
