@@ -99,37 +99,44 @@ export default function Review() {
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
-        <div className="m-4 w-full space-y-8 md:w-96">
-          <Card className="max-w-md flex-1 overflow-y-auto rounded-none bg-email-charcoal text-email-white">
+        <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
+          <Card className="h-64 max-w-md rounded-none bg-email-charcoal p-4 text-email-white">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <div className="mb-3 mt-2 flex items-center justify-center gap-3">
-                <CardTitle className="text-center">
-                  Here&apos;s your review,
-                </CardTitle>
+              <CardTitle className="mb-4 text-center">
+                Listen to your review
+              </CardTitle>
+              <div className="flex flex-col items-center gap-4 pb-4">
                 <button
                   onClick={handlePlayTts}
                   disabled={ttsMutation.isPending}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80 disabled:opacity-50"
+                  className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80 disabled:opacity-50"
                   aria-label="Play audio review"
                 >
                   {ttsMutation.isPending ? (
-                    <span className="text-xs">...</span>
+                    <span className="text-sm">...</span>
                   ) : (
-                    <Play className="h-5 w-5" fill="currentColor" />
+                    <Play className="h-8 w-8" fill="currentColor" />
                   )}
                 </button>
+                {audioUrl && (
+                  // eslint-disable-next-line jsx-a11y/media-has-caption
+                  <audio
+                    ref={audioRef}
+                    src={audioUrl}
+                    controls
+                    className="w-full"
+                  />
+                )}
               </div>
-              {audioUrl && (
-                // eslint-disable-next-line jsx-a11y/media-has-caption
-                <audio
-                  ref={audioRef}
-                  src={audioUrl}
-                  controls
-                  className="mt-2 w-full"
-                />
-              )}
             </CardHeader>
+          </Card>
 
+          <Card className="h-[40rem] max-w-md overflow-y-auto rounded-none bg-email-charcoal text-email-white">
+            <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
+              <CardTitle className="mb-3 mt-2 text-center">
+                Transcript
+              </CardTitle>
+            </CardHeader>
             <ScrollArea className="h-[40rem] p-3 px-6 font-serif text-[15px] leading-relaxed md:h-[calc(100vh-14rem)]">
               {reviewParagraphs.map((para, index) => (
                 <p key={index} className="mb-3">
