@@ -65,6 +65,8 @@ Avoid heavy formatting, excessive bullet points, or long nested lists.
 Don't section off original and suggested text - if using, describe as part of full sentences.
 Don't offer full rewrites of the email - just suggest improvements.
 
+Encourage the user to rewrite the email taking into account the feedback provided. Let them know they can then submit their rewritten email for a final review.
+
 Keep the entire response under 250 words, in the style of a thoughtful teacher giving constructive feedback.
 
 EMAIL:
@@ -72,6 +74,9 @@ ${emailContent}
 
 PROMPT CONTEXT:
 ${promptText}
+
+WORD LIMIT CONTEXT:
+${wordLimit} words
 `.trim(),
       },
     ]
