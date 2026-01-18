@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getEmailRewriteReview } from '../apis/email-rewrite'
 import { generateTtsAudio } from '../apis/tts'
-import { Play } from 'lucide-react'
+import { ArrowBigDownDash, AudioLines} from 'lucide-react'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
@@ -42,10 +42,10 @@ export default function Review() {
     if (!reviewText) return //text doesn't exist
     if (audioUrl) return //audio is already generated
     if (ttsMutation.isPending) return //audio is being generated
-    if (ttsMutation.isSuccess) return //audio has been generated
 
     ttsMutation.mutate(reviewText)
-  }, [emailReviewData?.review, audioUrl, ttsMutation])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailReviewData?.review, audioUrl, ttsMutation.isPending])
 
   const rewriteReviewMutation = useMutation({
     mutationFn: ({
@@ -73,15 +73,9 @@ export default function Review() {
   }, [audioUrl])
 
   const handlePlayTts = () => {
-    if (!emailReviewData?.review) return
-
-    if (audioUrl && audioRef.current) {
+    if (!audioRef.current) return
       // If audio already generated, just play it
       audioRef.current.play()
-    } else {
-      // Generate new audio
-      ttsMutation.mutate(emailReviewData.review)
-    }
   }
 
   const handleRewriteReview = () => {
@@ -104,7 +98,7 @@ export default function Review() {
   const isReviewPending = rewriteReviewMutation.isPending
 
   return (
-    <div className="min-h-screen w-full bg-email-grey p-4">
+    <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
         <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-email-grey/60">
         <p className="text-email-charcoal">Getting your final review...</p>
@@ -115,7 +109,16 @@ export default function Review() {
           <Card className="h-64 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
               <CardTitle className="mb-4 text-center">
-                Let&apos;s review:
+              {!audioUrl && ttsMutation.isPending && (
+                  <span className="text-sm text-email-charcoal/80">Loading review audio…</span>
+                )}
+
+                {!audioUrl && ttsMutation.isError && (
+                  <span>Couldn&apos;t generate audio. See review notes below</span>)}
+
+                {audioUrl && (
+                <span>Listen to your review:</span>
+                )}
               </CardTitle>
               <div className="flex flex-col items-center gap-4 pb-4">
                 <button
@@ -124,10 +127,19 @@ export default function Review() {
                   className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80 disabled:opacity-50"
                   aria-label="Play audio review"
                 >
-                  {ttsMutation.isPending ? (
-                    <span className="text-sm">...</span>
-                  ) : (
-                    <Play className="h-8 w-8" fill="currentColor" />
+                  {ttsMutation.isPending && (
+                    <span className="text-lg font-bold">...</span>
+                  )}
+
+                  {audioUrl && (
+                    <AudioLines
+                      className="h-8 w-8"
+                      fill="email-charcoal"
+                    />
+                  )}
+
+                  {!audioUrl || ttsMutation.isError && (
+                    <ArrowBigDownDash className="h-8 w-8" fill="email-charcoal" />
                   )}
                 </button>
                 {audioUrl && (
