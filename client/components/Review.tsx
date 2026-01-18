@@ -24,10 +24,28 @@ export default function Review() {
     setEmailRewrite(e.target.value)
   }
 
+  //Retrieves email data from query cache. Keeps data fresh
   const { data: emailReviewData } = useQuery<EmailReview>({
     queryKey: ['emailReview'],
-    enabled: false,
+    staleTime: Infinity,
   })
+
+  //Checks caache data vs stored data and parses the stored data if needed ie. the page was refreshed. Data replaces the cached data.
+  useEffect(() => {
+    const cachedData = queryClient.getQueryData<EmailReview>(['emailReview'])
+    if (cachedData) return
+
+    const storedData = localStorage.getItem('emailReview')
+    if (!storedData) return
+
+    try {
+      const parsedData = JSON.parse(storedData) as EmailReview
+      queryClient.setQueryData(['emailReview'], parsedData)
+    } catch (error) {
+      console.error('Error parsing stored email review data:', error)
+      localStorage.removeItem('emailReview')
+    }
+  }, [queryClient])
 
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),

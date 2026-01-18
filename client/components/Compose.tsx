@@ -119,6 +119,10 @@ export default function Compose() {
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
+
+      // Store in local storage to access if page is refreshed
+      localStorage.setItem('emailReview', JSON.stringify(data))
+
       navigate('/review')
     },
   })
