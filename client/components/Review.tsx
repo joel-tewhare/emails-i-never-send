@@ -133,13 +133,13 @@ export default function Review() {
 
                   {audioUrl && (
                     <AudioLines
-                      className="h-8 w-8"
+                      className="h-10 w-10"
                       fill="email-charcoal"
                     />
                   )}
 
                   {!audioUrl || ttsMutation.isError && (
-                    <ArrowBigDownDash className="h-8 w-8" fill="email-charcoal" />
+                    <ArrowBigDownDash className="h-10 w-10" fill="email-charcoal" />
                   )}
                 </button>
                 {audioUrl && (
