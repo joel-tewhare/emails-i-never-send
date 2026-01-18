@@ -170,8 +170,15 @@ export default function Compose() {
     (wordLimit) => wordLimit.id === selectedWordLimitId,
   )?.wordLimit
 
+  const isReviewPending = reviewMutation.isPending
+
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
+      {isReviewPending && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-email-grey/60">
+        <p className="text-email-charcoal">Preparing your review...</p>
+        </div>)}
+
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
         <div className="m-4 w-full space-y-8 md:w-80">
           <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">

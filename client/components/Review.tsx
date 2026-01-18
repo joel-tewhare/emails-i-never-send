@@ -96,8 +96,15 @@ export default function Review() {
   const reviewParagraphs = emailReviewData?.review.split(/\n\s*\n+/)
   const originalParagraphs = emailReviewData?.emailOriginal.split(/\n\s*\n+/)
 
+  const isReviewPending = rewriteReviewMutation.isPending
+
   return (
     <div className="min-h-screen w-full bg-email-grey p-4">
+      {isReviewPending && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-email-grey/60">
+        <p className="text-email-charcoal">Getting your final review...</p>
+        </div>)}
+
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
         <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
           <Card className="h-64 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
