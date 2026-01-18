@@ -34,13 +34,18 @@ export default function Review() {
     onSuccess: (audioBlob) => {
       const url = URL.createObjectURL(audioBlob)
       setAudioUrl(url)
-      // Auto-play when audio is ready
-      if (audioRef.current) {
-        audioRef.current.src = url
-        audioRef.current.play()
-      }
     },
   })
+
+  useEffect(() => {
+    const reviewText = emailReviewData?.review
+    if (!reviewText) return //text doesn't exist
+    if (audioUrl) return //audio is already generated
+    if (ttsMutation.isPending) return //audio is being generated
+    if (ttsMutation.isSuccess) return //audio has been generated
+
+    ttsMutation.mutate(reviewText)
+  }, [emailReviewData?.review, audioUrl, ttsMutation])
 
   const rewriteReviewMutation = useMutation({
     mutationFn: ({
