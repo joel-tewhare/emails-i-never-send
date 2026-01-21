@@ -84,7 +84,7 @@ ${wordLimit ?? 'unknown'} words
         systemInstruction,
         responseSchema: reviewSchema,
         temperature: 0.4,
-        maxOutputTokens: 450
+        maxOutputTokens: 2000
       }
     })
 
@@ -101,7 +101,7 @@ ${wordLimit ?? 'unknown'} words
     }
 
     res.json({
-      review: reviewJson,
+      reviewData: reviewJson,
       emailOriginal: emailContent,
       promptText,
       wordLimit,
