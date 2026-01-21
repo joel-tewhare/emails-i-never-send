@@ -5,11 +5,11 @@ export interface AISentenceSuggestion {
 }
 
 export interface AIReviewData {
-  impact_rating_percent: number | null
-  impact_rating_explanation: string | null
-  coach_review_paragraphs: string[]
-  sentence_suggestions: AISentenceSuggestion[]
-  next_step: string
+  impactRatingPercent: number | null
+  impactRatingExplanation: string | null
+  coachReviewParagraphs: string[]
+  sentenceSuggestions: AISentenceSuggestion[]
+  nextStep: string
 }
 
 export interface EmailReview {

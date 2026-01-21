@@ -3,6 +3,7 @@ import multer from 'multer'
 import { GoogleGenAI } from '@google/genai'
 import { systemInstruction } from '../gemini/reviewSystemInstruction'
 import { reviewSchema } from '../gemini/reviewSchema'
+import toCamelCase from '../utils'
 
 const router = express.Router()
 const ai = new GoogleGenAI({
@@ -100,8 +101,11 @@ ${wordLimit ?? 'unknown'} words
       })
     }
 
+    // Transform snake_case to camelCase to match model type
+    const formattedReview = toCamelCase(reviewJson)
+
     res.json({
-      reviewData: reviewJson,
+      reviewData: formattedReview,
       emailOriginal: emailContent,
       promptText,
       wordLimit,

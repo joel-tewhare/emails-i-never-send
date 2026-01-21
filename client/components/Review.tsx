@@ -56,14 +56,14 @@ export default function Review() {
   })
 
   useEffect(() => {
-    const reviewText = emailReviewData?.review
+    const reviewText = emailReviewData?.reviewData.coachReviewParagraphs.join('\n\n')
     if (!reviewText) return //text doesn't exist
     if (audioUrl) return //audio is already generated
     if (ttsMutation.isPending) return //audio is being generated
 
     ttsMutation.mutate(reviewText)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [emailReviewData?.review, audioUrl, ttsMutation.isPending])
+  }, [emailReviewData?.reviewData.coachReviewParagraphs, audioUrl, ttsMutation.isPending])
 
   const rewriteReviewMutation = useMutation({
     mutationFn: ({
@@ -110,8 +110,9 @@ export default function Review() {
     return <div>Missing review data</div>
   }
 
-  const reviewParagraphs = emailReviewData?.review.split(/\n\s*\n+/)
-  const originalParagraphs = emailReviewData?.emailOriginal.split(/\n\s*\n+/)
+  const reviewParagraphs = emailReviewData?.reviewData.coachReviewParagraphs ?? []
+
+  const originalParagraphs = emailReviewData?.emailOriginal.split(/\n\s*\n+/) ?? []
 
   const isReviewPending = rewriteReviewMutation.isPending
 
