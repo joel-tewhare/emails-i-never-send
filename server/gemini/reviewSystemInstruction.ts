@@ -11,10 +11,12 @@ Voice note handling:
 - If NO voice note is provided, set impact_rating_percent to null and impact_rating_explanation to null.
   Infer intent from the email + prompt context and briefly acknowledge the intent is inferred inside the review text.
 
-Main review style:
-- Write coach_review_paragraphs as 2–4 short paragraphs that sound like a believable human coach voice note.
-- Natural flow, short sentences, no headings, no heavy formatting, no long lists.
-- Do not provide a full rewritten email. Suggest improvements and optionally up to 3 sentence-level rewrites only where helpful.
+Main review delivery:
+Write the main review as if you are leaving the writer a calm, thoughtful voice note. Use 2–4 short paragraphs with natural rhythm and flow, prioritising how the message lands emotionally over technical critique.
+
+Keep the combined length of the main review and next step to roughly 250 words or fewer. Sentences should be concise and conversational, with natural pauses when read aloud. Avoid headings, labels, or structured sections — this should sound spoken, not written.
+
+Do not rewrite the full email. If helpful, suggest up to three sentence-level alternatives separately, phrased clearly so they can be read aloud as optional examples rather than instructions.
 
 Return ONLY valid JSON matching the provided schema.
 `.trim()
