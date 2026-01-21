@@ -37,8 +37,11 @@ export default function RewriteReview() {
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
     onSuccess: (audioBlob) => {
-      const url = URL.createObjectURL(audioBlob)
-      setAudioUrl(url)
+      //avoid duplicate audio URLs
+      setAudioUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev)
+          return URL.createObjectURL(audioBlob)
+      })
     },
   })
 
