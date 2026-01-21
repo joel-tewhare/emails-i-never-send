@@ -6,6 +6,7 @@ import { ArrowBigDownDash, AudioLines } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function RewriteReview() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
@@ -72,9 +73,11 @@ export default function RewriteReview() {
     audioRef.current.play()
   }
 
+  const reviewParagraphs = finalReviewData?.finalReview.split(/\n\s*\n+/)
+
   return (
-    <div>
-      <div className="m-16 flex flex-row items-center justify-center">
+    <div className="mt-16 flex flex-col items-center justify-center">
+      <div className="flex flex-row">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
@@ -134,7 +137,22 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      <div className="flex items-center justify-center">
+      <Card className="maxh-[30rem] md:w-[40rem] rounded-none bg-email-white text-email-charcoal my-4 border-none">
+            <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
+              <CardTitle className="mb-3 mt-2 border-2 border-email-charcoal p-2 text-center font-serif w-40">
+                Your Final Email
+              </CardTitle>
+            </CardHeader>
+            <ScrollArea className="p-3 px-6 font-serif text-[15px] leading-relaxed">
+              {reviewParagraphs?.map((para, index) => (
+                <p key={index} className="mb-3">
+                  {para.trim()}
+                </p>
+              ))}
+            </ScrollArea>
+          </Card>
+
+      <div className="flex">
         <Card className="mt-4 w-full md:w-[40rem] rounded-none border-none bg-email-white text-email-charcoal mx-2">
           <CardContent>
             <Tabs defaultValue="prompt" className="mt-4 w-full">
@@ -170,7 +188,7 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      <div className="flex flex-row gap-4 mt-8 items-center justify-center">
+      <div className="flex flex-row gap-4 mt-8">
         <Button className="rounded-xl bg-email-charcoal px-4 text-email-white hover:bg-email-charcoal/80 hover:shadow-md">
           Save Email
         </Button>
