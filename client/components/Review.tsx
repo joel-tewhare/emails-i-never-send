@@ -153,6 +153,25 @@ export default function Review() {
         <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-email-grey/60">
         <p className="text-email-charcoal">Getting your final review...</p>
         </div>)}
+        
+        <div className="flex flex-col justify-center items-center">
+        <Card className="my-8 max-w-96 rounded-none border-none p-2 text-center">
+            <CardHeader className="font-style: p-2 font-serif text-8xl md:text-9xl">
+              Let&apos;s <span className="italic">review</span>
+            </CardHeader>
+          </Card>
+          <div>
+          <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
+        1. Your audio review will be loaded shortly.
+      </p>
+      <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
+        2. Use the feedback and suggestions to rewrite your email.
+      </p>
+      <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
+        3. Send for your final review
+      </p>
+      </div>
+          </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
         <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
