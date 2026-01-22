@@ -14,7 +14,7 @@ import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
@@ -53,9 +53,7 @@ export default function Compose() {
     setSelectedTimeLimitId(Number(value))
   }
 
-  const handleEmailContentChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
+  const handleEmailContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setEmailContent(e.target.value)
   }
 
@@ -177,14 +175,14 @@ export default function Compose() {
   const isReviewPending = reviewMutation.isPending
 
   return (
-    <div className="min-h-screen w-full bg-email-grey p-4">
+    <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-email-grey/60">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
           <p className="text-email-charcoal">Preparing your review...</p>
         </div>
       )}
 
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center">
         {/* Big header */}
         <Card className="my-8 max-w-72 rounded-none border-none p-2 text-center">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
@@ -193,11 +191,11 @@ export default function Compose() {
         </Card>
 
         {/* Three rows of options */}
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-center space-y-6 mb-6">
+        <div className="mx-auto mb-6 flex w-full max-w-6xl flex-col items-center space-y-6">
           {/* First row: Text box on left, Scenario and Mood on right */}
-          <div className="flex w-full flex-col items-center justify-center gap-12 flex-wrap md:flex-row">
-            <div className="flex items-center justify-center min-h-[200px]">
-              <p className="text-2xl font-bold text-right max-w-72">
+          <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
+            <div className="flex min-h-[200px] items-center justify-center">
+              <p className="max-w-72 text-right text-2xl font-bold">
                 Set the scene for your style of email.
               </p>
             </div>
@@ -205,7 +203,10 @@ export default function Compose() {
               <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
                 <CardHeader>
                   <CardTitle>
-                    <img src="/assets/icons/scenarios.svg" alt="scenario icons" />
+                    <img
+                      src="/assets/icons/scenarios.svg"
+                      alt="scenario icons"
+                    />
                   </CardTitle>
                 </CardHeader>
               </Card>
@@ -264,9 +265,9 @@ export default function Compose() {
           </div>
 
           {/* Second row: Text box on left, Word Limit and Time Limit on right */}
-          <div className="flex w-full flex-col items-center justify-center gap-12 flex-wrap md:flex-row">
-            <div className="flex items-center justify-center min-h-[200px]">
-              <p className="text-2xl font-bold text-right max-w-72">
+          <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
+            <div className="flex min-h-[200px] items-center justify-center">
+              <p className="max-w-72 text-right text-2xl font-bold">
                 Set your preferred writing conditions.
               </p>
             </div>
@@ -283,7 +284,9 @@ export default function Compose() {
                 <Label className="font-serif text-lg">Word Limit</Label>
                 <Select
                   value={
-                    selectedWordLimitId ? String(selectedWordLimitId) : undefined
+                    selectedWordLimitId
+                      ? String(selectedWordLimitId)
+                      : undefined
                   }
                   onValueChange={handleWordLimitChange}
                 >
@@ -307,7 +310,9 @@ export default function Compose() {
                 <Label className="font-serif text-lg">Time Limit</Label>
                 <Select
                   value={
-                    selectedTimeLimitId ? String(selectedTimeLimitId) : undefined
+                    selectedTimeLimitId
+                      ? String(selectedTimeLimitId)
+                      : undefined
                   }
                   onValueChange={handleTimeLimitChange}
                 >
@@ -341,7 +346,7 @@ export default function Compose() {
                 !selectedWordLimitId ||
                 !selectedTimeLimitId
               }
-              className="flex items-center justify-center rounded-xl bg-email-charcoal px-6 m-4 py-7 text-xl font-semibold text-email-white hover:shadow-md disabled:opacity-50"
+              className="m-4 flex items-center justify-center rounded-xl bg-email-charcoal px-6 py-7 text-xl font-semibold text-email-white hover:shadow-md disabled:opacity-50"
             >
               {isPendingPrompts ? 'Choose Options' : 'Get Prompt'}
             </Button>
