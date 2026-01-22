@@ -60,6 +60,7 @@ export default function Review() {
   if (!review) return
 
   const paragraphs = review.coachReviewParagraphs ?? []
+  const sentenceSuggestions = review.spokenSuggestionSummary?.trim()
   const nextStep = review.nextStep?.trim()
 
   const parts: string[] = []
@@ -67,6 +68,10 @@ export default function Review() {
    if (paragraphs.length > 0) {
     parts.push(paragraphs.join('\n\n'))
    }
+
+  if (sentenceSuggestions) {
+    parts.push(sentenceSuggestions)
+  }
 
   if (nextStep) {
     parts.push(nextStep)
