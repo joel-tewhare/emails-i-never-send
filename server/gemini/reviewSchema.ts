@@ -27,6 +27,11 @@ export const reviewSchema = {
       },
     },
 
+    spoken_suggestion_summary: {
+      type: ['string', 'null'],
+      maxLength: 300,
+    },
+
     next_step: { type: 'string' },
   },
   required: [

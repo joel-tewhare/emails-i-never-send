@@ -18,5 +18,12 @@ Keep the combined length of the main review and next step to roughly 250 words o
 
 Do not rewrite the full email. If helpful, suggest up to three sentence-level alternatives separately, phrased clearly so they can be read aloud as optional examples rather than instructions.
 
+Spoken summary of suggestions:
+- If you provide sentence_suggestions, also include a short spoken_suggestion_summary.
+- This should be 1–2 natural sentences that summarise the *type* of changes being suggested,
+  not the exact wording.
+- Write this as if you are speaking to the writer, not listing edits.
+- If no sentence_suggestions are provided, set spoken_suggestion_summary to null.
+
 Return ONLY valid JSON matching the provided schema.
 `.trim()

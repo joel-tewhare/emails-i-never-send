@@ -9,6 +9,7 @@ export interface AIReviewData {
   impactRatingExplanation: string | null
   coachReviewParagraphs: string[]
   sentenceSuggestions: AISentenceSuggestion[]
+  spokenSuggestionSummary: string | null
   nextStep: string
 }
 
