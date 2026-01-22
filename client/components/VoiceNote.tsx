@@ -93,7 +93,10 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
         <CardTitle className="text-xl">Add a voice note</CardTitle>
       </CardHeader>
       <CardContent className="text-md pb-6 pl-3 pt-2 font-sans">
-      Optional: Record a short voice note (up to 20 seconds) sharing how you hope the recipient will feel when they read your email. You&apos;ll receive an Impact Rating as part of your review.
+        <span className="font-bold italic">Optional</span>: Record a short voice
+        note (up to 20 seconds) sharing how you hope the recipient will feel
+        when they read your email. You&apos;ll receive an Impact Rating as part
+        of your review and help with more personalized feedback.
       </CardContent>
       {/* Controls row - mic, visualizer, re-record button */}
       <div className="flex flex-row items-center justify-center gap-4 px-3 pb-3">
