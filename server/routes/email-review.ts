@@ -33,7 +33,7 @@ router.post('/', upload.single('audio'), async (req, res) => {
   try {
     const emailContent = req.body.emailContent
     const promptText = req.body.promptText
-    const wordLimit = req.body.wordLimit
+    const wordLimit = Number(req.body.wordLimit)
     const audioFile = req.file
 
     if (!emailContent || !promptText) {
@@ -53,7 +53,7 @@ PROMPT CONTEXT:
 ${promptText}
 
 WORD LIMIT CONTEXT:
-${wordLimit ?? 'unknown'} words
+${wordLimit ?? 250} words
 `.trim(),
       },
     ]
@@ -89,7 +89,12 @@ ${wordLimit ?? 'unknown'} words
       }
     })
 
-    const raw = response.text ?? '{}'
+    const raw = response.text
+    if (!raw) {
+      return res.status(502).json({
+        error: 'No response from AI',
+      })
+    }
 
     let reviewJson: unknown
     try {

@@ -56,14 +56,31 @@ export default function Review() {
   })
 
   useEffect(() => {
-    const reviewText = emailReviewData?.reviewData.coachReviewParagraphs.join('\n\n')
-    if (!reviewText) return //text doesn't exist
-    if (audioUrl) return //audio is already generated
-    if (ttsMutation.isPending) return //audio is being generated
+    const review = emailReviewData?.reviewData
+  if (!review) return
 
-    ttsMutation.mutate(reviewText)
+  const paragraphs = review.coachReviewParagraphs ?? []
+  const nextStep = review.nextStep?.trim()
+
+  const parts: string[] = []
+
+   if (paragraphs.length > 0) {
+    parts.push(paragraphs.join('\n\n'))
+   }
+
+  if (nextStep) {
+    parts.push(nextStep)
+  }
+
+  const mainReviewText = parts.join('\n\n')
+
+    if (!mainReviewText) return //text doesn't exist
+    if (audioUrl) return //audio is already generated
+    if (ttsMutation.isPending) return //audio is being generating
+
+    ttsMutation.mutate(mainReviewText)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [emailReviewData?.reviewData.coachReviewParagraphs, audioUrl, ttsMutation.isPending])
+  }, [emailReviewData?.reviewData?.coachReviewParagraphs, emailReviewData?.reviewData?.nextStep, audioUrl, ttsMutation.isPending])
 
   const rewriteReviewMutation = useMutation({
     mutationFn: ({
@@ -97,22 +114,31 @@ export default function Review() {
   }
 
   const handleRewriteReview = () => {
-    if (emailReviewData && emailRewrite !== '') {
-      rewriteReviewMutation.mutate({
-        emailRewrite,
-        promptText: emailReviewData.promptText,
-        emailOriginal: emailReviewData.emailOriginal,
-      })
-    }
+    if (!emailReviewData || emailRewrite.trim() === '') return
+    
+    rewriteReviewMutation.mutate({
+      emailRewrite,
+      promptText: emailReviewData.promptText,
+      emailOriginal: emailReviewData.emailOriginal,
+    })
   }
 
   if (!emailReviewData) {
     return <div>Missing review data</div>
   }
 
-  const reviewParagraphs = emailReviewData?.reviewData.coachReviewParagraphs ?? []
+  // Extract review data with proper type safety
+  const reviewData = emailReviewData.reviewData
+  if (!reviewData) {
+    return <div>Missing review data</div>
+  }
 
-  const originalParagraphs = emailReviewData?.emailOriginal.split(/\n\s*\n+/) ?? []
+  const reviewParagraphs = reviewData.coachReviewParagraphs ?? []
+  const sentenceSuggestions = reviewData.sentenceSuggestions ?? []
+  const impactRating = reviewData.impactRatingPercent
+  const impactExplanation = reviewData.impactRatingExplanation
+
+  const originalParagraphs = emailReviewData.emailOriginal.split(/\n\s*\n+/) ?? []
 
   const isReviewPending = rewriteReviewMutation.isPending
 
@@ -174,6 +200,24 @@ export default function Review() {
             </CardHeader>
           </Card>
 
+          {impactRating !== null && audioUrl && (
+            <Card className="mb-8 max-w-xl rounded-none bg-email-white">
+              <CardHeader className="pl-3 pt-2">
+                <CardTitle>Impact Rating</CardTitle>
+              </CardHeader>
+              <CardContent className="pl-3 pb-3 pt-2">
+                <div className="flex items-center gap-4">
+                  <div className="text-3xl font-bold">{impactRating}%</div>
+                  {impactExplanation && (
+                    <p className="text-sm text-email-charcoal/80">
+                      {impactExplanation}
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card className="h-[40rem] max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
               <CardTitle className="mb-3 mt-2 text-center">
@@ -195,7 +239,7 @@ export default function Review() {
               <CardTitle className="text-xl italic">Prompt:</CardTitle>
             </CardHeader>
             <CardContent className="pb-3 pl-3 pt-2 font-serif text-lg">
-              {emailReviewData?.promptText}
+              {emailReviewData.promptText}
             </CardContent>
           </Card>
 
@@ -212,6 +256,29 @@ export default function Review() {
             </ScrollArea>
           </Card>
 
+          {sentenceSuggestions.length > 0 && (
+            <Card className="mb-8 max-w-xl rounded-none bg-email-white">
+              <CardHeader className="pl-3 pt-2">
+                <CardTitle>Sentence Suggestions</CardTitle>
+              </CardHeader>
+              <CardContent className="pl-3 pb-3 pt-2">
+                <div className="space-y-4 text-sm">
+                  {sentenceSuggestions.map((suggestion, index) => (
+                    <div key={index} className="border-l-2 border-email-charcoal/20 pl-3">
+                      <p className="font-semibold mb-1">Original:</p>
+                      <p className="mb-2 text-email-charcoal/70">{suggestion.original}</p>
+                      <p className="font-semibold mb-1">Suggestion:</p>
+                      <p className="mb-2">{suggestion.suggestion}</p>
+                      <p className="text-xs text-email-charcoal/60 italic">
+                        Why: {suggestion.why}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card className="max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
               <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
@@ -220,7 +287,7 @@ export default function Review() {
                   alt="word limit icon"
                   className="h-8 w-8"
                 />
-                <p>{Number(emailReviewData?.wordLimit)}</p>
+                <p>{emailReviewData.wordLimit}</p>
               </CardContent>
             </div>
           </Card>
