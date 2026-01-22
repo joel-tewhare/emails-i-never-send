@@ -195,71 +195,83 @@ export default function Compose() {
           {/* First row: Text box on left, Scenario and Mood on right */}
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
-              <p className="max-w-72 text-right text-2xl font-bold">
-                Set the scene for your style of email.
+              <p className="max-w-72 text-center text-2xl font-bold md:text-right">
+                Set the scene for your writing your email.
               </p>
             </div>
-            <div className="flex flex-col items-center space-y-4">
-              <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
-                <CardHeader>
-                  <CardTitle>
+            <div className="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row">
+              <div className="flex flex-col items-center space-y-4">
+                <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-blue p-4">
+                  <CardHeader>
+                    <CardTitle>
+                      <img
+                        src="/assets/icons/scenarios.svg"
+                        alt="scenario icons"
+                      />
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <div className="space-y-2">
+                  <Label className="font-serif text-lg">
+                    Choose a Scenario
+                  </Label>
+                  <Select
+                    value={
+                      selectedScenarioId
+                        ? String(selectedScenarioId)
+                        : undefined
+                    }
+                    onValueChange={handleScenarioChange}
+                  >
+                    <SelectTrigger className="w-64 bg-email-white px-2">
+                      <SelectValue placeholder="Select…" />
+                    </SelectTrigger>
+                    <SelectContent className="w-64">
+                      {scenariosData.map((scenario) => (
+                        <SelectItem
+                          key={scenario.id}
+                          className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
+                          value={String(scenario.id)}
+                        >
+                          {scenario.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center space-y-4">
+                <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-mauve p-4">
+                  <CardTitle className="p-10">
                     <img
-                      src="/assets/icons/scenarios.svg"
-                      alt="scenario icons"
+                      src="/assets/icons/prompt-moods.svg"
+                      alt="mood icons"
                     />
                   </CardTitle>
-                </CardHeader>
-              </Card>
-              <div className="space-y-2">
-                <Label className="font-serif text-lg">Choose a Scenario</Label>
-                <Select
-                  value={
-                    selectedScenarioId ? String(selectedScenarioId) : undefined
-                  }
-                  onValueChange={handleScenarioChange}
-                >
-                  <SelectTrigger className="w-64 bg-email-white px-2">
-                    <SelectValue placeholder="Select…" />
-                  </SelectTrigger>
-                  <SelectContent className="w-64">
-                    {scenariosData.map((scenario) => (
-                      <SelectItem
-                        key={scenario.id}
-                        className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
-                        value={String(scenario.id)}
-                      >
-                        {scenario.description}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-mauve p-4">
-                <CardTitle className="p-10">
-                  <img src="/assets/icons/prompt-moods.svg" alt="mood icons" />
-                </CardTitle>
-              </Card>
-              <div className="space-y-2">
-                <Label className="font-serif text-lg">Select Mood</Label>
-                <Select
-                  value={selectedMoodId ? String(selectedMoodId) : undefined}
-                  onValueChange={handleMoodChange}
-                >
-                  <SelectTrigger className="w-64 bg-email-white px-2">
-                    <SelectValue placeholder="Select…" />
-                  </SelectTrigger>
-                  <SelectContent className="w-64">
-                    {moodsData.map((mood) => (
-                      <SelectItem
-                        key={mood.id}
-                        className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
-                        value={String(mood.id)}
-                      >
-                        {mood.mood}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                </Card>
+                <div className="space-y-2">
+                  <Label className="font-serif text-lg">Select Mood</Label>
+                  <Select
+                    value={selectedMoodId ? String(selectedMoodId) : undefined}
+                    onValueChange={handleMoodChange}
+                  >
+                    <SelectTrigger className="w-64 bg-email-white px-2">
+                      <SelectValue placeholder="Select…" />
+                    </SelectTrigger>
+                    <SelectContent className="w-64">
+                      {moodsData.map((mood) => (
+                        <SelectItem
+                          key={mood.id}
+                          className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
+                          value={String(mood.id)}
+                        >
+                          {mood.mood}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
@@ -267,70 +279,87 @@ export default function Compose() {
           {/* Second row: Text box on left, Word Limit and Time Limit on right */}
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
-              <p className="max-w-72 text-right text-2xl font-bold">
+              <p className="max-w-72 text-center text-2xl font-bold md:text-right">
                 Set your preferred writing conditions.
               </p>
             </div>
-            <div className="flex flex-col items-center space-y-4">
-              <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-gold p-4">
-                <CardTitle className="p-10">
-                  <img
-                    src="/assets/icons/word-time-limits.svg"
-                    alt="word and time icons"
-                  />
-                </CardTitle>
-              </Card>
-              <div className="space-y-2">
-                <Label className="font-serif text-lg">Word Limit</Label>
-                <Select
-                  value={
-                    selectedWordLimitId
-                      ? String(selectedWordLimitId)
-                      : undefined
-                  }
-                  onValueChange={handleWordLimitChange}
-                >
-                  <SelectTrigger className="w-64 bg-email-white px-2">
-                    <SelectValue placeholder="Select…" />
-                  </SelectTrigger>
-                  <SelectContent className="w-64">
-                    {wordLimitsData.map((wordLimit) => (
-                      <SelectItem
-                        key={wordLimit.id}
-                        className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
-                        value={String(wordLimit.id)}
-                      >
-                        {`${wordLimit.wordLimit} words`}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <div className="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row">
+              <div className="flex flex-col items-center space-y-4">
+                <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-gold p-4">
+                  <CardHeader>
+                    <CardTitle>
+                      <img
+                        src="/assets/icons/word-time-limits.svg"
+                        alt="notepad icon"
+                      />
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <div className="space-y-2">
+                  <Label className="font-serif text-lg">Word Limit</Label>
+                  <Select
+                    value={
+                      selectedWordLimitId
+                        ? String(selectedWordLimitId)
+                        : undefined
+                    }
+                    onValueChange={handleWordLimitChange}
+                  >
+                    <SelectTrigger className="w-64 bg-email-white px-2">
+                      <SelectValue placeholder="Select…" />
+                    </SelectTrigger>
+                    <SelectContent className="w-64">
+                      {wordLimitsData.map((wordLimit) => (
+                        <SelectItem
+                          key={wordLimit.id}
+                          className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
+                          value={String(wordLimit.id)}
+                        >
+                          {`${wordLimit.wordLimit} words`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label className="font-serif text-lg">Time Limit</Label>
-                <Select
-                  value={
-                    selectedTimeLimitId
-                      ? String(selectedTimeLimitId)
-                      : undefined
-                  }
-                  onValueChange={handleTimeLimitChange}
-                >
-                  <SelectTrigger className="w-64 bg-email-white px-2">
-                    <SelectValue placeholder="Select…" />
-                  </SelectTrigger>
-                  <SelectContent className="w-64">
-                    {timeLimitsData.map((timeLimit) => (
-                      <SelectItem
-                        key={timeLimit.id}
-                        className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
-                        value={String(timeLimit.id)}
-                      >
-                        {timeLimit.timeLimit}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+
+              <div className="flex flex-col items-center space-y-4">
+                <Card className="flex h-20 w-64 items-center justify-center border border-email-charcoal bg-email-gold p-4">
+                  <CardHeader>
+                    <CardTitle>
+                      <img
+                        src="/assets/icons/word-time-limits.svg"
+                        alt="stopwatch icon"
+                      />
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <div className="space-y-2">
+                  <Label className="font-serif text-lg">Time Limit</Label>
+                  <Select
+                    value={
+                      selectedTimeLimitId
+                        ? String(selectedTimeLimitId)
+                        : undefined
+                    }
+                    onValueChange={handleTimeLimitChange}
+                  >
+                    <SelectTrigger className="w-64 bg-email-white px-2">
+                      <SelectValue placeholder="Select…" />
+                    </SelectTrigger>
+                    <SelectContent className="w-64">
+                      {timeLimitsData.map((timeLimit) => (
+                        <SelectItem
+                          key={timeLimit.id}
+                          className="bg-email-white px-2 py-1 hover:bg-email-charcoal hover:text-email-grey"
+                          value={String(timeLimit.id)}
+                        >
+                          {timeLimit.timeLimit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
@@ -348,7 +377,9 @@ export default function Compose() {
               }
               className="m-4 flex items-center justify-center rounded-xl bg-email-charcoal px-6 py-7 text-xl font-semibold text-email-white hover:shadow-md disabled:opacity-50"
             >
-              {isPendingPrompts ? 'Choose Options' : 'Get Prompt'}
+              {isPendingPrompts || !selectedWordLimit || !selectedTimeLimitId
+                ? 'Choose Options'
+                : 'Get Prompt'}
             </Button>
           </div>
         </div>
