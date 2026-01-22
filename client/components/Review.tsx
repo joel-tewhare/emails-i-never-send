@@ -51,8 +51,12 @@ export default function Review() {
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
     onSuccess: (audioBlob) => {
-      const url = URL.createObjectURL(audioBlob)
-      setAudioUrl(url)
+      setAudioUrl((prev) => {
+        if (prev) {
+          URL.revokeObjectURL(prev)
+        }
+        return URL.createObjectURL(audioBlob)
+      })
     },
   })
 
@@ -157,8 +161,8 @@ export default function Review() {
         
         <div className="flex flex-col justify-center items-center">
         <Card className="my-8 max-w-96 rounded-none border-none p-2 text-center">
-            <CardHeader className="font-style: p-2 font-serif text-8xl md:text-9xl">
-              Let&apos;s <span className="italic">review</span>
+            <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
+              Let&apos;s <span className="italic">review.</span>
             </CardHeader>
           </Card>
           <div>
@@ -174,7 +178,7 @@ export default function Review() {
       </div>
 
         <div className="flex flex-row flex-wrap justify-center items-center">
-      <Card className="h-80 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal m-8 p-10">
+      <Card className="h-80 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal m-8">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
               <CardTitle className="mb-10 text-center">
               {!audioUrl && ttsMutation.isPending && (
@@ -206,7 +210,7 @@ export default function Review() {
                     />
                   )}
 
-                  {!audioUrl || ttsMutation.isError && (
+                  {(!audioUrl || ttsMutation.isError) && (
                     <ArrowBigDownDash className="h-16 w-16" fill="email-charcoal" />
                   )}
                 </button>
@@ -224,7 +228,7 @@ export default function Review() {
           </Card>
 
           <Card className="max-w-xl overflow-y-auto rounded-none bg-email-mint p-3 h-80">
-            <ScrollArea className="font-style: h-64 p-3 text-md italic">
+            <ScrollArea className="h-64 p-3 text-md italic">
               {originalParagraphs.map((para, index) => (
                 <p key={index} className="mb-3">
                   {para.trim()}
@@ -263,13 +267,13 @@ export default function Review() {
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger
                     value="review"
-                    className="bg-email-white border-2 border-email-mint text-email-charcoal rounded-md p-2 text-center w-36 font-serif"
+                    className="bg-email-white border-2 border-email-mint text-email-charcoal rounded-md p-2 text-center w-36 font-serif data-[state=active]:bg-email-mint data-[state=active]:border-email-charcoal data-[state=active]:font-bold"
                   >
                     Review Notes
                   </TabsTrigger>
                   <TabsTrigger
                     value="suggestions"
-                    className="bg-email-charcoal text-email-white rounded-md p-2 text-center w-42"
+                    className="bg-email-white border-2 border-email-mint text-email-charcoal rounded-md p-2 text-center w-42 font-serif data-[state=active]:bg-email-charcoal data-[state=active]:text-email-white data-[state=active]:border-email-charcoal data-[state=active]:font-bold"
                   >
                     Sentence Suggestions
                   </TabsTrigger>
