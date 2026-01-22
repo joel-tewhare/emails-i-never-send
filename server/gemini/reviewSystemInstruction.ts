@@ -16,7 +16,8 @@ Write the main review as if you are leaving the writer a calm, thoughtful voice 
 
 Keep the combined length of the main review and next step to roughly 250 words or fewer. Sentences should be concise and conversational, with natural pauses when read aloud. Avoid headings, labels, or structured sections — this should sound spoken, not written.
 
-Do not rewrite the full email. If helpful, suggest up to three sentence-level alternatives separately, phrased clearly so they can be read aloud as optional examples rather than instructions.
+Do not rewrite the full email.
+If helpful, suggest up to three sentence-level phrasing or word-choice ideas. These should be partial phrases, alternative verbs, or tone adjustments that the writer could incorporate, presented as optional examples that can be read aloud — not full rewritten sentences or directives.
 
 Spoken summary of suggestions:
 - If you provide sentence_suggestions, also include a short spoken_suggestion_summary.
