@@ -3,6 +3,7 @@ import { EmailReview } from '@/models/email-review'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
@@ -171,22 +172,20 @@ export default function Review() {
         3. Send for your final review
       </p>
       </div>
-          </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
-        <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
-          <Card className="h-64 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
+        <div className="flex flex-row flex-wrap justify-center items-center">
+      <Card className="h-80 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal m-8 p-10">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-4 text-center">
+              <CardTitle className="mb-10 text-center">
               {!audioUrl && ttsMutation.isPending && (
-                  <span className="text-sm text-email-charcoal/80">Loading review audio…</span>
+                  <span className="text-2xl text-email-charcoal/80">Loading review audio…</span>
                 )}
 
                 {!audioUrl && ttsMutation.isError && (
-                  <span>Couldn&apos;t generate audio. See review notes below</span>)}
+                  <span className="text-2xl text-email-charcoal">Couldn&apos;t generate audio. See review notes below</span>)}
 
                 {audioUrl && (
-                <span>Listen to your review:</span>
+                <span className="text-3xl text-email-charcoal"><span className="italic">Listen</span> to your review:</span>
                 )}
               </CardTitle>
               <div className="flex flex-col items-center gap-4 pb-4">
@@ -202,13 +201,13 @@ export default function Review() {
 
                   {audioUrl && (
                     <AudioLines
-                      className="h-10 w-10"
+                      className="h-16 w-16"
                       fill="email-charcoal"
                     />
                   )}
 
                   {!audioUrl || ttsMutation.isError && (
-                    <ArrowBigDownDash className="h-10 w-10" fill="email-charcoal" />
+                    <ArrowBigDownDash className="h-16 w-16" fill="email-charcoal" />
                   )}
                 </button>
                 {audioUrl && (
@@ -224,54 +223,8 @@ export default function Review() {
             </CardHeader>
           </Card>
 
-          {impactRating !== null && audioUrl && (
-            <Card className="mb-8 max-w-xl rounded-none bg-email-white">
-              <CardHeader className="pl-3 pt-2">
-                <CardTitle>Impact Rating</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-3 pb-3 pt-2">
-                <div className="flex items-center gap-4">
-                  <div className="text-3xl font-bold">{impactRating}%</div>
-                  {impactExplanation && (
-                    <p className="text-sm text-email-charcoal/80">
-                      {impactExplanation}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          <Card className="h-[40rem] max-w-md overflow-y-auto rounded-none bg-email-white text-email-charcoal">
-            <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-3 mt-2 text-center">
-                Transcript
-              </CardTitle>
-            </CardHeader>
-            <ScrollArea className="h-[40rem] p-3 px-6 font-serif text-[15px] leading-relaxed md:h-[calc(100vh-14rem)]">
-              {reviewParagraphs.map((para, index) => (
-                <p key={index} className="mb-3">
-                  {para.trim()}
-                </p>
-              ))}
-            </ScrollArea>
-          </Card>
-        </div>
-        <div className="w-full flex-1">
-          <Card className="mb-8 max-w-xl bg-email-white p-3">
-            <CardHeader className="pl-3 pt-2 font-serif">
-              <CardTitle className="text-xl italic">Prompt:</CardTitle>
-            </CardHeader>
-            <CardContent className="pb-3 pl-3 pt-2 font-serif text-lg">
-              {emailReviewData.promptText}
-            </CardContent>
-          </Card>
-
-          <Card className="mb-8 max-w-xl overflow-y-auto rounded-none bg-email-mint">
-            <CardHeader className="pl-3 pt-2">
-              <CardTitle>Original email:</CardTitle>
-            </CardHeader>
-            <ScrollArea className="font-style: h-64 p-3 text-sm ">
+          <Card className="max-w-xl overflow-y-auto rounded-none bg-email-mint p-3 h-80">
+            <ScrollArea className="font-style: h-64 p-3 text-md italic">
               {originalParagraphs.map((para, index) => (
                 <p key={index} className="mb-3">
                   {para.trim()}
@@ -279,29 +232,100 @@ export default function Review() {
               ))}
             </ScrollArea>
           </Card>
-
-          {sentenceSuggestions.length > 0 && (
-            <Card className="mb-8 max-w-xl rounded-none bg-email-white">
-              <CardHeader className="pl-3 pt-2">
-                <CardTitle>Sentence Suggestions</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-3 pb-3 pt-2">
-                <div className="space-y-4 text-sm">
-                  {sentenceSuggestions.map((suggestion, index) => (
-                    <div key={index} className="border-l-2 border-email-charcoal/20 pl-3">
-                      <p className="font-semibold mb-1">Original:</p>
-                      <p className="mb-2 text-email-charcoal/70">{suggestion.original}</p>
-                      <p className="font-semibold mb-1">Suggestion:</p>
-                      <p className="mb-2">{suggestion.suggestion}</p>
-                      <p className="text-xs text-email-charcoal/60 italic">
-                        Why: {suggestion.why}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          </div>
+              
+          {impactRating !== null && audioUrl && (
+            <div className="flex flex-row justify-center items-center gap-4 m-8">
+              <Card className="mb-8 max-w-xl rounded-none border-none">
+                <CardHeader className="pl-3 pt-2 text-2xl font-bold">
+                  <CardTitle>Impact Rating:</CardTitle>
+                </CardHeader>
+                <CardContent className="pl-3 pb-3 pt-2">
+                  <div className="flex items-center gap-4">
+                    <div className="text-8xl font-bold">{impactRating}%</div>
+                  </div>
+                </CardContent>
+              </Card>
+              {impactExplanation && (
+                <p className="text-md text-email-charcoal/80 md:max-w-md text-right m-1">
+                  {impactExplanation}
+                </p>
+              )}
+            </div>
           )}
+          </div>
+
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
+        <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
+          <Card className="h-[40rem] max-w-md rounded-none border-2 border-email-charcoal border-dashed bg-email-white text-email-charcoal">
+            <CardContent>
+              <Tabs defaultValue="review" className="mt-4 w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger
+                    value="review"
+                    className="bg-email-white border-2 border-email-mint text-email-charcoal rounded-md p-2 text-center w-36 font-serif"
+                  >
+                    Review Notes
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="suggestions"
+                    className="bg-email-charcoal text-email-white rounded-md p-2 text-center w-42"
+                  >
+                    Sentence Suggestions
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="review" className="mt-4">
+                  <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
+                    {reviewParagraphs.map((para, index) => (
+                      <p key={index} className="mb-3">
+                        {para.trim()}
+                      </p>
+                    ))}
+                  </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="suggestions" className="mt-4">
+                  <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4">
+                    {sentenceSuggestions.length > 0 ? (
+                      <div className="space-y-4 text-sm leading-relaxed">
+                        {sentenceSuggestions.map((suggestion, index) => (
+                          <div
+                            key={index}
+                            className="border-l-2 border-email-charcoal/20 pl-2"
+                          >
+                            <p className="font-semibold mb-1 italic">You wrote:</p>
+                            <p className="mb-2 text-email-charcoal/70 mb-6 italic">
+                              {suggestion.original}
+                            </p>
+                            <p className="font-semibold mb-1 underline">Suggestion:</p>
+                            <p className="mb-2">{suggestion.suggestion}</p>
+                            <p className="text-xs text-email-charcoal/60 italic mb-8">
+                              {suggestion.why}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-email-charcoal/60">
+                        No sentence suggestions available.
+                      </p>
+                    )}
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="w-full flex-1">
+          <Card className="mb-8 max-w-xl border-none p-3">
+            <CardHeader className="mb-4 w-52 border-2 border-email-charcoal p-2 text-center font-serif">
+              <CardTitle className="text-xl"><span className="italic">Prompt</span> reminder:</CardTitle>
+            </CardHeader>
+            <CardContent className="text-md pb-3 pl-3 pt-2 font-sans">
+              {emailReviewData.promptText}
+            </CardContent>
+          </Card>
 
           <Card className="max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
