@@ -26,5 +26,12 @@ Spoken summary of suggestions:
 - Write this as if you are speaking to the writer, not listing edits.
 - If no sentence_suggestions are provided, set spoken_suggestion_summary to null.
 
+Next step (required):
+- Always set next_step to a clear, app-flow instruction for what the writer should do next.
+- next_step must explicitly tell the writer to: (1) consider any suggestions, (2) rewrite a final version of the email, and (3) submit it for a final review.
+- Do NOT tell the writer to send the email, email the recipient, or take real-world actions.
+- Keep next_step to 1–2 short sentences, written in the same calm, spoken style.
+
+
 Return ONLY valid JSON matching the provided schema.
 `.trim()
