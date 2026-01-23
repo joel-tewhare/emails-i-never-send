@@ -1,8 +1,7 @@
 import express from 'express'
-import multer from 'multer'
 import { GoogleGenAI } from '@google/genai'
-import { systemInstruction } from '../gemini/reviewSystemInstruction'
-import { reviewSchema } from '../gemini/reviewSchema'
+import { rewriteSystemInstruction } from '../gemini/rewriteSystemInstruction'
+import { rewriteSchema } from '../gemini/rewriteSchema'
 import toCamelCase from '../utils'
 
 const router = express.Router()
@@ -10,64 +9,42 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 })
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, //10mb limit for audio
-})
-
-type TextPart = { text: string }
-type VoiceNotePart = {
-  inlineData: {
-    mimeType: string
-    data: string
-  }
-}
-type Part = TextPart | VoiceNotePart
+type Part = { text: string }
 
 type Content = {
   role: 'user' | 'model'
   parts: Part[]
 }
 
-router.post('/', upload.single('audio'), async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const emailContent = req.body.emailContent
+    const originalEmailContent = req.body.originalEmailContent
+    const originalImpactRatingPercent = req.body.originalImpactRatingPercent
+    const finalEmailContent = req.body.finalEmailContent
     const promptText = req.body.promptText
-    const wordLimit = Number(req.body.wordLimit)
-    const audioFile = req.file
 
-    if (!emailContent || !promptText) {
-      return res
-        .status(400)
-        .json({ error: 'emailContent and promptText are required' })
+    if (!originalEmailContent || !finalEmailContent || !promptText) {
+      return res.status(400).json({ error: 'Required data is missing' })
     }
 
     //Build parts array for user's message
     const parts: Part[] = [
       {
         text: `
-EMAIL:
-${emailContent}
+ORIGINAL EMAIL:
+${originalEmailContent}
+
+ORIGINAL IMPACT RATING PERCENT:
+${originalImpactRatingPercent ?? null}
+
+FINAL EMAIL:
+${finalEmailContent}
 
 PROMPT CONTEXT:
 ${promptText}
-
-WORD LIMIT CONTEXT:
-${wordLimit ?? 250} words
 `.trim(),
       },
     ]
-
-    if (audioFile) {
-      const audioBase64 = audioFile.buffer.toString('base64')
-
-      parts.push({
-        inlineData: {
-          mimeType: audioFile.mimetype || 'audio/webm',
-          data: audioBase64,
-        },
-      })
-    }
 
     //Contents array with role and parts
     const contents: Content[] = [
@@ -82,11 +59,11 @@ ${wordLimit ?? 250} words
       contents: contents,
       config: {
         responseMimeType: 'application/json',
-        systemInstruction,
-        responseSchema: reviewSchema,
+        systemInstruction: rewriteSystemInstruction,
+        responseSchema: rewriteSchema,
         temperature: 0.4,
-        maxOutputTokens: 2000
-      }
+        maxOutputTokens: 2000,
+      },
     })
 
     const raw = response.text
@@ -111,9 +88,9 @@ ${wordLimit ?? 250} words
 
     res.json({
       reviewData: formattedReview,
-      emailOriginal: emailContent,
+      emailOriginal: originalEmailContent,
+      finalEmail: finalEmailContent,
       promptText,
-      wordLimit,
     })
   } catch (error) {
     console.error('Error generating review:', error)

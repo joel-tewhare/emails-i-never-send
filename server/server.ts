@@ -9,7 +9,7 @@ import promptsRoutes from './routes/prompts.ts'
 import savedEmailsRoutes from './routes/saved-emails.ts'
 import usersRoutes from './routes/users.ts'
 import emailReviewRoutes from './routes/email-review.ts'
-import emailRewriteRoutes from './routes/email-rewrite.ts'
+import finalReviewRoutes from './routes/final-review.ts'
 import ttsRoutes from './routes/tts.ts'
 
 const server = express()
@@ -24,7 +24,7 @@ server.use('/api/v1/prompts', promptsRoutes)
 server.use('/api/v1/saved-emails', savedEmailsRoutes)
 server.use('/api/v1/users', usersRoutes)
 server.use('/api/v1/email-review', emailReviewRoutes)
-server.use('/api/v1/email-rewrite', emailRewriteRoutes)
+server.use('/api/v1/final-review', finalReviewRoutes)
 server.use('/api/v1/tts', ttsRoutes)
 
 if (process.env.NODE_ENV === 'production') {

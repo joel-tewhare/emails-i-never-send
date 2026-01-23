@@ -1,5 +1,20 @@
+export interface AISentenceSuggestion {
+  original: string
+  suggestion: string
+  why: string
+}
+
+export interface AIReviewData {
+  impactRatingPercent: number | null
+  impactRatingExplanation: string | null
+  coachReviewParagraphs: string[]
+  sentenceSuggestions: AISentenceSuggestion[]
+  spokenSuggestionSummary: string | null
+  nextStep: string
+}
+
 export interface EmailReview {
-  review: string
+  reviewData: AIReviewData
   emailOriginal: string
   promptText: string
   wordLimit: number

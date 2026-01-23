@@ -92,19 +92,20 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
       <CardHeader className="mb-4 w-48 border-2 border-email-charcoal p-2 text-center font-serif">
         <CardTitle className="text-xl">Add a voice note</CardTitle>
       </CardHeader>
-      <CardContent className="text-md pb-3 pl-3 pt-2 font-sans">
-        Record a 20 second (max) audio clip about how you hope the recipient
-        will feel receiving the email you have written. This will be sent as
-        part of your review.
+      <CardContent className="text-md pb-6 pl-3 pt-2 font-sans">
+        <span className="font-bold italic">Optional</span>: Record a short voice
+        note (up to 20 seconds) sharing how you hope the recipient will feel
+        when they read your email. You&apos;ll receive an Impact Rating as part
+        of your review and help with more personalized feedback.
       </CardContent>
       {/* Controls row - mic, visualizer, re-record button */}
       <div className="flex flex-row items-center justify-center gap-4 px-3 pb-3">
         {recorderStatus === 'idle' && (
           <button
             onClick={startRecording}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-email-charcoal text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
+            className="flex h-20 w-20 items-center justify-center rounded-full bg-email-charcoal text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
           >
-            <Mic className="h-6 w-6" />
+            <Mic className="h-12 w-12" />
           </button>
         )}
 

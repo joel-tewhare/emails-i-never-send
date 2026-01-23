@@ -6,6 +6,7 @@ import Compose from './components/Compose.tsx'
 import SavedEmails from './components/SavedEmails.tsx'
 import Profile from './components/Profile.tsx'
 import Review from './components/Review.tsx'
+import FinalReview from './components/FinalReview.tsx'
 
 export default createRoutesFromElements(
   <>
@@ -16,6 +17,7 @@ export default createRoutesFromElements(
       <Route path="saved" element={<SavedEmails />} />
       <Route path="profile" element={<Profile />} />
       <Route path="review" element={<Review />} />
+      <Route path="final" element={<FinalReview />} />
     </Route>
   </>,
 )
