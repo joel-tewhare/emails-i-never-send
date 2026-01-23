@@ -15,9 +15,9 @@ export interface AIFinalReviewData {
   nextStep: string
 }
 
-export interface EmailReview {
+export interface FinalReview {
   reviewData: AIFinalReviewData
   emailOriginal: string
+  finalEmail: string
   promptText: string
-  wordLimit: number
 }
