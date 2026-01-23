@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { getEmailRewriteReview } from '../apis/email-rewrite'
+import { getEmailFinalReview, getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
 import { ArrowBigDownDash, AudioLines } from 'lucide-react'
 
@@ -108,13 +108,20 @@ export default function Review() {
       emailRewrite,
       promptText,
       emailOriginal,
+      originalImpactRatingPercent,
     }: {
       emailRewrite: string
       promptText: string
       emailOriginal: string
-    }) => getEmailRewriteReview(emailRewrite, promptText, emailOriginal),
+    }) =>
+      getFinalReview(
+        emailOriginal,
+        promptText,
+        emailRewrite,
+        originalImpactRatingPercent,
+      ),
     onSuccess: (data) => {
-      queryClient.setQueryData(['emailRewrite'], data)
+      queryClient.setQueryData(['finalReview'], data)
       navigate('/final')
     },
   })

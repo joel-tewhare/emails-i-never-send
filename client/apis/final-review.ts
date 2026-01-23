@@ -9,13 +9,11 @@ export async function getFinalReview(
   emailRewrite: string,
   originalImpactRatingPercent: number | null,
 ): Promise<FinalReview> {
-  const response = await request
-    .post(`${rootURL}/final-review`)
-    .send({
-      emailOriginal,
-      promptText,
-      emailRewrite,
-      originalImpactRatingPercent,
-    })
+  const response = await request.post(`${rootURL}/final-review`).send({
+    emailOriginal,
+    promptText,
+    emailRewrite,
+    originalImpactRatingPercent,
+  })
   return response.body
 }
