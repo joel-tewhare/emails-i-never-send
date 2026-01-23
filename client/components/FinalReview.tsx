@@ -55,14 +55,41 @@ export default function RewriteReview() {
   })
 
   useEffect(() => {
-    const reviewText = finalReviewData?.finalReview
-    if (!reviewText) return //text doesn't exist
-    if (audioUrl) return //audio is already generated
-    if (ttsMutation.isPending) return //audio is being generated
+    const review = finalReviewData?.reviewData
+    if (!review) return
 
-    ttsMutation.mutate(reviewText)
+    const paragraphs = review.coachReviewParagraphs ?? []
+    const sentenceSuggestions = review.spokenSuggestionSummary?.trim()
+    const nextStep = review.nextStep?.trim()
+
+    const parts: string[] = []
+
+    if (paragraphs.length > 0) {
+      parts.push(paragraphs.join('\n\n'))
+    }
+
+    if (sentenceSuggestions) {
+      parts.push(sentenceSuggestions)
+    }
+
+    if (nextStep) {
+      parts.push(nextStep)
+    }
+
+    const mainReviewText = parts.join('\n\n')
+
+    if (!mainReviewText) return //text doesn't exist
+    if (audioUrl) return //audio is already generated
+    if (ttsMutation.isPending) return //audio is being generating
+
+    ttsMutation.mutate(mainReviewText)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finalReviewData?.finalReview, audioUrl, ttsMutation.isPending])
+  }, [
+    finalReviewData?.reviewData?.coachReviewParagraphs,
+    finalReviewData?.reviewData?.nextStep,
+    audioUrl,
+    ttsMutation.isPending,
+  ])
 
   // Cleanup audio URL on unmount
   useEffect(() => {
@@ -79,7 +106,17 @@ export default function RewriteReview() {
     audioRef.current.play()
   }
 
-  const reviewParagraphs = finalReviewData?.finalReview.split(/\n\s*\n+/)
+  const reviewParagraphs =
+    finalReviewData?.reviewData?.coachReviewParagraphs ?? []
+  const sentenceSuggestions =
+    finalReviewData?.reviewData?.sentenceSuggestions ?? []
+  const impactRating = finalReviewData?.reviewData?.impactRatingPercent
+  const impactExplanation = finalReviewData?.reviewData?.impactRatingExplanation
+
+  const finalEmailParagraphs =
+    finalReviewData?.finalEmail?.split(/\n\s*\n+/) ?? []
+  const originalParagraphs =
+    finalReviewData?.emailOriginal.split(/\n\s*\n+/) ?? []
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
@@ -143,6 +180,26 @@ export default function RewriteReview() {
         </Card>
       </div>
 
+      {impactRating !== null && audioUrl && (
+        <div className="m-8 flex flex-row items-center justify-center gap-4">
+          <Card className="mb-8 max-w-xl rounded-none border-none">
+            <CardHeader className="pl-3 pt-2 text-2xl font-bold">
+              <CardTitle>Impact Rating:</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-3 pl-3 pt-2">
+              <div className="flex items-center gap-4">
+                <div className="text-8xl font-bold">{impactRating}%</div>
+              </div>
+            </CardContent>
+          </Card>
+          {impactExplanation && (
+            <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
+              {impactExplanation}
+            </p>
+          )}
+        </div>
+      )}
+
       <Card className="maxh-[30rem] my-4 rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
         <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
           <CardTitle className="mb-3 mt-2 w-40 border-2 border-email-charcoal p-2 text-center font-serif">
@@ -150,7 +207,7 @@ export default function RewriteReview() {
           </CardTitle>
         </CardHeader>
         <ScrollArea className="p-3 px-6 font-serif text-[15px] leading-relaxed">
-          {reviewParagraphs?.map((para, index) => (
+          {finalEmailParagraphs?.map((para, index) => (
             <p key={index} className="mb-3">
               {para.trim()}
             </p>
@@ -159,48 +216,94 @@ export default function RewriteReview() {
       </Card>
 
       <div className="flex">
-        <Card className="mx-2 mt-4 w-full rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
+        <Card className="mx-2 mt-4 h-[40rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
           <CardContent>
             <Tabs defaultValue="prompt" className="mt-4 w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger
                   value="prompt"
-                  className="mx-1 rounded-none border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif"
+                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Prompt
                 </TabsTrigger>
                 <TabsTrigger
                   value="final"
-                  className="mx-1 rounded-none border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 px-2 text-center font-serif"
+                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Review Transcript
                 </TabsTrigger>
                 <TabsTrigger
+                  value="suggestions"
+                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-charcoal data-[state=active]:font-bold data-[state=active]:text-email-white"
+                >
+                  Sentence Suggestions
+                </TabsTrigger>
+                <TabsTrigger
                   value="first"
-                  className="mx-1 rounded-none border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif"
+                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   First Email
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="prompt" className="mt-8">
-                <div className="max-h-64 overflow-auto whitespace-pre-wrap rounded-md border p-3 text-sm">
+              <TabsContent value="prompt" className="mt-4">
+                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
                   {finalReviewData?.promptText ??
                     'No prompt found for this email.'}
-                </div>
+                </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="final" className="mt-8">
-                <div className="max-h-64 overflow-auto whitespace-pre-wrap rounded-md border p-3 text-sm">
-                  {finalReviewData?.finalReview ?? 'No final review found.'}
-                </div>
+              <TabsContent value="final" className="mt-4">
+                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
+                  {reviewParagraphs.map((para, index) => (
+                    <p key={index} className="mb-3">
+                      {para.trim()}
+                    </p>
+                  ))}
+                </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="first" className="mt-8">
-                <div className="max-h-64 overflow-auto whitespace-pre-wrap rounded-md border p-3 text-sm">
-                  {finalReviewData?.emailRewrite ??
-                    'First email & review not saved.'}
-                </div>
+              <TabsContent value="suggestions" className="mt-4">
+                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4">
+                  {sentenceSuggestions.length > 0 ? (
+                    <div className="space-y-4 text-sm leading-relaxed">
+                      {sentenceSuggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="border-l-2 border-email-charcoal/20 pl-2"
+                        >
+                          <p className="mb-1 font-semibold italic">
+                            You wrote:
+                          </p>
+                          <p className="mb-2 mb-6 italic text-email-charcoal/70">
+                            {suggestion.original}
+                          </p>
+                          <p className="mb-1 font-semibold underline">
+                            Suggestion:
+                          </p>
+                          <p className="mb-2">{suggestion.suggestion}</p>
+                          <p className="mb-8 text-xs italic text-email-charcoal/60">
+                            {suggestion.why}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-email-charcoal/60">
+                      No sentence suggestions available.
+                    </p>
+                  )}
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="first" className="mt-4">
+                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
+                  {originalParagraphs.map((para, index) => (
+                    <p key={index} className="mb-3">
+                      {para.trim()}
+                    </p>
+                  ))}
+                </ScrollArea>
               </TabsContent>
             </Tabs>
           </CardContent>
