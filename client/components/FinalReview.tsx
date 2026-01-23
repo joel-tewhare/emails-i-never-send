@@ -17,25 +17,31 @@ export default function RewriteReview() {
   //Retrieves email data from query cache. Keeps data fresh
   const { data: finalReviewData } = useQuery<FinalReview>({
     queryKey: ['finalReview'],
+    queryFn: () => {
+      const cachedData = queryClient.getQueryData<FinalReview>(['finalReview'])
+      if (cachedData) {
+        return cachedData
+      }
+
+      const storedData = localStorage.getItem('finalReview')
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData) as FinalReview
+          // Update cache for future use
+          queryClient.setQueryData(['finalReview'], parsedData)
+          return parsedData
+        } catch (error) {
+          console.error('Error parsing stored final review data:', error)
+          localStorage.removeItem('finalReview')
+          throw new Error('Failed to parse stored review data')
+        }
+      }
+
+      throw new Error('No final review data found')
+    },
     staleTime: Infinity,
+    retry: false, // Don't retry if data is missing
   })
-
-  //Checks cache data vs stored data and parses the stored data if needed ie. the page was refreshed. Data replaces the cached data.
-  useEffect(() => {
-    const cachedData = queryClient.getQueryData<FinalReview>(['finalReview'])
-    if (cachedData) return
-
-    const storedData = localStorage.getItem('finalReview')
-    if (!storedData) return
-
-    try {
-      const parsedData = JSON.parse(storedData) as FinalReview
-      queryClient.setQueryData(['finalReview'], parsedData)
-    } catch (error) {
-      console.error('Error parsing stored final review data:', error)
-      localStorage.removeItem('finalReview')
-    }
-  }, [queryClient])
 
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
@@ -137,31 +143,44 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      <Card className="maxh-[30rem] md:w-[40rem] rounded-none bg-email-white text-email-charcoal my-4 border-none">
-            <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-3 mt-2 border-2 border-email-charcoal p-2 text-center font-serif w-40">
-                Your Final Email
-              </CardTitle>
-            </CardHeader>
-            <ScrollArea className="p-3 px-6 font-serif text-[15px] leading-relaxed">
-              {reviewParagraphs?.map((para, index) => (
-                <p key={index} className="mb-3">
-                  {para.trim()}
-                </p>
-              ))}
-            </ScrollArea>
-          </Card>
+      <Card className="maxh-[30rem] my-4 rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
+        <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
+          <CardTitle className="mb-3 mt-2 w-40 border-2 border-email-charcoal p-2 text-center font-serif">
+            Your Final Email
+          </CardTitle>
+        </CardHeader>
+        <ScrollArea className="p-3 px-6 font-serif text-[15px] leading-relaxed">
+          {reviewParagraphs?.map((para, index) => (
+            <p key={index} className="mb-3">
+              {para.trim()}
+            </p>
+          ))}
+        </ScrollArea>
+      </Card>
 
       <div className="flex">
-        <Card className="mt-4 w-full md:w-[40rem] rounded-none border-none bg-email-white text-email-charcoal mx-2">
+        <Card className="mx-2 mt-4 w-full rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
           <CardContent>
             <Tabs defaultValue="prompt" className="mt-4 w-full">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="prompt" className="border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif rounded-none mx-1">
+                <TabsTrigger
+                  value="prompt"
+                  className="mx-1 rounded-none border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif"
+                >
                   Prompt
                 </TabsTrigger>
-                <TabsTrigger value="final" className="border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif rounded-none mx-1 px-2">Review Transcript</TabsTrigger>
-                <TabsTrigger value="first" className="border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif rounded-none mx-1">First Email</TabsTrigger>
+                <TabsTrigger
+                  value="final"
+                  className="mx-1 rounded-none border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 px-2 text-center font-serif"
+                >
+                  Review Transcript
+                </TabsTrigger>
+                <TabsTrigger
+                  value="first"
+                  className="mx-1 rounded-none border-l-2 border-r-2 border-t-2 border-email-charcoal p-2 text-center font-serif"
+                >
+                  First Email
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="prompt" className="mt-8">
@@ -188,7 +207,7 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      <div className="flex flex-row gap-4 mt-8">
+      <div className="mt-8 flex flex-row gap-4">
         <Button className="rounded-xl bg-email-charcoal px-4 text-email-white hover:bg-email-charcoal/80 hover:shadow-md">
           Save Email
         </Button>
