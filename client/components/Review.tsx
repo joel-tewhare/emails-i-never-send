@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { getEmailFinalReview, getFinalReview } from '../apis/final-review'
+import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
 import { ArrowBigDownDash, AudioLines } from 'lucide-react'
 
@@ -105,19 +105,20 @@ export default function Review() {
 
   const rewriteReviewMutation = useMutation({
     mutationFn: ({
-      emailRewrite,
       promptText,
-      emailOriginal,
+      originalEmailContent,
+      finalEmailContent,
       originalImpactRatingPercent,
     }: {
-      emailRewrite: string
       promptText: string
-      emailOriginal: string
+      originalEmailContent: string
+      finalEmailContent: string
+      originalImpactRatingPercent: number | null
     }) =>
       getFinalReview(
-        emailOriginal,
+        originalEmailContent,
         promptText,
-        emailRewrite,
+        finalEmailContent,
         originalImpactRatingPercent,
       ),
     onSuccess: (data) => {
@@ -145,9 +146,10 @@ export default function Review() {
     if (!emailReviewData || emailRewrite.trim() === '') return
 
     rewriteReviewMutation.mutate({
-      emailRewrite,
+      finalEmailContent: emailRewrite,
       promptText: emailReviewData.promptText,
-      emailOriginal: emailReviewData.emailOriginal,
+      originalEmailContent: emailReviewData.emailOriginal,
+      originalImpactRatingPercent: impactRating,
     })
   }
 

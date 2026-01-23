@@ -4,15 +4,15 @@ import { FinalReview } from '@/models/final-review'
 const rootURL = new URL(`/api/v1`, document.body.baseURI)
 
 export async function getFinalReview(
-  emailOriginal: string,
+  originalEmailContent: string,
   promptText: string,
-  emailRewrite: string,
+  finalEmailContent: string,
   originalImpactRatingPercent: number | null,
 ): Promise<FinalReview> {
   const response = await request.post(`${rootURL}/final-review`).send({
-    emailOriginal,
+    originalEmailContent,
     promptText,
-    emailRewrite,
+    finalEmailContent,
     originalImpactRatingPercent,
   })
   return response.body
