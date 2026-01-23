@@ -14,7 +14,7 @@ export default function RewriteReview() {
 
   const queryClient = useQueryClient()
 
-  //Retrieves email data from query cache. Keeps data fresh
+  //Retrieves final email data from query cache. Keeps data fresh
   const { data: finalReviewData } = useQuery<FinalReview>({
     queryKey: ['finalReview'],
     queryFn: () => {
