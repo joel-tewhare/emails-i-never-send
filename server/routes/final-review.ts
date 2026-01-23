@@ -62,7 +62,7 @@ ${promptText}
         systemInstruction: rewriteSystemInstruction,
         responseSchema: rewriteSchema,
         temperature: 0.4,
-        maxOutputTokens: 700,
+        maxOutputTokens: 2000,
       },
     })
 
