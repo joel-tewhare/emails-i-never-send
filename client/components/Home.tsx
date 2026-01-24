@@ -5,10 +5,11 @@ import { Link } from 'react-router'
 export default function Home() {
   return (
     <div className="flex w-full flex-col items-center justify-center bg-email-grey">
-      <div className="flex h-screen flex-row items-center justify-center gap-4">
+      <div className="mx-6 my-24 h-96 flex-row items-center justify-center gap-4 md:mx-0 md:flex md:h-screen">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="icons graphic"
+          className="hidden md:flex"
         />
         <img
           src="/assets/images/landing-page-text-graphic.svg"
