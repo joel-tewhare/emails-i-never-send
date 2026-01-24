@@ -187,7 +187,7 @@ export default function Review() {
             Let&apos;s <span className="italic">review.</span>
           </CardHeader>
         </Card>
-        <div>
+        <div className="mx-6 md:mx-0">
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
             1. Your audio review will be loaded shortly.
           </p>
@@ -200,9 +200,9 @@ export default function Review() {
         </div>
 
         <div className="flex flex-row flex-wrap items-center justify-center">
-          <Card className="m-8 h-80 max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
+          <Card className="m-8 h-80 max-w-sm rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-10 text-center">
+              <CardTitle className="mb-10 p-4 text-center">
                 {!audioUrl && ttsMutation.isPending && (
                   <span className="text-2xl text-email-charcoal/80">
                     Loading review audio…
@@ -231,13 +231,13 @@ export default function Review() {
                     <span className="text-lg font-bold">...</span>
                   </button>
                 )}
-                
+
                 {ttsMutation.isError && !ttsMutation.isPending && (
-                  <div className="flex items-center justify-center px-4 text-center text-sm text-email-charcoal/70">
-                    Audio unavailable at this time (free tier limits)
+                  <div className="flex items-center justify-center px-16 text-center text-sm text-email-charcoal/70">
+                    Audio unavailable at this time (Gemini tier limits)
                   </div>
                 )}
-                
+
                 {audioUrl && !ttsMutation.isPending && (
                   <button
                     onClick={handlePlayTts}
@@ -261,7 +261,8 @@ export default function Review() {
           </Card>
 
           <Card className="h-80 max-w-xl overflow-y-auto rounded-none bg-email-mint p-3">
-            <ScrollArea className="text-md h-64 p-3 italic">
+            <ScrollArea className="h-68 p-3 text-sm italic">
+              <p className="mb-3 font-semibold">What you wrote:</p>
               {originalParagraphs.map((para, index) => (
                 <p key={index} className="mb-3">
                   {para.trim()}
@@ -297,39 +298,43 @@ export default function Review() {
           <Card className="h-[40rem] max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal">
             <CardContent>
               <Tabs defaultValue="review" className="mt-4 w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-2 gap-0 p-3">
                   <TabsTrigger
                     value="review"
-                    className="w-36 rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                    className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                   >
                     Review Notes
                   </TabsTrigger>
                   <TabsTrigger
                     value="suggestions"
-                    className="w-42 rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-charcoal data-[state=active]:font-bold data-[state=active]:text-email-white"
+                    className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                   >
-                    Sentence Suggestions
+                    Rewrite Suggestions
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="review" className="mt-4">
-                  <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
+                  <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-8 text-sm leading-relaxed">
                     {reviewParagraphs.map((para, index) => (
                       <p key={index} className="mb-3">
                         {para.trim()}
                       </p>
                     ))}
+                    <p>
+                      Consider any suggestions, try rewriting your email, and
+                      send for your final review.
+                    </p>
                   </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="suggestions" className="mt-4">
-                  <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4">
+                  <ScrollArea className="h-[calc(39rem-4rem)] p-3 px-4">
                     {sentenceSuggestions.length > 0 ? (
                       <div className="space-y-4 text-sm leading-relaxed">
                         {sentenceSuggestions.map((suggestion, index) => (
                           <div
                             key={index}
-                            className="border-l-2 border-email-charcoal/20 pl-2"
+                            className="border-l-2 border-email-charcoal/20 pl-2 pt-3"
                           >
                             <p className="mb-1 font-semibold italic">
                               You wrote:

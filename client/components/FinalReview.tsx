@@ -223,28 +223,28 @@ export default function RewriteReview() {
         <Card className="mx-2 mt-4 h-[40rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
           <CardContent>
             <Tabs defaultValue="prompt" className="mt-4 w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-4 gap-0">
                 <TabsTrigger
                   value="prompt"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Prompt
                 </TabsTrigger>
                 <TabsTrigger
                   value="final"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Review Transcript
                 </TabsTrigger>
                 <TabsTrigger
                   value="suggestions"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-charcoal data-[state=active]:font-bold data-[state=active]:text-email-white"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Sentence Suggestions
                 </TabsTrigger>
                 <TabsTrigger
                   value="first"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   First Email
                 </TabsTrigger>
