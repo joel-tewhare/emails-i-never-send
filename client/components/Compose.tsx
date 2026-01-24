@@ -14,7 +14,7 @@ import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
-import { useState, ChangeEvent } from 'react'
+import { useState, useRef, ChangeEvent } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
@@ -101,6 +101,7 @@ export default function Compose() {
   )
 
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
+  const promptSectionRef = useRef<HTMLDivElement>(null)
 
   const reviewMutation = useMutation({
     mutationFn: ({
@@ -133,6 +134,7 @@ export default function Compose() {
           // Randomly select a prompt from the array
           const randomIndex = Math.floor(Math.random() * result.data.length)
           setSelectedPrompt(result.data[randomIndex].prompt)
+          promptSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
         }
       } catch (error) {
         console.error('Error fetching prompts:', error)
@@ -389,7 +391,10 @@ export default function Compose() {
         </div>
 
         {/* Centered column: Prompt section down to Get Review button */}
-        <div className="mx-auto mt-8 flex w-full max-w-xl flex-col items-center">
+        <div
+          ref={promptSectionRef}
+          className="mx-auto mt-8 flex w-full max-w-xl scroll-mt-4 flex-col items-center"
+        >
           <Card className="mb-4 w-full border-none p-3">
             <CardHeader className="mb-4 w-60 border-2 border-email-charcoal p-2 text-center font-serif">
               <CardTitle className="text-xl">
