@@ -1,8 +1,8 @@
 <svg width="326" height="500" viewBox="0 0 326 500" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect x="1" y="1" width="324" height="110" rx="11" fill="#6A9FF8" stroke="black" stroke-width="2"/>
-<rect x="1" y="389" width="324" height="110" rx="11" fill="#7DCFB6" stroke="black" stroke-width="2"/>
-<rect x="1" y="260" width="324" height="110" rx="11" fill="#F6C85F" stroke="black" stroke-width="2"/>
-<rect x="1" y="130" width="324" height="110" rx="11" fill="#B58DB6" stroke="black" stroke-width="2"/>
+<rect x="0.5" y="0.5" width="325" height="111" rx="11.5" fill="#4F8CFF" stroke="black"/>
+<rect x="0.5" y="388.5" width="325" height="111" rx="11.5" fill="#6FD3C1" stroke="black"/>
+<path d="M12 259.5H314C320.351 259.5 325.5 264.649 325.5 271V359C325.5 365.351 320.351 370.5 314 370.5H12C5.64873 370.5 0.5 365.351 0.5 359V271C0.500001 264.649 5.64873 259.5 12 259.5Z" fill="#FFC857" stroke="black"/>
+<rect x="0.5" y="129.5" width="325" height="111" rx="11.5" fill="#C08CCF" stroke="black"/>
 <rect x="43" y="13" width="85" height="85" fill="url(#pattern0_35_9)"/>
 <rect x="200" y="16" width="82" height="82" fill="url(#pattern1_35_9)"/>
 <rect x="127" y="26" width="72" height="72" fill="url(#pattern2_35_9)"/>
