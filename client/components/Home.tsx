@@ -127,19 +127,9 @@ export default function Home() {
         </div>
       </div>
 
-      <p className="max-w-4xl py-12 text-center text-2xl font-bold">
-        Sign up and save your best emails for future use
-      </p>
-
       <Button
         asChild
-        className="m-4 rounded-xl bg-email-charcoal px-4 py-3 text-lg text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
-      >
-        <Link to="">Create Account</Link>
-      </Button>
-      <Button
-        asChild
-        className="m-4 rounded-xl bg-email-charcoal px-4 py-3 text-lg text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
+        className="w-42 mb-16 mt-12 flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20"
       >
         <Link to="/compose">Get Started Now</Link>
       </Button>
