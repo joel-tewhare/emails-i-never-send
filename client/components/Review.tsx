@@ -216,7 +216,7 @@ export default function Review() {
                 )}
 
                 {audioUrl && (
-                  <span className="text-3xl text-email-charcoal">
+                  <span className="mx-1 text-3xl text-email-charcoal">
                     <span className="italic">Listen</span> to your review:
                   </span>
                 )}
