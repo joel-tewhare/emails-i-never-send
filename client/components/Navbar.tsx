@@ -21,9 +21,9 @@ export default function Navbar() {
                 {showStartNewEmail && (
                   <NavigationMenuLink
                     href="/compose"
-                    className="border border-email-charcoal px-4 py-2 font-serif text-xl font-semibold decoration-email-charcoal underline-offset-2 shadow-md transition-colors duration-150 hover:bg-email-charcoal/10 active:bg-email-charcoal/20"
+                    className="text-md flex w-28 flex-wrap rounded-md bg-email-charcoal px-4 py-2 font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 active:bg-email-charcoal/20 md:w-auto md:text-xl"
                   >
-                    Start <span className="italic">new</span> email
+                    {'< start a new email'}
                   </NavigationMenuLink>
                 )}
               </NavigationMenuItem>
@@ -37,7 +37,7 @@ export default function Navbar() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   href="/"
-                  className="fex-row flex items-center gap-2 px-4 text-xl font-bold"
+                  className="flex items-center gap-2 px-4 text-center text-xl font-bold"
                 >
                   Emails I Never Send
                 </NavigationMenuLink>
