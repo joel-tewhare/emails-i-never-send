@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 
 export default function Home() {
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center bg-email-grey">
       <div className="flex h-screen flex-row items-center justify-center gap-4">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
