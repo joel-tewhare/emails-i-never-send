@@ -207,6 +207,7 @@ export default function Compose() {
                       <img
                         src="/assets/icons/scenarios.svg"
                         alt="scenario icons"
+                        className="h-16"
                       />
                     </CardTitle>
                   </CardHeader>
@@ -247,6 +248,7 @@ export default function Compose() {
                     <img
                       src="/assets/icons/prompt-moods.svg"
                       alt="mood icons"
+                      className="h-16"
                     />
                   </CardTitle>
                 </Card>
@@ -289,8 +291,9 @@ export default function Compose() {
                   <CardHeader>
                     <CardTitle>
                       <img
-                        src="/assets/icons/word-time-limits.svg"
+                        src="/assets/icons/word-limit.png"
                         alt="notepad icon"
+                        className="h-16"
                       />
                     </CardTitle>
                   </CardHeader>
@@ -328,8 +331,9 @@ export default function Compose() {
                   <CardHeader>
                     <CardTitle>
                       <img
-                        src="/assets/icons/word-time-limits.svg"
+                        src="/assets/icons/time-limit.png"
                         alt="stopwatch icon"
+                        className="h-16"
                       />
                     </CardTitle>
                   </CardHeader>
