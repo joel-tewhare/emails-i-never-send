@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
-import { ArrowBigDownDash, AudioLines } from 'lucide-react'
+import { AudioLines } from 'lucide-react'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
@@ -222,27 +222,31 @@ export default function Review() {
                 )}
               </CardTitle>
               <div className="flex flex-col items-center gap-4 pb-4">
-                <button
-                  onClick={handlePlayTts}
-                  disabled={ttsMutation.isPending}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80 disabled:opacity-50"
-                  aria-label="Play audio review"
-                >
-                  {ttsMutation.isPending && (
+                {ttsMutation.isPending && (
+                  <button
+                    disabled
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal opacity-50"
+                    aria-label="Loading audio"
+                  >
                     <span className="text-lg font-bold">...</span>
-                  )}
-
-                  {audioUrl && (
+                  </button>
+                )}
+                
+                {ttsMutation.isError && !ttsMutation.isPending && (
+                  <div className="flex items-center justify-center px-4 text-center text-sm text-email-charcoal/70">
+                    Audio unavailable at this time (free tier limits)
+                  </div>
+                )}
+                
+                {audioUrl && !ttsMutation.isPending && (
+                  <button
+                    onClick={handlePlayTts}
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80"
+                    aria-label="Play audio review"
+                  >
                     <AudioLines className="h-16 w-16" fill="email-charcoal" />
-                  )}
-
-                  {(!audioUrl || ttsMutation.isError) && (
-                    <ArrowBigDownDash
-                      className="h-16 w-16"
-                      fill="email-charcoal"
-                    />
-                  )}
-                </button>
+                  </button>
+                )}
                 {audioUrl && (
                   // eslint-disable-next-line jsx-a11y/media-has-caption
                   <audio
