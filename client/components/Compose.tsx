@@ -36,6 +36,7 @@ export default function Compose() {
   )
   const [emailContent, setEmailContent] = useState<string>('')
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
+  const [voiceNoteKey, setVoiceNoteKey] = useState(0)
 
   const handleScenarioChange = (value: string) => {
     setSelectedScenarioId(Number(value))
@@ -434,7 +435,14 @@ export default function Compose() {
             </div>
           </Card>
 
-          <VoiceNote onAudioRecorded={(blob) => setAudioBlob(blob)} />
+          <VoiceNote 
+            key={voiceNoteKey}
+            onAudioRecorded={(blob) => setAudioBlob(blob)} 
+            onReRecord={() => {
+              setAudioBlob(null)
+              setVoiceNoteKey(prev => prev + 1)
+            }}
+          />
 
           <Card className="h-16 w-full border-none">
             <div className="flex h-full flex-row items-center justify-end">
