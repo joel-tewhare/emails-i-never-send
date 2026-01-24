@@ -33,6 +33,7 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
 
   //clear audio, preview and start recording
   const startRecording = () => {
+    onAudioRecorded?.(null)
     setAudio(null)
     setPreviewUrl((currentUrl) => {
       if (currentUrl) {
@@ -46,6 +47,7 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
 
   //clear audio, preview and set status as idle
   const reRecord = () => {
+    onAudioRecorded?.(null)
     setAudio(null)
     setPreviewUrl((currentUrl) => {
       if (currentUrl) {
@@ -54,7 +56,6 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
       return null
     })
     setRecorderStatus('idle')
-    onAudioRecorded?.(null)
   }
 
   //time limit managed, recording stopped with ref once timeout reached
