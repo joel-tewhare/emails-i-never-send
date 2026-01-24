@@ -7,9 +7,10 @@ type RecorderStatus = 'idle' | 'recording' | 'finalizing' | 'recorded' | 'error'
 
 interface VoiceNoteProps {
   onAudioRecorded?: (audioBlob: Blob | null) => void
+  onReRecord?: () => void
 }
 
-export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
+export default function VoiceNote({ onAudioRecorded, onReRecord }: VoiceNoteProps) {
   const [audio, setAudio] = useState<Blob | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>('idle')
@@ -31,8 +32,14 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
   const recorderControlsRef = useRef(recorderControls)
   recorderControlsRef.current = recorderControls
 
+  const stopMicStream = () => {
+    const stream = recorderControlsRef.current.mediaRecorder?.stream
+    stream?.getTracks().forEach((t) => t.stop())
+  }
+
   //clear audio, preview and start recording
   const startRecording = () => {
+    onAudioRecorded?.(null)
     setAudio(null)
     setPreviewUrl((currentUrl) => {
       if (currentUrl) {
@@ -44,17 +51,14 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
     recorderControls.startRecording()
   }
 
-  //clear audio, preview and set status as idle
+  //trigger parent to remount this component (clearing all state)
   const reRecord = () => {
-    setAudio(null)
-    setPreviewUrl((currentUrl) => {
-      if (currentUrl) {
-        URL.revokeObjectURL(currentUrl)
-      }
-      return null
-    })
-    setRecorderStatus('idle')
-    onAudioRecorded?.(null)
+    // Clean up blob URL before unmounting
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl)
+    }
+    stopMicStream()
+    onReRecord?.()
   }
 
   //time limit managed, recording stopped with ref once timeout reached
@@ -71,6 +75,16 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
     return () => clearTimeout(timeout)
   }, [recorderStatus])
 
+  useEffect(() => {
+    return () => {
+      stopMicStream()
+      setPreviewUrl((currentUrl) => {
+        if (currentUrl) URL.revokeObjectURL(currentUrl)
+        return null
+      })
+    }
+  }, [])
+
   //add audio to state, set preview, update status to recorded
   const addAudioElement = (blob: Blob) => {
     setAudio(blob)
@@ -82,6 +96,8 @@ export default function VoiceNote({ onAudioRecorded }: VoiceNoteProps) {
     })
     setRecorderStatus('recorded')
     onAudioRecorded?.(blob)
+
+    stopMicStream()
   }
 
   const showRecorder =

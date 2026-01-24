@@ -85,8 +85,8 @@ ${wordLimit ?? 250} words
         systemInstruction,
         responseSchema: reviewSchema,
         temperature: 0.4,
-        maxOutputTokens: 2000
-      }
+        maxOutputTokens: 2000,
+      },
     })
 
     const raw = response.text

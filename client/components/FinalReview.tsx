@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
-import { ArrowBigDownDash, AudioLines } from 'lucide-react'
+import { AudioLines } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -145,27 +145,31 @@ export default function RewriteReview() {
               {audioUrl && <span>Listen to your review:</span>}
             </CardTitle>
             <div className="flex flex-col items-center gap-4 pb-4">
-              <button
-                onClick={handlePlayTts}
-                disabled={ttsMutation.isPending}
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80 disabled:opacity-50"
-                aria-label="Play audio review"
-              >
-                {ttsMutation.isPending && (
+              {ttsMutation.isPending && (
+                <button
+                  disabled
+                  className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal opacity-50"
+                  aria-label="Loading audio"
+                >
                   <span className="text-lg font-bold">...</span>
-                )}
-
-                {audioUrl && (
+                </button>
+              )}
+              
+              {ttsMutation.isError && !ttsMutation.isPending && (
+                <div className="flex items-center justify-center px-4 text-center text-sm text-email-charcoal/70">
+                  Audio unavailable at this time (free tier limits)
+                </div>
+              )}
+              
+              {audioUrl && !ttsMutation.isPending && (
+                <button
+                  onClick={handlePlayTts}
+                  className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80"
+                  aria-label="Play audio review"
+                >
                   <AudioLines className="h-10 w-10" fill="email-charcoal" />
-                )}
-
-                {(!audioUrl || ttsMutation.isError) && (
-                  <ArrowBigDownDash
-                    className="h-10 w-10"
-                    fill="email-charcoal"
-                  />
-                )}
-              </button>
+                </button>
+              )}
               {audioUrl && (
                 // eslint-disable-next-line jsx-a11y/media-has-caption
                 <audio
@@ -219,28 +223,28 @@ export default function RewriteReview() {
         <Card className="mx-2 mt-4 h-[40rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
           <CardContent>
             <Tabs defaultValue="prompt" className="mt-4 w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-4 gap-0">
                 <TabsTrigger
                   value="prompt"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Prompt
                 </TabsTrigger>
                 <TabsTrigger
                   value="final"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Review Transcript
                 </TabsTrigger>
                 <TabsTrigger
                   value="suggestions"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-charcoal data-[state=active]:font-bold data-[state=active]:text-email-white"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   Sentence Suggestions
                 </TabsTrigger>
                 <TabsTrigger
                   value="first"
-                  className="rounded-md border-2 border-email-mint bg-email-white p-2 text-center font-serif text-email-charcoal data-[state=active]:border-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
                   First Email
                 </TabsTrigger>

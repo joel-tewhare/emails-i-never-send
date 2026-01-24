@@ -14,7 +14,7 @@ import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
-import { useState, ChangeEvent } from 'react'
+import { useState, useRef, ChangeEvent } from 'react'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
@@ -36,6 +36,7 @@ export default function Compose() {
   )
   const [emailContent, setEmailContent] = useState<string>('')
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
+  const [voiceNoteKey, setVoiceNoteKey] = useState(0)
 
   const handleScenarioChange = (value: string) => {
     setSelectedScenarioId(Number(value))
@@ -101,6 +102,7 @@ export default function Compose() {
   )
 
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
+  const promptSectionRef = useRef<HTMLDivElement>(null)
 
   const reviewMutation = useMutation({
     mutationFn: ({
@@ -133,6 +135,7 @@ export default function Compose() {
           // Randomly select a prompt from the array
           const randomIndex = Math.floor(Math.random() * result.data.length)
           setSelectedPrompt(result.data[randomIndex].prompt)
+          promptSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
         }
       } catch (error) {
         console.error('Error fetching prompts:', error)
@@ -207,6 +210,7 @@ export default function Compose() {
                       <img
                         src="/assets/icons/scenarios.svg"
                         alt="scenario icons"
+                        className="h-16"
                       />
                     </CardTitle>
                   </CardHeader>
@@ -247,6 +251,7 @@ export default function Compose() {
                     <img
                       src="/assets/icons/prompt-moods.svg"
                       alt="mood icons"
+                      className="h-16"
                     />
                   </CardTitle>
                 </Card>
@@ -289,8 +294,9 @@ export default function Compose() {
                   <CardHeader>
                     <CardTitle>
                       <img
-                        src="/assets/icons/word-time-limits.svg"
+                        src="/assets/icons/word-limit.png"
                         alt="notepad icon"
+                        className="h-16"
                       />
                     </CardTitle>
                   </CardHeader>
@@ -328,8 +334,9 @@ export default function Compose() {
                   <CardHeader>
                     <CardTitle>
                       <img
-                        src="/assets/icons/word-time-limits.svg"
+                        src="/assets/icons/time-limit.png"
                         alt="stopwatch icon"
+                        className="h-16"
                       />
                     </CardTitle>
                   </CardHeader>
@@ -385,7 +392,10 @@ export default function Compose() {
         </div>
 
         {/* Centered column: Prompt section down to Get Review button */}
-        <div className="mx-auto mt-8 flex w-full max-w-xl flex-col items-center">
+        <div
+          ref={promptSectionRef}
+          className="mx-auto mt-8 flex w-full max-w-xl scroll-mt-4 flex-col items-center"
+        >
           <Card className="mb-4 w-full border-none p-3">
             <CardHeader className="mb-4 w-60 border-2 border-email-charcoal p-2 text-center font-serif">
               <CardTitle className="text-xl">
@@ -425,7 +435,14 @@ export default function Compose() {
             </div>
           </Card>
 
-          <VoiceNote onAudioRecorded={(blob) => setAudioBlob(blob)} />
+          <VoiceNote 
+            key={voiceNoteKey}
+            onAudioRecorded={(blob) => setAudioBlob(blob)} 
+            onReRecord={() => {
+              setAudioBlob(null)
+              setVoiceNoteKey(prev => prev + 1)
+            }}
+          />
 
           <Card className="h-16 w-full border-none">
             <div className="flex h-full flex-row items-center justify-end">
