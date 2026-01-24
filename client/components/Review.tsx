@@ -400,7 +400,8 @@ export default function Review() {
               <CardContent className="pr-6 pt-2 text-sm font-bold">
                 <Button
                   onClick={handleRewriteReview}
-                  className="rounded-xl bg-email-mint px-4 py-3 text-email-charcoal hover:shadow-md"
+                  className="flex h-14 items-center justify-center rounded-xl bg-email-mint px-6 py-5 text-lg font-bold text-email-charcoal hover:shadow-md"
+                  disabled={!emailRewrite}
                 >
                   Get Final Review
                 </Button>
