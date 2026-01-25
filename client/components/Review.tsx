@@ -196,7 +196,7 @@ export default function Review() {
           </p>
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
             3. Use this coaching to rewrite your email then send for your final
-            review
+            review.
           </p>
         </div>
 
