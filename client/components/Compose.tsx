@@ -122,7 +122,7 @@ export default function Compose() {
 
       // Store in local storage to access if page is refreshed
       localStorage.setItem('emailReview', JSON.stringify(data))
-
+      window.scrollTo(0, 0)
       navigate('/review')
     },
   })
@@ -180,7 +180,7 @@ export default function Compose() {
   return (
     <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
+        <div className="fixed absolute inset-0 inset-0 z-50 flex flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
           <p className="text-email-charcoal">Preparing your review...</p>
         </div>
       )}
@@ -435,12 +435,12 @@ export default function Compose() {
             </div>
           </Card>
 
-          <VoiceNote 
+          <VoiceNote
             key={voiceNoteKey}
-            onAudioRecorded={(blob) => setAudioBlob(blob)} 
+            onAudioRecorded={(blob) => setAudioBlob(blob)}
             onReRecord={() => {
               setAudioBlob(null)
-              setVoiceNoteKey(prev => prev + 1)
+              setVoiceNoteKey((prev) => prev + 1)
             }}
           />
 
