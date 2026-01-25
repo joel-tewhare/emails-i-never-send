@@ -89,37 +89,20 @@ ${wordLimit ?? 250} words
       },
     })
 
-    // Check if response was truncated
-    const finishReason = response.candidates?.[0]?.finishReason
-    if (finishReason === 'MAX_TOKENS') {
-      console.warn('Response was truncated due to token limit')
-      return res.status(502).json({
-        error: 'Response was truncated. Please try with a shorter email or reduce review detail.',
-        finishReason,
-      })
-    }
-
     const raw = response.text
     if (!raw) {
-      console.error('No response text from Gemini API')
-      console.error('Finish reason:', finishReason)
       return res.status(502).json({
         error: 'No response from AI',
-        finishReason,
       })
     }
 
     let reviewJson: unknown
     try {
       reviewJson = JSON.parse(raw)
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError)
-      console.error('Raw response length:', raw.length)
-      console.error('Raw response (first 500 chars):', raw.substring(0, 500))
+    } catch {
       return res.status(502).json({
-        error: 'Invalid JSON response from AI - response may be truncated',
-        rawResponseLength: raw.length,
-        rawResponsePreview: raw.substring(0, 500),
+        error: 'Invalid JSON response from AI',
+        rawResponse: raw,
       })
     }
 
