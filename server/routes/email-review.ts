@@ -85,7 +85,7 @@ ${wordLimit ?? 250} words
         systemInstruction,
         responseSchema: reviewSchema,
         temperature: 0.4,
-        maxOutputTokens: 2000,
+        maxOutputTokens: 8192, // Increased for comprehensive reviews
       },
     })
 

@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Link } from 'react-router'
 
 export default function RewriteReview() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
@@ -115,34 +116,56 @@ export default function RewriteReview() {
 
   const finalEmailParagraphs =
     finalReviewData?.finalEmail?.split(/\n\s*\n+/) ?? []
-  const originalParagraphs =
-    finalReviewData?.emailOriginal.split(/\n\s*\n+/) ?? []
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
+        <Card className="my-8 max-w-96 rounded-none border-none p-2 text-center">
+          <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
+            <span className="italic">Final</span> word.
+          </CardHeader>
+        </Card>
+        <div className="mx-6 md:mx-0">
+          <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
+            You made it.
+          </p>
+          <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
+            With some careful revision and AI coaching, you&apos;ve hopefully
+            crafted a final email that&apos;s gone from{' '}
+            <span className="italic">never</span> to{' '}
+            <span className="italic">ready</span> for sending in the right
+            situation.
+          </p>
+        </div>
+      </div>
+
       <div className="flex flex-row">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
-          className="h-96"
+          className="my-12 h-96"
         />
 
-        <Card className="mx-4 h-96 w-96 rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
+        <Card className="mx-4 my-12 h-96 w-96 rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
           <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-            <CardTitle className="mb-4 text-center">
+            <CardTitle className="mb-10 mt-8 text-center">
               {!audioUrl && ttsMutation.isPending && (
-                <span className="text-sm text-email-charcoal/80">
+                <span className="text-3xl text-email-charcoal/80">
                   Loading review audio…
                 </span>
               )}
 
               {!audioUrl && ttsMutation.isError && (
-                <span>
+                <span className="text-3xl text-email-charcoal">
                   Couldn&apos;t generate audio. See review notes below
                 </span>
               )}
 
-              {audioUrl && <span>Listen to your review:</span>}
+              {audioUrl && (
+                <span className="mx-1 text-3xl text-email-charcoal">
+                  <span className="italic">Listen</span> to your final review:
+                </span>
+              )}
             </CardTitle>
             <div className="flex flex-col items-center gap-4 pb-4">
               {ttsMutation.isPending && (
@@ -154,20 +177,23 @@ export default function RewriteReview() {
                   <span className="text-lg font-bold">...</span>
                 </button>
               )}
-              
+
               {ttsMutation.isError && !ttsMutation.isPending && (
                 <div className="flex items-center justify-center px-4 text-center text-sm text-email-charcoal/70">
-                  Audio unavailable at this time (free tier limits)
+                  Audio unavailable at this time (Gemini tier limits)
                 </div>
               )}
-              
+
               {audioUrl && !ttsMutation.isPending && (
                 <button
                   onClick={handlePlayTts}
                   className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80"
                   aria-label="Play audio review"
                 >
-                  <AudioLines className="h-10 w-10" fill="email-charcoal" />
+                  <AudioLines
+                    className="my-6 h-16 w-16"
+                    fill="email-charcoal"
+                  />
                 </button>
               )}
               {audioUrl && (
@@ -204,13 +230,13 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <Card className="maxh-[30rem] my-4 rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
+      <Card className="my-4 max-h-[30rem] rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
         <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-          <CardTitle className="mb-3 mt-2 w-40 border-2 border-email-charcoal p-2 text-center font-serif">
+          <CardTitle className="mb-3 mt-2 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
             Your Final Email
           </CardTitle>
         </CardHeader>
-        <ScrollArea className="p-3 px-6 font-serif text-[15px] leading-relaxed">
+        <ScrollArea className="text-md p-3 px-6 leading-relaxed">
           {finalEmailParagraphs?.map((para, index) => (
             <p key={index} className="mb-3">
               {para.trim()}
@@ -220,16 +246,10 @@ export default function RewriteReview() {
       </Card>
 
       <div className="flex">
-        <Card className="mx-2 mt-4 h-[40rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
+        <Card className="mx-2 mt-4 h-[30rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
           <CardContent>
-            <Tabs defaultValue="prompt" className="mt-4 w-full">
-              <TabsList className="grid w-full grid-cols-4 gap-0">
-                <TabsTrigger
-                  value="prompt"
-                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
-                >
-                  Prompt
-                </TabsTrigger>
+            <Tabs defaultValue="final" className="mt-4 w-full px-3">
+              <TabsList className="grid w-full grid-cols-2 gap-0">
                 <TabsTrigger
                   value="final"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
@@ -240,25 +260,12 @@ export default function RewriteReview() {
                   value="suggestions"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
-                  Sentence Suggestions
-                </TabsTrigger>
-                <TabsTrigger
-                  value="first"
-                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
-                >
-                  First Email
+                  Final Suggestions
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="prompt" className="mt-4">
-                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
-                  {finalReviewData?.promptText ??
-                    'No prompt found for this email.'}
-                </ScrollArea>
-              </TabsContent>
-
               <TabsContent value="final" className="mt-4">
-                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
+                <ScrollArea className="h-[calc(28rem-4rem)] p-3 px-4 text-sm leading-relaxed">
                   {reviewParagraphs.map((para, index) => (
                     <p key={index} className="mb-3">
                       {para.trim()}
@@ -268,7 +275,7 @@ export default function RewriteReview() {
               </TabsContent>
 
               <TabsContent value="suggestions" className="mt-4">
-                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4">
+                <ScrollArea className="h-[calc(28rem-4rem)] p-3 px-4">
                   {sentenceSuggestions.length > 0 ? (
                     <div className="space-y-4 text-sm leading-relaxed">
                       {sentenceSuggestions.map((suggestion, index) => (
@@ -299,28 +306,21 @@ export default function RewriteReview() {
                   )}
                 </ScrollArea>
               </TabsContent>
-
-              <TabsContent value="first" className="mt-4">
-                <ScrollArea className="h-[calc(37rem-4rem)] p-3 px-4 text-sm leading-relaxed">
-                  {originalParagraphs.map((para, index) => (
-                    <p key={index} className="mb-3">
-                      {para.trim()}
-                    </p>
-                  ))}
-                </ScrollArea>
-              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
       </div>
 
-      <div className="mt-8 flex flex-row gap-4">
-        <Button className="rounded-xl bg-email-charcoal px-4 text-email-white hover:bg-email-charcoal/80 hover:shadow-md">
+      <div className="mb-12 mt-8 flex flex-row gap-4">
+        <Button className="flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20">
           Save Email
         </Button>
 
-        <Button className="rounded-xl bg-email-charcoal px-4 text-email-white hover:bg-email-charcoal/80 hover:shadow-md">
-          Start New Email
+        <Button
+          asChild
+          className="flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20"
+        >
+          <Link to="/compose">Start New Email</Link>
         </Button>
       </div>
     </div>

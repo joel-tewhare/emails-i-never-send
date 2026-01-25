@@ -189,13 +189,14 @@ export default function Review() {
         </Card>
         <div className="mx-6 md:mx-0">
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            1. Your audio review will be loaded shortly.
+            1. Your review will be available to listen to shortly.
           </p>
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            2. Use the feedback and suggestions to rewrite your email.
+            2. Consider any feedback and rewrite suggestions.
           </p>
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            3. Send for your final review
+            3. Use this coaching to rewrite your email then send for your final
+            review.
           </p>
         </div>
 
@@ -216,7 +217,7 @@ export default function Review() {
                 )}
 
                 {audioUrl && (
-                  <span className="text-3xl text-email-charcoal">
+                  <span className="mx-1 text-3xl text-email-charcoal">
                     <span className="italic">Listen</span> to your review:
                   </span>
                 )}
