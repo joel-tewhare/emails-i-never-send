@@ -248,7 +248,7 @@ export default function RewriteReview() {
       <div className="flex">
         <Card className="mx-2 mt-4 h-[30rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
           <CardContent>
-            <Tabs defaultValue="final" className="mt-4 w-full">
+            <Tabs defaultValue="final" className="mt-4 w-full px-3">
               <TabsList className="grid w-full grid-cols-2 gap-0">
                 <TabsTrigger
                   value="final"
@@ -260,7 +260,7 @@ export default function RewriteReview() {
                   value="suggestions"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
-                  Sentence Suggestions
+                  Final Suggestions
                 </TabsTrigger>
               </TabsList>
 
