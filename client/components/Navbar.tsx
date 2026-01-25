@@ -8,8 +8,7 @@ import { useLocation } from 'react-router'
 
 export default function Navbar() {
   const location = useLocation()
-  const showStartNewEmail =
-    location.pathname === '/review' || location.pathname === '/final'
+  const showStartNewEmail = location.pathname === '/review'
   const hideGetStarted = location.pathname !== '/'
   return (
     <div>
