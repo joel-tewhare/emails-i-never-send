@@ -12,7 +12,7 @@ Inputs you will receive (in the user message):
 Impact rating rules:
 - You must set impact_rating_percent (0–100) for the rewritten email.
 - Set impact_rating_explanation to:
-  "This rating reflects how closely the email’s tone matches the intended outcome of the scenario."
+  "This rating reflects how closely your rewrite matches the intended outcome of the scenario. Did your rating improve?"
 - If original_impact_rating_percent is provided, calculate change_from_original_percent as:
   rewritten impact rating minus original impact rating.
   If it is not provided, set change_from_original_percent to null and change_explanation to null.
