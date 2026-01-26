@@ -22,7 +22,8 @@ export default function Home() {
       </p>
       <p className="max-w-4xl pb-12 text-center text-2xl font-bold">
         This reflective writing tool uses real-life prompts and AI coaching to
-        help you build confidence in professional and emotional communication.
+        simulate outcomes and help you build confidence in professional and
+        emotional communication.
       </p>
 
       <div className="m-8 flex flex-row flex-wrap items-center justify-center">
