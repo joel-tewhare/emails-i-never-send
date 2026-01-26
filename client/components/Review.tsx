@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
-import { AudioLines } from 'lucide-react'
+import { AudioLines, Headphones, Mail, Pencil } from 'lucide-react'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
@@ -161,6 +161,7 @@ export default function Review() {
 
   const reviewParagraphs = reviewData.coachReviewParagraphs ?? []
   const leveragePoints = reviewData.leveragePoints ?? []
+  const counterfactualOutcomes = reviewData.counterfactualOutcomes ?? []
   const impactRating = reviewData.impactRatingPercent
   const impactDefinition = reviewData.ratingDefinition
 
@@ -189,15 +190,20 @@ export default function Review() {
             draft and simulate outcomes:
           </p>
           <ol className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            <li className="mb-4">
-              Listen to key takeaways from your AI coach.
+            <li className="mb-4 flex items-start gap-3">
+              <Headphones className="mt-1 h-6 w-6 shrink-0" />
+              <span>Listen to key takeaways from your AI coach.</span>
             </li>
-            <li className="mb-4">
-              Use the review notes and reflections to help decide what your
-              final email could look like.
+            <li className="mb-4 flex items-start gap-3">
+              <Pencil className="mt-1 h-6 w-6 shrink-0" />
+              <span>
+                Use the review notes and reflections to help decide what your
+                final email could look like.
+              </span>
             </li>
-            <li className="mb-4">
-              Rewrite your email and submit it for a final review.
+            <li className="mb-4 flex items-start gap-3">
+              <Mail className="mt-1 h-6 w-6 shrink-0" />
+              <span>Rewrite your email and submit it for a final review.</span>
             </li>
           </ol>
         </div>
@@ -277,22 +283,56 @@ export default function Review() {
         </div>
 
         {impactRating !== null && audioUrl && (
-          <div className="m-8 flex flex-row items-center justify-center gap-4">
-            <Card className="mb-8 max-w-xl rounded-none border-none">
-              <CardHeader className="pl-3 pt-2 text-2xl font-bold">
-                <CardTitle>Impact Rating:</CardTitle>
+          <div className="m-10 flex w-full flex-col items-center justify-center gap-1">
+            <div className="flex flex-row items-center justify-center gap-4">
+              <Card className="mb-8 max-w-xl rounded-none border-none">
+                <CardHeader className="pl-3 pt-2 text-2xl font-bold">
+                  <CardTitle>Impact Rating:</CardTitle>
+                </CardHeader>
+                <CardContent className="pb-3 pl-3 pt-2">
+                  <div className="flex items-center gap-4">
+                    <div className="text-8xl font-bold">{impactRating}%</div>
+                  </div>
+                </CardContent>
+              </Card>
+              {impactDefinition && (
+                <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
+                  {impactDefinition}
+                </p>
+              )}
+            </div>
+
+            <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
+              <CardHeader className="p-2 text-center text-lg">
+                <CardTitle className="text-2xl">If you sent as is...</CardTitle>
               </CardHeader>
-              <CardContent className="pb-3 pl-3 pt-2">
-                <div className="flex items-center gap-4">
-                  <div className="text-8xl font-bold">{impactRating}%</div>
-                </div>
+              <CardContent className="pt-2">
+                {counterfactualOutcomes.length > 0 ? (
+                  <div className="space-y-4">
+                    {counterfactualOutcomes.map((outcome, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <div className="w-24 shrink-0">
+                          <div className="text-4xl font-bold leading-none">
+                            {outcome.probabilityPercent}%
+                          </div>
+                          <div className="mt-1 text-center text-xs font-semibold text-email-charcoal/90">
+                            likely
+                          </div>
+                        </div>
+
+                        <p className="text-left text-sm italic leading-relaxed text-email-charcoal/80">
+                          {outcome.likelyRecipientResponse}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-email-charcoal/60">
+                    No outcome simulation available.
+                  </p>
+                )}
               </CardContent>
             </Card>
-            {impactDefinition && (
-              <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
-                {impactDefinition}
-              </p>
-            )}
           </div>
         )}
       </div>
@@ -301,7 +341,7 @@ export default function Review() {
         <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
           <Card className="h-[40rem] max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal">
             <CardContent>
-              <Tabs defaultValue="review" className="mt-4 w-full">
+              <Tabs defaultValue="review" className="mt-0 w-full">
                 <TabsList className="grid w-full grid-cols-2 gap-0 p-3">
                   <TabsTrigger
                     value="review"
@@ -325,8 +365,8 @@ export default function Review() {
                       </p>
                     ))}
                     <p>
-                      Consider the reflections, consider what you could change
-                      then rewrite your email and submit it for a final review.
+                      Consider the reflections and what you could change then,
+                      rewrite your email and submit it for a final review.
                     </p>
                   </ScrollArea>
                 </TabsContent>
@@ -392,7 +432,7 @@ export default function Review() {
           <Textarea
             value={emailRewrite}
             onChange={handleEmailRewriteChange}
-            className="h-80 max-w-xl px-2 py-2 text-sm"
+            className="mb-8 h-80 max-w-xl px-2 py-2 text-sm"
             placeholder="Rewrite your email here..."
           />
 
