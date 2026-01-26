@@ -110,17 +110,20 @@ export default function Review() {
       originalEmailContent,
       finalEmailContent,
       originalImpactRatingPercent,
+      wordLimit,
     }: {
       promptText: string
       originalEmailContent: string
       finalEmailContent: string
       originalImpactRatingPercent: number | null
+      wordLimit: number
     }) =>
       getFinalReview(
         originalEmailContent,
         promptText,
         finalEmailContent,
         originalImpactRatingPercent,
+        wordLimit,
       ),
     onSuccess: (data) => {
       queryClient.setQueryData(['finalReview'], data)
@@ -151,6 +154,7 @@ export default function Review() {
       promptText: emailReviewData.promptText,
       originalEmailContent: emailReviewData.emailOriginal,
       originalImpactRatingPercent: impactRating,
+      wordLimit: emailReviewData.wordLimit,
     })
   }
 

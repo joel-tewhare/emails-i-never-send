@@ -22,6 +22,7 @@ router.post('/', async (req, res) => {
     const originalImpactRatingPercent = req.body.originalImpactRatingPercent
     const finalEmailContent = req.body.finalEmailContent
     const promptText = req.body.promptText
+    const wordLimit = Number(req.body.wordLimit)
 
     if (!originalEmailContent || !finalEmailContent || !promptText) {
       return res.status(400).json({ error: 'Required data is missing' })
@@ -42,6 +43,9 @@ ${finalEmailContent}
 
 PROMPT CONTEXT:
 ${promptText}
+
+WORD LIMIT CONTEXT:
+${wordLimit ?? 250} words
 `.trim(),
       },
     ]
@@ -62,7 +66,7 @@ ${promptText}
         systemInstruction: rewriteSystemInstruction,
         responseSchema: rewriteSchema,
         temperature: 0.4,
-        maxOutputTokens: 8192, // Increased for comprehensive reviews
+        maxOutputTokens: 8192,
       },
     })
 

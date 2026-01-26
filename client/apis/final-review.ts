@@ -8,12 +8,14 @@ export async function getFinalReview(
   promptText: string,
   finalEmailContent: string,
   originalImpactRatingPercent: number | null,
+  wordLimit: number,
 ): Promise<FinalReview> {
   const response = await request.post(`${rootURL}/final-review`).send({
     originalEmailContent,
     promptText,
     finalEmailContent,
     originalImpactRatingPercent,
+    wordLimit,
   })
   return response.body
 }
