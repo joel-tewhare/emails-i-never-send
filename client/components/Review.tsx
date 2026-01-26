@@ -184,25 +184,28 @@ export default function Review() {
           </CardHeader>
         </Card>
         <div className="mx-6 md:mx-0">
-          <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            You&apos;ve got a set of great tools to help review your first
-            draft:
+          <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
+            You&apos;ve got a great set of tools to help you review your first
+            draft and simulate outcomes:
           </p>
-          <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            - Listen to key takeaways from your AI coach
-          </p>
-          <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            - Use the notes given to help decide what you could change
-          </p>
-          <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            - Rewrite your email and submit it for a final review
-          </p>
+          <ol className="max-w-2xl pb-12 text-left text-2xl font-bold">
+            <li className="mb-4">
+              Listen to key takeaways from your AI coach.
+            </li>
+            <li className="mb-4">
+              Use the review notes and reflections to help decide what your
+              final email could look like.
+            </li>
+            <li className="mb-4">
+              Rewrite your email and submit it for a final review.
+            </li>
+          </ol>
         </div>
 
         <div className="flex flex-row flex-wrap items-center justify-center">
           <Card className="m-8 h-80 max-w-sm rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
             <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-10 p-4 text-center">
+              <CardTitle className="mb-10 p-1 text-center">
                 {!audioUrl && ttsMutation.isPending && (
                   <span className="text-2xl text-email-charcoal/80">
                     Loading review audio…
@@ -217,7 +220,8 @@ export default function Review() {
 
                 {audioUrl && (
                   <span className="mx-1 text-3xl text-email-charcoal">
-                    <span className="italic">Listen</span> to your review:
+                    Key <span className="italic">takeaways</span> from your
+                    email:
                   </span>
                 )}
               </CardTitle>
@@ -309,7 +313,7 @@ export default function Review() {
                     value="suggestions"
                     className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                   >
-                    Rewrite Suggestions
+                    Reflections
                   </TabsTrigger>
                 </TabsList>
 
@@ -321,8 +325,8 @@ export default function Review() {
                       </p>
                     ))}
                     <p>
-                      Consider any suggestions, try rewriting your email, and
-                      send for your final review.
+                      Consider the reflections, consider what you could change
+                      then rewrite your email and submit it for a final review.
                     </p>
                   </ScrollArea>
                 </TabsContent>
@@ -337,7 +341,7 @@ export default function Review() {
                             className="border-l-2 border-email-charcoal/20 pl-2 pt-3"
                           >
                             <p className="mb-1 font-semibold italic">
-                              Keyword or phrase:
+                              You wrote:
                             </p>
                             <p className="mb-2 mb-6 italic text-email-charcoal/70">
                               {leveragePoint.keywordOrPhrase}
