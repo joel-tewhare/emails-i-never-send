@@ -99,6 +99,7 @@ export default function Review() {
   }, [
     emailReviewData?.reviewData?.coachReviewParagraphs,
     emailReviewData?.reviewData?.nextStep,
+    emailReviewData?.reviewData?.spokenLeveragePointsSummary,
     audioUrl,
     ttsMutation.isPending,
   ])
