@@ -97,8 +97,8 @@ export default function Home() {
             </CardContent>
           </Card>
           <p className="max-w-xl text-left text-lg">
-            Set word and time limits to help you learn to communicate
-            effectively and efficiently.
+            Set word and time limits to help you communicate effectively and
+            efficiently.
           </p>
         </div>
       </div>
@@ -116,15 +116,15 @@ export default function Home() {
           </CardHeader>
         </Card>
         <div>
-          <Card className="mb-8 max-w-lg rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center">
+          <Card className="mb-8 max-w-xs rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center">
             <CardContent className="font-style: p-2 font-serif text-2xl">
-              Get <span className="italic">feedback</span> on your tone, clarity
-              + more
+              <span className="italic">Reflect</span> before you revise
             </CardContent>
           </Card>
           <p className="max-w-xl text-left text-lg">
-            Write and rewrite your email with feedback and AI coaching, giving
-            you space to refine your voice and build confidence.
+            Your AI coach rates the impact of your email, sharing key takeaways
+            and reflections to help you decide what to change before a final
+            review.
           </p>
         </div>
       </div>
