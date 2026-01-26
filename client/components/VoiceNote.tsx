@@ -10,7 +10,10 @@ interface VoiceNoteProps {
   onReRecord?: () => void
 }
 
-export default function VoiceNote({ onAudioRecorded, onReRecord }: VoiceNoteProps) {
+export default function VoiceNote({
+  onAudioRecorded,
+  onReRecord,
+}: VoiceNoteProps) {
   const [audio, setAudio] = useState<Blob | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>('idle')
@@ -111,8 +114,8 @@ export default function VoiceNote({ onAudioRecorded, onReRecord }: VoiceNoteProp
       <CardContent className="text-md pb-6 pl-3 pt-2 font-sans">
         <span className="font-bold italic">Optional</span>: Record a short voice
         note (up to 20 seconds) sharing how you hope the recipient will feel
-        when they read your email. You&apos;ll receive an Impact Rating as part
-        of your review and help with more personalized feedback.
+        when they read your email. Voice notes can provide emotional context and
+        add depth at the review stage.
       </CardContent>
       {/* Controls row - mic, visualizer, re-record button */}
       <div className="flex flex-row items-center justify-center gap-4 px-3 pb-3">
