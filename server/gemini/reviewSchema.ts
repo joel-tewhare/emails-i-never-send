@@ -65,7 +65,7 @@ export const reviewSchema = {
       maxItems: 4,
     },
 
-    spoken_suggestion_summary: {
+    spoken_leverage_points_summary: {
       type: ['string', 'null'],
       maxLength: 300,
     },
