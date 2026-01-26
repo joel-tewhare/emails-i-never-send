@@ -71,7 +71,7 @@ export default function Review() {
     if (!review) return
 
     const paragraphs = review.coachReviewParagraphs ?? []
-    const sentenceSuggestions = review.spokenSuggestionSummary?.trim()
+    const leveragePointsSummary = review.spokenLeveragePointsSummary?.trim()
     const nextStep = review.nextStep?.trim()
 
     const parts: string[] = []
@@ -80,8 +80,8 @@ export default function Review() {
       parts.push(paragraphs.join('\n\n'))
     }
 
-    if (sentenceSuggestions) {
-      parts.push(sentenceSuggestions)
+    if (leveragePointsSummary) {
+      parts.push(leveragePointsSummary)
     }
 
     if (nextStep) {
@@ -157,16 +157,12 @@ export default function Review() {
     return <div>Missing review data</div>
   }
 
-  // Extract review data with proper type safety
   const reviewData = emailReviewData.reviewData
-  if (!reviewData) {
-    return <div>Missing review data</div>
-  }
 
   const reviewParagraphs = reviewData.coachReviewParagraphs ?? []
-  const sentenceSuggestions = reviewData.sentenceSuggestions ?? []
+  const leveragePoints = reviewData.leveragePoints ?? []
   const impactRating = reviewData.impactRatingPercent
-  const impactExplanation = reviewData.impactRatingExplanation
+  const impactDefinition = reviewData.ratingDefinition
 
   const originalParagraphs =
     emailReviewData.emailOriginal.split(/\n\s*\n+/) ?? []
@@ -189,14 +185,17 @@ export default function Review() {
         </Card>
         <div className="mx-6 md:mx-0">
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            1. Your review will be available to listen to shortly.
+            You&apos;ve got a set of great tools to help review your first
+            draft:
           </p>
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            2. Consider any feedback and rewrite suggestions.
+            - Listen to key takeaways from your AI coach
           </p>
           <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
-            3. Use this coaching to rewrite your email then send for your final
-            review.
+            - Use the notes given to help decide what you could change
+          </p>
+          <p className="max-w-2xl pb-12 text-left text-2xl font-bold">
+            - Rewrite your email and submit it for a final review
           </p>
         </div>
 
@@ -285,9 +284,9 @@ export default function Review() {
                 </div>
               </CardContent>
             </Card>
-            {impactExplanation && (
+            {impactDefinition && (
               <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
-                {impactExplanation}
+                {impactDefinition}
               </p>
             )}
           </div>
@@ -330,32 +329,29 @@ export default function Review() {
 
                 <TabsContent value="suggestions" className="mt-4">
                   <ScrollArea className="h-[calc(39rem-4rem)] p-3 px-4">
-                    {sentenceSuggestions.length > 0 ? (
+                    {leveragePoints.length > 0 ? (
                       <div className="space-y-4 text-sm leading-relaxed">
-                        {sentenceSuggestions.map((suggestion, index) => (
+                        {leveragePoints.map((leveragePoint, index) => (
                           <div
                             key={index}
                             className="border-l-2 border-email-charcoal/20 pl-2 pt-3"
                           >
                             <p className="mb-1 font-semibold italic">
-                              You wrote:
+                              Keyword or phrase:
                             </p>
                             <p className="mb-2 mb-6 italic text-email-charcoal/70">
-                              {suggestion.original}
+                              {leveragePoint.keywordOrPhrase}
                             </p>
                             <p className="mb-1 font-semibold underline">
-                              Suggestion:
+                              How it influences the reader:
                             </p>
-                            <p className="mb-2">{suggestion.suggestion}</p>
-                            <p className="mb-8 text-xs italic text-email-charcoal/60">
-                              {suggestion.why}
-                            </p>
+                            <p className="mb-2">{leveragePoint.influence}</p>
                           </div>
                         ))}
                       </div>
                     ) : (
                       <p className="text-sm text-email-charcoal/60">
-                        No sentence suggestions available.
+                        No leverage points available.
                       </p>
                     )}
                   </ScrollArea>
