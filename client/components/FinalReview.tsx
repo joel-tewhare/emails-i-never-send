@@ -12,7 +12,6 @@ import { Link } from 'react-router'
 export default function RewriteReview() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
-  const audioBlobRef = useRef<Blob | null>(null)
 
   const queryClient = useQueryClient()
 
@@ -48,7 +47,7 @@ export default function RewriteReview() {
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
     onSuccess: (audioBlob) => {
-      audioBlobRef.current = audioBlob
+      //avoid duplicate audio URLs
       setAudioUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev)
         return URL.createObjectURL(audioBlob)
@@ -100,23 +99,13 @@ export default function RewriteReview() {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl)
       }
-      audioBlobRef.current = null
     }
   }, [audioUrl])
 
   const handlePlayTts = () => {
     if (!audioRef.current) return
+    // If audio already generated, just play it
     audioRef.current.play()
-  }
-
-  const handleAudioError = () => {
-    const blob = audioBlobRef.current
-    if (blob && audioUrl) {
-      URL.revokeObjectURL(audioUrl)
-      const newUrl = URL.createObjectURL(blob)
-      setAudioUrl(newUrl)
-      setTimeout(() => audioRef.current?.load(), 0)
-    }
   }
 
   const reviewParagraphs =
@@ -125,8 +114,6 @@ export default function RewriteReview() {
   const impactRating = finalReviewData?.reviewData?.impactRatingPercent
   const ratingChange = finalReviewData?.reviewData?.changeFromOriginalPercent
   const ratingChangeExplanation = finalReviewData?.reviewData?.changeSummary
-  const counterfactualOutcomes =
-    finalReviewData?.reviewData?.counterfactualOutcomes ?? []
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
@@ -214,7 +201,6 @@ export default function RewriteReview() {
                   src={audioUrl}
                   controls
                   className="w-full"
-                  onError={handleAudioError}
                 />
               )}
             </div>
@@ -223,59 +209,23 @@ export default function RewriteReview() {
       </div>
 
       {impactRating !== null && audioUrl && (
-        <div className="m-10 flex w-full flex-col items-center justify-center gap-1">
-          <div className="flex flex-row items-center justify-center gap-4">
-            <Card className="mb-8 max-w-xl rounded-none border-none">
-              <CardHeader className="pl-3 pt-2 text-2xl font-bold">
-                <CardTitle>Impact Rating:</CardTitle>
-              </CardHeader>
-              <CardContent className="pb-3 pl-3 pt-2">
-                <div className="flex items-center gap-4">
-                  <div className="text-8xl font-bold">{impactRating}%</div>
-                  <p className="text-md">from {ratingChange}%</p>
-                </div>
-              </CardContent>
-            </Card>
-            {ratingChangeExplanation && (
-              <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
-                {ratingChangeExplanation}
-              </p>
-            )}
-          </div>
-
-          <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
-            <CardHeader className="p-2 text-center text-lg">
-              <CardTitle className="text-2xl">
-                If you sent this email...
-              </CardTitle>
+        <div className="m-8 flex flex-row items-center justify-center gap-4">
+          <Card className="mb-8 max-w-xl rounded-none border-none">
+            <CardHeader className="pl-3 pt-2 text-2xl font-bold">
+              <CardTitle>Impact Rating:</CardTitle>
             </CardHeader>
-            <CardContent className="pt-2">
-              {counterfactualOutcomes.length > 0 ? (
-                <div className="space-y-4">
-                  {counterfactualOutcomes.map((outcome, index) => (
-                    <div key={index} className="flex items-start gap-2">
-                      <div className="w-24 shrink-0">
-                        <div className="text-4xl font-bold leading-none">
-                          {outcome.probabilityPercent}%
-                        </div>
-                        <div className="mt-1 text-center text-xs font-semibold text-email-charcoal/90">
-                          likely
-                        </div>
-                      </div>
-
-                      <p className="text-left text-sm italic leading-relaxed text-email-charcoal/80">
-                        {outcome.likelyRecipientResponse}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-email-charcoal/60">
-                  No outcome simulation available.
-                </p>
-              )}
+            <CardContent className="pb-3 pl-3 pt-2">
+              <div className="flex items-center gap-4">
+                <div className="text-8xl font-bold">{impactRating}%</div>
+                <p className="text-md">from {ratingChange}%</p>
+              </div>
             </CardContent>
           </Card>
+          {ratingChangeExplanation && (
+            <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
+              {ratingChangeExplanation}
+            </p>
+          )}
         </div>
       )}
 
