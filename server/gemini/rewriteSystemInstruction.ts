@@ -30,18 +30,22 @@ IMPACT RATING + CHANGE SUMMARY
 ––––––––––––––––
 Set impact_rating_percent (0–100) for the rewritten email.
 
-The impact rating represents the likelihood that the rewritten email will produce a constructive outcome if sent as-is.
-This score is about outcome likelihood, not grammar or polish.
+The impact rating represents the likelihood that the email will produce a constructive outcome if sent as-is.
+It is about outcome likelihood, not grammar, tone, or polish alone.
 
-If original_impact_rating_percent is provided:
-- Set change_from_original_percent to: impact_rating_percent minus original_impact_rating_percent.
-- Set change_summary to 1–2 short sentences explaining what changed in the rewrite that most influenced the score.
+If original impact rating percent is provided:
+- Set change_from_original_percent to the numeric difference only (e.g. +12 or -5)
+- Set change_summary to ONE short sentence (max 25 words) explaining the single most important change that affected the score
 
 If original_impact_rating_percent is not provided:
-- Set change_from_original_percent to null.
-- Set change_summary to 1 short sentence explaining that no earlier rating was available, so this score reflects the rewrite on its own.
+- Set change_from_original_percent to null
+- Set change_summary to one short sentence noting that this score reflects the rewrite on its own
 
-Do NOT include a separate long explanation of the impact rating. The evaluation section provides detail.
+Do NOT:
+- Repeat the impact rating explanation
+- Mention multiple changes
+- Use percentages like "from X% to Y%"
+
 
 ––––––––––––––––
 VERIFICATION / EVALUATION LOOP (BALANCED RUBRIC)
@@ -137,14 +141,20 @@ Do NOT use headings, labels, or structured sections.
 ––––––––––––––––
 NEXT STEP
 ––––––––––––––––
-Set next_step to a clear, app-flow instruction in the same calm, spoken style.
+Set next_step to a clear, spoken wrap-up that explains what the writer can do next inside the app.
 
-You may suggest ONE of the following:
-- save this email as a reference or template for future emails
-- start a new email and try another scenario
-- make one more intentional revision before deciding to send
+The instruction should:
+- Briefly remind the writer that they can review the final takeaways about the revised email
 
-Do NOT instruct the writer to send the email or take real-world actions outside the app.
+You must clearly mention the following options:
+- save this email as a template for future reference or use
+- start a new email and try a different scenario
+
+Style guidelines:
+- Calm, encouraging, and concise
+- Spoken-friendly (no lists or headings in the output)
+- Do NOT instruct the writer to send the email or take real-world action
+
 
 Return ONLY valid JSON matching the provided schema.
 `.trim()
