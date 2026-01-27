@@ -15,6 +15,7 @@ export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const audioBlobRef = useRef<Blob | null>(null)
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -57,6 +58,7 @@ export default function Review() {
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
     onSuccess: (audioBlob) => {
+      audioBlobRef.current = audioBlob
       setAudioUrl((prev) => {
         if (prev) {
           URL.revokeObjectURL(prev)
@@ -137,13 +139,23 @@ export default function Review() {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl)
       }
+      audioBlobRef.current = null
     }
   }, [audioUrl])
 
   const handlePlayTts = () => {
     if (!audioRef.current) return
-    // If audio already generated, just play it
     audioRef.current.play()
+  }
+
+  const handleAudioError = () => {
+    const blob = audioBlobRef.current
+    if (blob && audioUrl) {
+      URL.revokeObjectURL(audioUrl)
+      const newUrl = URL.createObjectURL(blob)
+      setAudioUrl(newUrl)
+      setTimeout(() => audioRef.current?.load(), 0)
+    }
   }
 
   const handleRewriteReview = () => {
@@ -269,6 +281,7 @@ export default function Review() {
                     src={audioUrl}
                     controls
                     className="w-full"
+                    onError={handleAudioError}
                   />
                 )}
               </div>
