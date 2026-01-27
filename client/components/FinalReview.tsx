@@ -115,6 +115,9 @@ export default function RewriteReview() {
   const ratingChange = finalReviewData?.reviewData?.changeFromOriginalPercent
   const ratingChangeExplanation = finalReviewData?.reviewData?.changeSummary
 
+  const finalEmailParagraphs =
+    finalReviewData?.finalEmail?.split(/\n\s*\n+/) ?? []
+
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
@@ -130,8 +133,8 @@ export default function RewriteReview() {
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
             With some careful revision and AI coaching, you&apos;ve hopefully
             crafted a final email that&apos;s gone from{' '}
-            <span className="italic">never</span> to being{' '}
-            <span className="italic">ready</span> to send in the right
+            <span className="italic">never</span> to{' '}
+            <span className="italic">ready</span> for sending in the right
             situation.
           </p>
         </div>
@@ -229,15 +232,19 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <Card className="my-4 min-h-0 rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
+      <Card className="my-4 max-h-[30rem] rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
         <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
           <CardTitle className="mb-3 mt-2 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
             Your Final Email
           </CardTitle>
         </CardHeader>
-        <div className="my-4 whitespace-pre-line p-3 px-6 text-sm leading-relaxed">
-          {finalReviewData?.finalEmail}
-        </div>
+        <ScrollArea className="text-md p-3 px-6 leading-relaxed">
+          {finalEmailParagraphs?.map((para, index) => (
+            <p key={index} className="mb-3">
+              {para.trim()}
+            </p>
+          ))}
+        </ScrollArea>
       </Card>
 
       <div className="flex">
