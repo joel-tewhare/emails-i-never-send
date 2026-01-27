@@ -6,12 +6,12 @@ import { AudioLines } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Link } from 'react-router'
 
 export default function RewriteReview() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const audioBlobRef = useRef<Blob | null>(null)
 
   const queryClient = useQueryClient()
 
@@ -47,7 +47,7 @@ export default function RewriteReview() {
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
     onSuccess: (audioBlob) => {
-      //avoid duplicate audio URLs
+      audioBlobRef.current = audioBlob
       setAudioUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev)
         return URL.createObjectURL(audioBlob)
@@ -60,7 +60,7 @@ export default function RewriteReview() {
     if (!review) return
 
     const paragraphs = review.coachReviewParagraphs ?? []
-    const sentenceSuggestions = review.spokenSuggestionSummary?.trim()
+    const reflections = review.spokenReflectionsSummary?.trim()
     const nextStep = review.nextStep?.trim()
 
     const parts: string[] = []
@@ -69,8 +69,8 @@ export default function RewriteReview() {
       parts.push(paragraphs.join('\n\n'))
     }
 
-    if (sentenceSuggestions) {
-      parts.push(sentenceSuggestions)
+    if (reflections) {
+      parts.push(reflections)
     }
 
     if (nextStep) {
@@ -88,6 +88,7 @@ export default function RewriteReview() {
   }, [
     finalReviewData?.reviewData?.coachReviewParagraphs,
     finalReviewData?.reviewData?.nextStep,
+    finalReviewData?.reviewData?.spokenReflectionsSummary,
     audioUrl,
     ttsMutation.isPending,
   ])
@@ -98,24 +99,34 @@ export default function RewriteReview() {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl)
       }
+      audioBlobRef.current = null
     }
   }, [audioUrl])
 
   const handlePlayTts = () => {
     if (!audioRef.current) return
-    // If audio already generated, just play it
     audioRef.current.play()
+  }
+
+  const handleAudioError = () => {
+    const blob = audioBlobRef.current
+    if (blob && audioUrl) {
+      URL.revokeObjectURL(audioUrl)
+      const newUrl = URL.createObjectURL(blob)
+      setAudioUrl(newUrl)
+      setTimeout(() => audioRef.current?.load(), 0)
+    }
   }
 
   const reviewParagraphs =
     finalReviewData?.reviewData?.coachReviewParagraphs ?? []
-  const sentenceSuggestions =
-    finalReviewData?.reviewData?.sentenceSuggestions ?? []
+  const reflections = finalReviewData?.reviewData?.reflections ?? []
   const impactRating = finalReviewData?.reviewData?.impactRatingPercent
-  const impactExplanation = finalReviewData?.reviewData?.impactRatingExplanation
-
-  const finalEmailParagraphs =
-    finalReviewData?.finalEmail?.split(/\n\s*\n+/) ?? []
+  const ratingChange = finalReviewData?.reviewData?.changeFromOriginalPercent
+  const ratingChangeExplanation = finalReviewData?.reviewData?.changeSummary
+  const counterfactualOutcomes =
+    finalReviewData?.reviewData?.counterfactualOutcomes ?? []
+  const evaluation = finalReviewData?.reviewData?.evaluation
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
@@ -132,8 +143,8 @@ export default function RewriteReview() {
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
             With some careful revision and AI coaching, you&apos;ve hopefully
             crafted a final email that&apos;s gone from{' '}
-            <span className="italic">never</span> to{' '}
-            <span className="italic">ready</span> for sending in the right
+            <span className="italic">never</span> to being{' '}
+            <span className="italic">ready</span> to send in the right
             situation.
           </p>
         </div>
@@ -203,6 +214,7 @@ export default function RewriteReview() {
                   src={audioUrl}
                   controls
                   className="w-full"
+                  onError={handleAudioError}
                 />
               )}
             </div>
@@ -211,74 +223,201 @@ export default function RewriteReview() {
       </div>
 
       {impactRating !== null && audioUrl && (
-        <div className="m-8 flex flex-row items-center justify-center gap-4">
-          <Card className="mb-8 max-w-xl rounded-none border-none">
-            <CardHeader className="pl-3 pt-2 text-2xl font-bold">
-              <CardTitle>Impact Rating:</CardTitle>
+        <div className="m-10 flex w-full flex-col items-center justify-center gap-1">
+          <div className="flex flex-row items-center justify-center gap-4">
+            <Card className="mb-8 max-w-xl rounded-none border-none">
+              <CardHeader className="pl-3 pt-2 text-2xl font-bold">
+                <CardTitle>Impact Rating:</CardTitle>
+              </CardHeader>
+              <CardContent className="pb-3 pl-3 pt-2">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="text-8xl font-bold">{impactRating}%</div>
+                  <p className="text-md font-bold text-email-charcoal/80">
+                    from {ratingChange}%
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            {ratingChangeExplanation && (
+              <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
+                {ratingChangeExplanation}
+              </p>
+            )}
+          </div>
+
+          <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
+            <CardHeader className="p-2 text-center text-lg">
+              <CardTitle className="text-2xl">
+                If you sent this email...
+              </CardTitle>
             </CardHeader>
-            <CardContent className="pb-3 pl-3 pt-2">
-              <div className="flex items-center gap-4">
-                <div className="text-8xl font-bold">{impactRating}%</div>
-              </div>
+            <CardContent className="pt-2">
+              {counterfactualOutcomes.length > 0 ? (
+                <div className="space-y-4">
+                  {counterfactualOutcomes.map((outcome, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <div className="w-24 shrink-0">
+                        <div className="text-4xl font-bold leading-none">
+                          {outcome.probabilityPercent}%
+                        </div>
+                        <div className="mt-1 text-center text-xs font-semibold text-email-charcoal/90">
+                          likely
+                        </div>
+                      </div>
+
+                      <p className="text-left text-sm italic leading-relaxed text-email-charcoal/80">
+                        {outcome.likelyRecipientResponse}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-email-charcoal/60">
+                  No outcome simulation available.
+                </p>
+              )}
             </CardContent>
           </Card>
-          {impactExplanation && (
-            <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
-              {impactExplanation}
-            </p>
-          )}
         </div>
       )}
 
-      <Card className="my-4 max-h-[30rem] rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
-        <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-          <CardTitle className="mb-3 mt-2 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
-            Your Final Email
-          </CardTitle>
-        </CardHeader>
-        <ScrollArea className="text-md p-3 px-6 leading-relaxed">
-          {finalEmailParagraphs?.map((para, index) => (
-            <p key={index} className="mb-3">
-              {para.trim()}
-            </p>
-          ))}
-        </ScrollArea>
-      </Card>
-
-      <div className="flex">
-        <Card className="mx-2 mt-4 h-[30rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
-          <CardContent>
-            <Tabs defaultValue="final" className="mt-4 w-full px-3">
-              <TabsList className="grid w-full grid-cols-2 gap-0">
+      <div className="mx-4 my-4 flex w-full max-w-6xl flex-col gap-4 md:relative md:mx-auto">
+        {/* Right column first so its content height sets the row height on desktop */}
+        <Card className="order-2 m-4 flex flex-1 flex-col rounded-none border-none bg-email-white py-6 pl-12 pr-12 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)]">
+          <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
+            <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
+              Your Final Email
+            </CardTitle>
+          </CardHeader>
+          <div className="min-w-0 whitespace-pre-line text-sm leading-relaxed">
+            {finalReviewData?.finalEmail}
+          </div>
+        </Card>
+        {/* Left column: absolute on md so it matches right column height; half width */}
+        <Card className="order-1 m-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:flex-none">
+          <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 pt-0">
+            <Tabs
+              defaultValue="evaluation"
+              className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden px-3"
+            >
+              <TabsList className="grid w-full shrink-0 grid-cols-3 gap-0 p-3">
                 <TabsTrigger
-                  value="final"
+                  value="evaluation"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
-                  Review Transcript
+                  Evaluation
                 </TabsTrigger>
                 <TabsTrigger
-                  value="suggestions"
+                  value="notes"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
-                  Final Suggestions
+                  Review Notes
+                </TabsTrigger>
+                <TabsTrigger
+                  value="takeaways"
+                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                >
+                  Final Takeaways
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="final" className="mt-4">
-                <ScrollArea className="h-[calc(28rem-4rem)] p-3 px-4 text-sm leading-relaxed">
+              <TabsContent
+                value="evaluation"
+                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+              >
+                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 text-sm">
+                  {evaluation ? (
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-semibold">Result:</span>
+                        <span
+                          className={
+                            evaluation.overallResult === 'pass'
+                              ? 'font-medium text-green-700'
+                              : 'font-medium text-amber-700'
+                          }
+                        >
+                          {evaluation.overallResult === 'pass'
+                            ? 'Pass'
+                            : 'Needs work'}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="font-semibold">Scores:</span>
+                        <ul className="list-none space-y-0.5 text-email-charcoal/90">
+                          <li>Clarity: {evaluation.scores.clarity}%</li>
+                          <li>Tone: {evaluation.scores.toneRespect}%</li>
+                          <li>Directness: {evaluation.scores.directness}%</li>
+                          <li>Efficiency: {evaluation.scores.efficiency}%</li>
+                        </ul>
+                      </div>
+                      {evaluation.checks?.length > 0 && (
+                        <div className="flex flex-col gap-2">
+                          <span className="font-semibold">Checks:</span>
+                          <ul className="space-y-2">
+                            {evaluation.checks.map((c, i) => (
+                              <li
+                                key={i}
+                                className="border-l-2 border-email-charcoal/20 pl-2"
+                              >
+                                <span
+                                  className={
+                                    c.passed
+                                      ? 'text-green-700'
+                                      : 'text-amber-700'
+                                  }
+                                >
+                                  {c.passed ? '✓' : '✗'}
+                                </span>{' '}
+                                {c.check}
+                                <p className="mt-0.5 text-xs text-email-charcoal/70">
+                                  {c.why}
+                                </p>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {evaluation.keyDrivers?.length > 0 && (
+                        <div className="flex flex-col gap-2">
+                          <span className="font-semibold">Key drivers:</span>
+                          <ul className="list-disc space-y-0.5 pl-4 text-email-charcoal/90">
+                            {evaluation.keyDrivers.map((driver, i) => (
+                              <li key={i}>{driver}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-email-charcoal/60">
+                      No evaluation available.
+                    </p>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent
+                value="notes"
+                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+              >
+                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 text-sm leading-relaxed">
                   {reviewParagraphs.map((para, index) => (
                     <p key={index} className="mb-3">
                       {para.trim()}
                     </p>
                   ))}
-                </ScrollArea>
+                </div>
               </TabsContent>
 
-              <TabsContent value="suggestions" className="mt-4">
-                <ScrollArea className="h-[calc(28rem-4rem)] p-3 px-4">
-                  {sentenceSuggestions.length > 0 ? (
+              <TabsContent
+                value="takeaways"
+                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+              >
+                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4">
+                  {reflections.length > 0 ? (
                     <div className="space-y-4 text-sm leading-relaxed">
-                      {sentenceSuggestions.map((suggestion, index) => (
+                      {reflections.map((reflection, index) => (
                         <div
                           key={index}
                           className="border-l-2 border-email-charcoal/20 pl-2"
@@ -287,24 +426,21 @@ export default function RewriteReview() {
                             You wrote:
                           </p>
                           <p className="mb-2 mb-6 italic text-email-charcoal/70">
-                            {suggestion.original}
+                            {reflection.keywordOrPhrase}
                           </p>
                           <p className="mb-1 font-semibold underline">
-                            Suggestion:
+                            How it influences the reader:
                           </p>
-                          <p className="mb-2">{suggestion.suggestion}</p>
-                          <p className="mb-8 text-xs italic text-email-charcoal/60">
-                            {suggestion.why}
-                          </p>
+                          <p className="mb-2">{reflection.influence}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <p className="text-sm text-email-charcoal/60">
-                      No sentence suggestions available.
+                      No reflections available.
                     </p>
                   )}
-                </ScrollArea>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
