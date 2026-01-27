@@ -6,6 +6,7 @@ import { AudioLines } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Link } from 'react-router'
 
 export default function RewriteReview() {
@@ -126,7 +127,6 @@ export default function RewriteReview() {
   const ratingChangeExplanation = finalReviewData?.reviewData?.changeSummary
   const counterfactualOutcomes =
     finalReviewData?.reviewData?.counterfactualOutcomes ?? []
-  const evaluation = finalReviewData?.reviewData?.evaluation
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
@@ -230,11 +230,9 @@ export default function RewriteReview() {
                 <CardTitle>Impact Rating:</CardTitle>
               </CardHeader>
               <CardContent className="pb-3 pl-3 pt-2">
-                <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-4">
                   <div className="text-8xl font-bold">{impactRating}%</div>
-                  <p className="text-md font-bold text-email-charcoal/80">
-                    from {ratingChange}%
-                  </p>
+                  <p className="text-md">from {ratingChange}%</p>
                 </div>
               </CardContent>
             </Card>
@@ -281,140 +279,48 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <div className="mx-4 my-4 flex w-full max-w-6xl flex-col gap-4 md:relative md:mx-auto">
-        {/* Right column first so its content height sets the row height on desktop */}
-        <Card className="order-2 m-4 flex flex-1 flex-col rounded-none border-none bg-email-white py-6 pl-12 pr-12 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)]">
-          <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
-            <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
-              Your Final Email
-            </CardTitle>
-          </CardHeader>
-          <div className="min-w-0 whitespace-pre-line text-sm leading-relaxed">
-            {finalReviewData?.finalEmail}
-          </div>
-        </Card>
-        {/* Left column: absolute on md so it matches right column height; half width */}
-        <Card className="order-1 m-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:flex-none">
-          <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 pt-0">
-            <Tabs
-              defaultValue="evaluation"
-              className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden px-3"
-            >
-              <TabsList className="grid w-full shrink-0 grid-cols-3 gap-0 p-3">
+      <Card className="my-4 min-h-0 rounded-none border-none bg-email-white text-email-charcoal md:w-[40rem]">
+        <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
+          <CardTitle className="mb-3 mt-2 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
+            Your Final Email
+          </CardTitle>
+        </CardHeader>
+        <div className="my-4 whitespace-pre-line p-3 px-6 text-sm leading-relaxed">
+          {finalReviewData?.finalEmail}
+        </div>
+      </Card>
+
+      <div className="flex">
+        <Card className="mx-2 mt-4 h-[30rem] w-full rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:w-[40rem]">
+          <CardContent>
+            <Tabs defaultValue="final" className="mt-4 w-full px-3">
+              <TabsList className="grid w-full grid-cols-2 gap-0">
                 <TabsTrigger
-                  value="evaluation"
+                  value="final"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
-                  Evaluation
+                  Review Transcript
                 </TabsTrigger>
                 <TabsTrigger
-                  value="notes"
+                  value="suggestions"
                   className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
                 >
-                  Review Notes
-                </TabsTrigger>
-                <TabsTrigger
-                  value="takeaways"
-                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
-                >
-                  Final Takeaways
+                  Final Suggestions
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent
-                value="evaluation"
-                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
-              >
-                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 text-sm">
-                  {evaluation ? (
-                    <div className="space-y-4">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold">Result:</span>
-                        <span
-                          className={
-                            evaluation.overallResult === 'pass'
-                              ? 'font-medium text-green-700'
-                              : 'font-medium text-amber-700'
-                          }
-                        >
-                          {evaluation.overallResult === 'pass'
-                            ? 'Pass'
-                            : 'Needs work'}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold">Scores:</span>
-                        <ul className="list-none space-y-0.5 text-email-charcoal/90">
-                          <li>Clarity: {evaluation.scores.clarity}%</li>
-                          <li>Tone: {evaluation.scores.toneRespect}%</li>
-                          <li>Directness: {evaluation.scores.directness}%</li>
-                          <li>Efficiency: {evaluation.scores.efficiency}%</li>
-                        </ul>
-                      </div>
-                      {evaluation.checks?.length > 0 && (
-                        <div className="flex flex-col gap-2">
-                          <span className="font-semibold">Checks:</span>
-                          <ul className="space-y-2">
-                            {evaluation.checks.map((c, i) => (
-                              <li
-                                key={i}
-                                className="border-l-2 border-email-charcoal/20 pl-2"
-                              >
-                                <span
-                                  className={
-                                    c.passed
-                                      ? 'text-green-700'
-                                      : 'text-amber-700'
-                                  }
-                                >
-                                  {c.passed ? '✓' : '✗'}
-                                </span>{' '}
-                                {c.check}
-                                <p className="mt-0.5 text-xs text-email-charcoal/70">
-                                  {c.why}
-                                </p>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {evaluation.keyDrivers?.length > 0 && (
-                        <div className="flex flex-col gap-2">
-                          <span className="font-semibold">Key drivers:</span>
-                          <ul className="list-disc space-y-0.5 pl-4 text-email-charcoal/90">
-                            {evaluation.keyDrivers.map((driver, i) => (
-                              <li key={i}>{driver}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-email-charcoal/60">
-                      No evaluation available.
-                    </p>
-                  )}
-                </div>
-              </TabsContent>
-
-              <TabsContent
-                value="notes"
-                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
-              >
-                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 text-sm leading-relaxed">
+              <TabsContent value="final" className="mt-4">
+                <ScrollArea className="h-[calc(28rem-4rem)] p-3 px-4 text-sm leading-relaxed">
                   {reviewParagraphs.map((para, index) => (
                     <p key={index} className="mb-3">
                       {para.trim()}
                     </p>
                   ))}
-                </div>
+                </ScrollArea>
               </TabsContent>
 
-              <TabsContent
-                value="takeaways"
-                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
-              >
-                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4">
+              <TabsContent value="suggestions" className="mt-4">
+                <ScrollArea className="h-[calc(28rem-4rem)] p-3 px-4">
                   {reflections.length > 0 ? (
                     <div className="space-y-4 text-sm leading-relaxed">
                       {reflections.map((reflection, index) => (
@@ -440,7 +346,7 @@ export default function RewriteReview() {
                       No reflections available.
                     </p>
                   )}
-                </div>
+                </ScrollArea>
               </TabsContent>
             </Tabs>
           </CardContent>
