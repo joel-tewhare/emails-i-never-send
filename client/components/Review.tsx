@@ -322,7 +322,9 @@ export default function Review() {
 
             <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
               <CardHeader className="p-2 text-center text-lg">
-                <CardTitle className="text-2xl">If you sent as is...</CardTitle>
+                <CardTitle className="text-2xl">
+                  If you sent this email...
+                </CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
                 {counterfactualOutcomes.length > 0 ? (
