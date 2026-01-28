@@ -338,9 +338,7 @@ export default function Compose() {
                   </Label>
                   <Textarea
                     value={groundingDoc ?? ''}
-                    onChange={(e) =>
-                      setGroundingDoc(e.target.value.trim() || null)
-                    }
+                    onChange={(e) => setGroundingDoc(e.target.value || null)}
                     placeholder={groundingDocPlaceholder}
                     maxLength={groundingDocMaxLength}
                     className="min-h-10 w-full resize-y bg-email-white px-3 py-2.5 text-sm"
