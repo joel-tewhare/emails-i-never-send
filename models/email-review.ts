@@ -1,3 +1,14 @@
+export interface CounterfactualOutcome {
+  probabilityPercent: number
+  likelyRecipientResponse: string
+  why: string
+}
+
+export interface LeveragePoint {
+  keywordOrPhrase: string
+  influence: string
+}
+
 export interface AISentenceSuggestion {
   original: string
   suggestion: string
@@ -5,11 +16,14 @@ export interface AISentenceSuggestion {
 }
 
 export interface AIReviewData {
+  ratingDefinition: string
   impactRatingPercent: number | null
-  impactRatingExplanation: string | null
+  ratingExplanation: string | null
+  counterfactualOutcomes: CounterfactualOutcome[]
+  leveragePoints: LeveragePoint[]
   coachReviewParagraphs: string[]
   sentenceSuggestions: AISentenceSuggestion[]
-  spokenSuggestionSummary: string | null
+  spokenLeveragePointsSummary: string | null
   nextStep: string
 }
 
