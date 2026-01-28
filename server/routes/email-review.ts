@@ -3,7 +3,8 @@ import multer from 'multer'
 import { GoogleGenAI } from '@google/genai'
 import { systemInstruction } from '../gemini/reviewSystemInstruction'
 import { reviewSchema } from '../gemini/reviewSchema'
-import toCamelCase from '../utils'
+import toCamelCase, { buildSessionContextText } from '../utils'
+import { SetupAnswers } from '@/models/setup'
 
 const router = express.Router()
 const ai = new GoogleGenAI({
@@ -36,16 +37,34 @@ router.post('/', upload.single('audio'), async (req, res) => {
     const wordLimit = Number(req.body.wordLimit)
     const audioFile = req.file
 
+    let setupAnswers: SetupAnswers | undefined
+
+    if (typeof req.body.setupAnswers === 'string') {
+      try {
+        setupAnswers = JSON.parse(req.body.setupAnswers)
+      } catch {
+        return res.status(400).json({ error: 'Invalid setupAnswers JSON' })
+      }
+    }
+
+    const groundingDoc =
+      typeof req.body.groundingDoc === 'string'
+        ? req.body.groundingDoc
+        : undefined
+
+    const contextText = buildSessionContextText(setupAnswers, groundingDoc)
+
     if (!emailContent || !promptText) {
-      return res
-        .status(400)
-        .json({ error: 'emailContent and promptText are required' })
+      return res.status(400).json({
+        error: 'emailContent, promptText, and contextText are required',
+      })
     }
 
     //Build parts array for user's message
     const parts: Part[] = [
       {
         text: `
+${contextText ? `CONTEXT: ${contextText}\n\n` : ''}
 EMAIL:
 ${emailContent}
 
