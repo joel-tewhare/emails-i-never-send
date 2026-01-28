@@ -247,9 +247,11 @@ export default function Compose() {
                   <button
                     type="button"
                     onClick={() => {
-                      setSessionStarterPriority('')
-                      setSessionStarterAvoid('')
-                      setSessionStarterTone('')
+                      setSessionStarterPriority(
+                        SESSION_STARTER.priority[0] ?? '',
+                      )
+                      setSessionStarterAvoid(SESSION_STARTER.avoid[0] ?? '')
+                      setSessionStarterTone(SESSION_STARTER.tone[0] ?? '')
                       setSetupAnswers(null)
                       setShowSessionStarter(false)
                     }}
