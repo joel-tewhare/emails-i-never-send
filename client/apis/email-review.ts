@@ -1,5 +1,6 @@
 import request from 'superagent'
 import { EmailReview } from '@/models/email-review'
+import type { SetupAnswers } from '@/models/setup'
 
 const rootURL = new URL(`/api/v1`, document.body.baseURI)
 
@@ -8,11 +9,21 @@ export async function getEmailReview(
   promptText: string,
   audioBlob: Blob | null,
   wordLimit: number,
+  setupAnswers: SetupAnswers | null,
+  groundingDoc: string | null,
 ): Promise<EmailReview> {
   const form = new FormData()
   form.append('emailContent', emailContent)
   form.append('promptText', promptText)
   form.append('wordLimit', String(wordLimit))
+
+  if (setupAnswers) {
+    form.append('setupAnswers', JSON.stringify(setupAnswers))
+  }
+
+  if (groundingDoc && groundingDoc.trim().length > 0) {
+    form.append('groundingDoc', groundingDoc.trim())
+  }
 
   if (audioBlob) {
     //extension is browser-based, variable checks possible types and adds to form with webm as default

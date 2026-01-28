@@ -1,5 +1,6 @@
-//Transform snake_case object keys to camelCase - useful for converting API responses (ie. from Gemini) to match TypeScript model types
+import type { SetupAnswers } from '@/models/setup'
 
+//Transform snake_case object keys to camelCase - useful for converting API responses (ie. from Gemini) to match TypeScript model types
 export default function toCamelCase(data: unknown): unknown {
   if (Array.isArray(data)) {
     return data.map((item) => toCamelCase(item))
@@ -21,4 +22,41 @@ export default function toCamelCase(data: unknown): unknown {
   }
 
   return transformed
+}
+
+//Format setup text in friendlier bullet point format for ai
+export function buildSessionContextText(
+  setup?: SetupAnswers,
+  groundingDoc?: string,
+): string | null {
+  if (!setup && !groundingDoc) return null
+
+  const lines: string[] = []
+
+  if (setup) {
+    lines.push('SESSION SETUP (user-selected):')
+
+    lines.push(
+      `- Priority: ${setup.priority.choice}` +
+        (setup.priority.other ? ` (${setup.priority.other})` : ''),
+    )
+
+    lines.push(
+      `- Avoid: ${setup.avoid.choice}` +
+        (setup.avoid.other ? ` (${setup.avoid.other})` : ''),
+    )
+
+    lines.push(
+      `- Tone focus: ${setup.tone.choice}` +
+        (setup.tone.other ? ` (${setup.tone.other})` : ''),
+    )
+  }
+
+  if (groundingDoc && groundingDoc.trim()) {
+    lines.push('')
+    lines.push('GROUNDING DOCUMENT (user-written):')
+    lines.push(groundingDoc.trim())
+  }
+
+  return lines.join('\n')
 }
