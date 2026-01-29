@@ -154,8 +154,7 @@ export default function RewriteReview() {
             With some careful revision and AI coaching, you&apos;ve hopefully
             crafted a final email that&apos;s gone from{' '}
             <span className="italic">never</span> to being{' '}
-            <span className="italic">ready</span> to send in the right
-            situation.
+            <span className="italic">ready</span> to use in the right situation.
           </p>
         </div>
       </div>

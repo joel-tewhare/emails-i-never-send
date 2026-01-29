@@ -222,8 +222,8 @@ export default function Review() {
         </Card>
         <div className="mx-6 md:mx-0">
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
-            You&apos;ve got a great set of tools to help you review your first
-            draft and simulate outcomes:
+            Here, you can explore how your first draft might land and what
+            outcomes it could create:
           </p>
           <ol className="max-w-2xl pb-12 text-left text-2xl font-bold">
             <li className="mb-4 flex items-start gap-3">
