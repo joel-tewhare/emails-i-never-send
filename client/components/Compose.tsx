@@ -15,6 +15,7 @@ import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
 import { useState, useRef, ChangeEvent } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
@@ -44,6 +45,8 @@ const groundingDocPlaceholder =
   'e.g. I want the language to sound like how I normally speak.'
 const groundingDocMaxLength = 300
 
+type StarterAction = 'skip' | 'continue'
+
 export default function Compose() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -63,10 +66,12 @@ export default function Compose() {
   const [voiceNoteKey, setVoiceNoteKey] = useState(0)
   const [setupAnswers, setSetupAnswers] = useState<SetupAnswers | null>(null)
   const [groundingDoc, setGroundingDoc] = useState<string | null>(null)
-  const [showSessionStarter, setShowSessionStarter] = useState(true)
-  const [sessionStarterPriority, setSessionStarterPriority] = useState('')
-  const [sessionStarterAvoid, setSessionStarterAvoid] = useState('')
-  const [sessionStarterTone, setSessionStarterTone] = useState('')
+  const [showSurvey, setShowSurvey] = useState(true)
+  const [pendingSurveyAction, setPendingSurveyAction] =
+    useState<StarterAction | null>(null)
+  const [surveyPriority, setSurveyPriority] = useState('')
+  const [surveyAvoid, setSurveyAvoid] = useState('')
+  const [surveyTone, setSurveyTone] = useState('')
 
   const handleScenarioChange = (value: string) => {
     setSelectedScenarioId(Number(value))
@@ -86,6 +91,30 @@ export default function Compose() {
 
   const handleEmailContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setEmailContent(e.target.value)
+  }
+
+  const resetSurveyState = () => {
+    setSurveyPriority('')
+    setSurveyAvoid('')
+    setSurveyTone('')
+    setGroundingDoc(null)
+  }
+
+  const buildSetupAnswers = (): SetupAnswers | null => {
+    if (!surveyPriority && !surveyAvoid && !surveyTone) {
+      return null
+    }
+
+    return {
+      priority: { choice: surveyPriority },
+      avoid: { choice: surveyAvoid },
+      tone: { choice: surveyTone },
+    }
+  }
+
+  const handleSurveyAction = (action: StarterAction) => {
+    setPendingSurveyAction(action)
+    setShowSurvey(false)
   }
 
   const {
@@ -231,152 +260,151 @@ export default function Compose() {
 
       <div className="flex flex-col items-center justify-center">
         {/* Session Starter row */}
-        {showSessionStarter && (
-          <div className="mx-auto mb-8 w-full max-w-6xl">
-            <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-charcoal/10 px-6 py-8">
-              <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
-                {/* Column 1: title and skip */}
-                <div className="flex flex-col items-center justify-center text-center md:flex-[1.25]">
-                  <h2 className="font-serif text-xl font-bold text-email-charcoal md:text-2xl">
-                    Session Starter
-                  </h2>
-                  <p className="mt-2 text-sm text-email-charcoal/80">
-                    How do you want to approach this session? A few questions to
-                    help your coach understand your needs.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSessionStarterPriority(
-                        SESSION_STARTER.priority[0] ?? '',
-                      )
-                      setSessionStarterAvoid(SESSION_STARTER.avoid[0] ?? '')
-                      setSessionStarterTone(SESSION_STARTER.tone[0] ?? '')
-                      setSetupAnswers(null)
-                      setShowSessionStarter(false)
-                    }}
-                    className="mt-3 text-sm text-email-charcoal/70 underline underline-offset-2 hover:text-email-charcoal"
-                  >
-                    Skip for now
-                  </button>
-                </div>
-                {/* Column 2: Priority */}
-                <div className="flex flex-1 flex-col space-y-3">
-                  <Label className="font-semibold text-email-charcoal">
-                    What are you prioritising most going into this session?
-                  </Label>
-                  <div className="flex flex-col space-y-2">
-                    {SESSION_STARTER.priority.map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setSessionStarterPriority(opt)}
-                        className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
-                          sessionStarterPriority === opt
-                            ? 'bg-email-mint text-email-charcoal'
-                            : sessionStarterPriority
-                              ? 'bg-white/90 text-email-charcoal/50'
-                              : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
+        <AnimatePresence
+          mode="wait"
+          onExitComplete={() => {
+            // this runs AFTER the fade-out finishes
+            if (pendingSurveyAction === 'skip') {
+              setSetupAnswers(null)
+              resetSurveyState()
+            }
+
+            if (pendingSurveyAction === 'continue') {
+              setSetupAnswers(buildSetupAnswers())
+            }
+
+            setPendingSurveyAction(null)
+          }}
+        >
+          {showSurvey && (
+            <motion.div
+              key="session-starter"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="mx-auto mb-8 w-full max-w-6xl"
+            >
+              <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-charcoal/10 px-6 py-8">
+                <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
+                  {/* Column 1: title and skip */}
+                  <div className="flex flex-col items-center justify-center text-center md:flex-[1.25]">
+                    <h2 className="font-serif text-xl font-bold text-email-charcoal md:text-2xl">
+                      Session Starter
+                    </h2>
+                    <p className="mt-2 text-sm text-email-charcoal/80">
+                      How do you want to approach this session? A few questions
+                      to help your coach understand your needs.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleSurveyAction('skip')}
+                      className="mt-3 text-sm text-email-charcoal/70 underline underline-offset-2 hover:text-email-charcoal"
+                    >
+                      Skip for now
+                    </button>
                   </div>
-                </div>
-                {/* Column 3: Avoid */}
-                <div className="flex flex-1 flex-col space-y-3">
-                  <Label className="font-semibold text-email-charcoal">
-                    What are you most trying to avoid?
-                  </Label>
-                  <div className="flex flex-col space-y-2">
-                    {SESSION_STARTER.avoid.map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setSessionStarterAvoid(opt)}
-                        className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
-                          sessionStarterAvoid === opt
-                            ? 'bg-email-mint text-email-charcoal'
-                            : sessionStarterAvoid
-                              ? 'bg-white/90 text-email-charcoal/50'
-                              : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
+                  {/* Column 2: Priority */}
+                  <div className="flex flex-1 flex-col space-y-3">
+                    <Label className="font-semibold text-email-charcoal">
+                      What are you prioritising most going into this session?
+                    </Label>
+                    <div className="flex flex-col space-y-2">
+                      {SESSION_STARTER.priority.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSurveyPriority(opt)}
+                          className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
+                            surveyPriority === opt
+                              ? 'bg-email-mint text-email-charcoal'
+                              : surveyPriority
+                                ? 'bg-white/90 text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                {/* Column 4: Tone */}
-                <div className="flex flex-1 flex-col space-y-3">
-                  <Label className="font-semibold text-email-charcoal">
-                    What tone are you focusing on?
-                  </Label>
-                  <div className="flex flex-col space-y-2">
-                    {SESSION_STARTER.tone.map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setSessionStarterTone(opt)}
-                        className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
-                          sessionStarterTone === opt
-                            ? 'bg-email-mint text-email-charcoal'
-                            : sessionStarterTone
-                              ? 'bg-white/90 text-email-charcoal/50'
-                              : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
+                  {/* Column 3: Avoid */}
+                  <div className="flex flex-1 flex-col space-y-3">
+                    <Label className="font-semibold text-email-charcoal">
+                      What are you most trying to avoid?
+                    </Label>
+                    <div className="flex flex-col space-y-2">
+                      {SESSION_STARTER.avoid.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSurveyAvoid(opt)}
+                          className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
+                            surveyAvoid === opt
+                              ? 'bg-email-mint text-email-charcoal'
+                              : surveyAvoid
+                                ? 'bg-white/90 text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                {/* Grounding doc: width of 2nd–3rd columns, centred */}
-                <div className="flex flex-col space-y-2 pt-2 md:col-span-2 md:col-start-2">
-                  <Label className="font-semibold text-email-charcoal">
-                    Anything else you want your coach to keep in mind while
-                    reviewing
-                  </Label>
-                  <Textarea
-                    value={groundingDoc ?? ''}
-                    onChange={(e) => setGroundingDoc(e.target.value || null)}
-                    placeholder={groundingDocPlaceholder}
-                    maxLength={groundingDocMaxLength}
-                    className="min-h-10 w-full resize-y bg-email-white px-3 py-2.5 text-sm"
-                  />
-                </div>
-                {/* Submit at end of row, corner of section */}
-                <div className="flex items-end justify-end pt-2 md:col-span-1 md:col-start-4">
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      if (
-                        !sessionStarterPriority &&
-                        !sessionStarterAvoid &&
-                        !sessionStarterTone
-                      ) {
-                        setSetupAnswers(null)
-                      } else {
-                        setSetupAnswers({
-                          priority: {
-                            choice: sessionStarterPriority || '',
-                          },
-                          avoid: { choice: sessionStarterAvoid || '' },
-                          tone: { choice: sessionStarterTone || '' },
-                        })
-                      }
-                      setShowSessionStarter(false)
-                    }}
-                    className="rounded-xl bg-email-charcoal px-6 text-email-white hover:bg-email-charcoal/90"
-                  >
-                    Continue
-                  </Button>
+                  {/* Column 4: Tone */}
+                  <div className="flex flex-1 flex-col space-y-3">
+                    <Label className="font-semibold text-email-charcoal">
+                      What tone are you focusing on?
+                    </Label>
+                    <div className="flex flex-col space-y-2">
+                      {SESSION_STARTER.tone.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSurveyTone(opt)}
+                          className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
+                            surveyTone === opt
+                              ? 'bg-email-mint text-email-charcoal'
+                              : surveyTone
+                                ? 'bg-white/90 text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Grounding doc: width of 2nd–3rd columns, centred */}
+                  <div className="flex flex-col space-y-2 pt-2 md:col-span-2 md:col-start-2">
+                    <Label className="font-semibold text-email-charcoal">
+                      Anything else you want your coach to keep in mind while
+                      reviewing
+                    </Label>
+                    <Textarea
+                      value={groundingDoc ?? ''}
+                      onChange={(e) => setGroundingDoc(e.target.value || null)}
+                      placeholder={groundingDocPlaceholder}
+                      maxLength={groundingDocMaxLength}
+                      className="min-h-10 w-full resize-y bg-email-white px-3 py-2.5 text-sm"
+                    />
+                  </div>
+                  {/* Submit at end of row, corner of section */}
+                  <div className="flex items-end justify-end pt-2 md:col-span-1 md:col-start-4">
+                    <Button
+                      type="button"
+                      onClick={() => handleSurveyAction('continue')}
+                      className="rounded-xl bg-email-charcoal px-6 text-email-white hover:bg-email-charcoal/90"
+                    >
+                      Continue
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Big header */}
         <Card className="my-8 max-w-72 rounded-none border-none p-2 text-center">
