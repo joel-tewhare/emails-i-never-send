@@ -241,8 +241,8 @@ export default function Compose() {
                     Session Starter
                   </h2>
                   <p className="mt-2 text-sm text-email-charcoal/80">
-                    A moment to think about how you want to approach this
-                    session
+                    How do you want to approach this session? A few questions to
+                    help your coach understand your needs.
                   </p>
                   <button
                     type="button"
@@ -287,7 +287,7 @@ export default function Compose() {
                 {/* Column 3: Avoid */}
                 <div className="flex flex-1 flex-col space-y-3">
                   <Label className="font-semibold text-email-charcoal">
-                    What are you most trying to avoid this session?
+                    What are you most trying to avoid?
                   </Label>
                   <div className="flex flex-col space-y-2">
                     {SESSION_STARTER.avoid.map((opt) => (
@@ -311,7 +311,7 @@ export default function Compose() {
                 {/* Column 4: Tone */}
                 <div className="flex flex-1 flex-col space-y-3">
                   <Label className="font-semibold text-email-charcoal">
-                    What tone are you focusing on this session?
+                    What tone are you focusing on?
                   </Label>
                   <div className="flex flex-col space-y-2">
                     {SESSION_STARTER.tone.map((opt) => (
@@ -391,7 +391,7 @@ export default function Compose() {
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
               <p className="max-w-72 text-center text-2xl font-bold md:text-right">
-                Set the scene for your writing your email.
+                Set the scene for your email.
               </p>
             </div>
             <div className="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row">
@@ -477,7 +477,7 @@ export default function Compose() {
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
               <p className="max-w-72 text-center text-2xl font-bold md:text-right">
-                Set your preferred writing conditions.
+                Set your preferred conditions.
               </p>
             </div>
             <div className="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row">
@@ -577,7 +577,7 @@ export default function Compose() {
               className="m-4 flex items-center justify-center rounded-xl bg-email-charcoal px-6 py-7 text-xl font-semibold text-email-white hover:shadow-md disabled:opacity-50"
             >
               {isPendingPrompts || !selectedWordLimit || !selectedTimeLimitId
-                ? 'Choose Options'
+                ? 'Get Prompt'
                 : 'Get Prompt'}
             </Button>
           </div>
