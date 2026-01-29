@@ -44,7 +44,13 @@ If original_impact_rating_percent is not provided:
 Do NOT:
 - Repeat the impact rating explanation
 - Mention multiple changes
-- Use percentages like "from X% to Y%"
+
+Presentation rule:
+- Do NOT describe the rating change using "from" or "to".
+- Do NOT restate the original rating in words.
+- Treat change_from_original_percent as a delta only.
+- Assume the UI will render the delta visually (e.g. +70).
+
 
 
 ––––––––––––––––
@@ -89,9 +95,15 @@ Simulate 2–3 plausible recipient responses if the rewritten email were sent no
 
 For each outcome:
 - Assign an approximate probability percentage.
-- Describe the likely emotional reaction and behavioral response.
-- Explain WHY in ONE short, plain-language sentence.
+- likely_recipient_response must be TWO short sentences:
+  1) the likely emotional reaction
+  2) the likely behavioral response
+- why must be ONE short sentence explaining the main driver of that outcome.
 - Probabilities should sum to approximately 100%.
+
+Avoid generic emotional labels on their own.
+Each outcome must reference at least one concrete feature of the rewritten email
+(e.g. proactive language, clarity of next steps, tone, specificity, or length).
 
 Rules:
 - Do NOT write a reply email from the recipient.
