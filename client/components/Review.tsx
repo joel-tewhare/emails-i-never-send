@@ -129,6 +129,7 @@ export default function Review() {
       ),
     onSuccess: (data) => {
       queryClient.setQueryData(['finalReview'], data)
+      window.scrollTo(0, 0)
       navigate('/final')
     },
   })
