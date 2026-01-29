@@ -163,7 +163,7 @@ export default function RewriteReview() {
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
-          className="my-12 h-96"
+          className="my-12 hidden h-96 md:block"
         />
 
         <Card className="mx-4 my-12 h-96 w-96 rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
@@ -232,7 +232,7 @@ export default function RewriteReview() {
       </div>
 
       {impactRating !== null && audioUrl && (
-        <div className="m-10 flex w-full flex-col items-center justify-center gap-1">
+        <div className="m-10 flex w-full flex-col items-center justify-center gap-1 px-4 md:px-0">
           <div className="flex flex-row items-center justify-center gap-4">
             <Card className="mb-8 max-w-xl rounded-none border-none">
               <CardHeader className="pl-3 pt-2 text-2xl font-bold">
