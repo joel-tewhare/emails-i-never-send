@@ -143,7 +143,11 @@ export default function Review() {
         wordLimit,
       ),
     onSuccess: (data) => {
+      // Store final review result in query cache for persistence
       queryClient.setQueryData(['finalReview'], data)
+
+      // Store in local storage to access if page is refreshed
+      localStorage.setItem('finalReview', JSON.stringify(data))
       window.scrollTo(0, 0)
       navigate('/final')
     },
