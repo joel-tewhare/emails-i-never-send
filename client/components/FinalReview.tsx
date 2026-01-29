@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
-import { AudioLines } from 'lucide-react'
+import { AudioLines, X } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ export default function RewriteReview() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
   const audioBlobRef = useRef<Blob | null>(null)
+  const [showSaveModal, setShowSaveModal] = useState(false)
 
   const queryClient = useQueryClient()
 
@@ -456,8 +457,32 @@ export default function RewriteReview() {
         </Card>
       </div>
 
+      {/* Save Email Modal */}
+      {showSaveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-email-grey/80 backdrop-blur-sm">
+          <Card className="relative max-w-md rounded-none border-2 border-email-charcoal bg-email-white p-6">
+            <button
+              onClick={() => setShowSaveModal(false)}
+              className="absolute right-4 top-4 text-email-charcoal hover:text-email-charcoal/70"
+              aria-label="Close"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <CardHeader>
+              <CardTitle className="font-serif text-2xl">Save Email</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-email-charcoal">This is a future feature.</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       <div className="mb-12 mt-8 flex flex-row gap-4">
-        <Button className="flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20">
+        <Button
+          onClick={() => setShowSaveModal(true)}
+          className="flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20"
+        >
           Save Email
         </Button>
 

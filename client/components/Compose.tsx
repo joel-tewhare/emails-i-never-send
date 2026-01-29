@@ -21,6 +21,14 @@ import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
 import VoiceNote from './VoiceNote'
 import { SetupAnswers } from '@/models/setup'
+import {
+  getWordCount,
+  getWordsRemaining,
+  isWordLimitReached,
+  getTimeLimitMinutes,
+  formatTimeRemaining,
+  isTimeLimitReached,
+} from '@/lib/utils'
 import LoadingBars from './LoadingBars'
 
 export const SESSION_STARTER = {
@@ -65,6 +73,9 @@ export default function Compose() {
   const [emailContent, setEmailContent] = useState<string>('')
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [voiceNoteKey, setVoiceNoteKey] = useState(0)
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
+  const [isTimerActive, setIsTimerActive] = useState(false)
+  const [hasStartedTyping, setHasStartedTyping] = useState(false)
   const [setupAnswers, setSetupAnswers] = useState<SetupAnswers | null>(null)
   const [groundingDoc, setGroundingDoc] = useState<string | null>(null)
   const [showSurvey, setShowSurvey] = useState(true)
@@ -91,7 +102,17 @@ export default function Compose() {
   }
 
   const handleEmailContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setEmailContent(e.target.value)
+    // Prevent typing if time limit reached
+    if (isTimeLimitReached(timeRemaining)) {
+      return
+    }
+
+    const newValue = e.target.value
+    // Prevent typing if word limit is reached
+    if (selectedWordLimit && getWordCount(newValue) > selectedWordLimit) {
+      return
+    }
+    setEmailContent(newValue)
   }
 
   const resetSurveyState = () => {
@@ -210,6 +231,39 @@ export default function Compose() {
     }
   }, [reviewMutation.isPending])
 
+  // Start timer when user first types
+  useEffect(() => {
+    const selectedTimeLimit = timeLimitsData?.find(
+      (timeLimit) => timeLimit.id === selectedTimeLimitId,
+    )?.timeLimit
+
+    if (emailContent.length > 0 && !hasStartedTyping) {
+      setHasStartedTyping(true)
+      const minutes = getTimeLimitMinutes(selectedTimeLimit)
+      if (minutes !== null) {
+        setIsTimerActive(true)
+        setTimeRemaining(minutes * 60)
+      }
+    }
+  }, [emailContent, hasStartedTyping, selectedTimeLimitId, timeLimitsData])
+
+  // Timer effect - counts down when active
+  useEffect(() => {
+    if (!isTimerActive || timeRemaining === null) return
+
+    const interval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev === null || prev <= 1) {
+          setIsTimerActive(false)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isTimerActive, timeRemaining])
+
   const handleGetPrompt = async () => {
     if (selectedScenarioId && selectedMoodId) {
       try {
@@ -225,6 +279,15 @@ export default function Compose() {
       }
     }
   }
+
+  // Calculate selected limits (using optional chaining for safety before data loads)
+  const selectedWordLimit = wordLimitsData?.find(
+    (wordLimit) => wordLimit.id === selectedWordLimitId,
+  )?.wordLimit
+
+  const selectedTimeLimit = timeLimitsData?.find(
+    (timeLimit) => timeLimit.id === selectedTimeLimitId,
+  )?.timeLimit
 
   const handleReviewEmail = () => {
     if (selectedPrompt && emailContent !== '') {
@@ -255,10 +318,6 @@ export default function Compose() {
   if (!scenariosData || !moodsData || !wordLimitsData || !timeLimitsData) {
     return <div>No data available</div>
   }
-
-  const selectedWordLimit = wordLimitsData.find(
-    (wordLimit) => wordLimit.id === selectedWordLimitId,
-  )?.wordLimit
 
   const isReviewPending = reviewMutation.isPending
 
@@ -649,27 +708,38 @@ export default function Compose() {
           <Textarea
             value={emailContent}
             onChange={handleEmailContentChange}
-            className="h-80 w-full border-2 border-email-charcoal px-3 py-3 text-sm"
+            disabled={
+              isWordLimitReached(emailContent, selectedWordLimit) ||
+              isTimeLimitReached(timeRemaining)
+            }
+            className="h-80 w-full border-2 border-email-charcoal px-3 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Start writing your email here..."
           />
 
           <Card className="w-full rounded-none border-none">
-            <div className="flex flex-row justify-end">
-              <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
+            <div className="flex flex-row items-center justify-end gap-4 pb-3 pr-4 pt-2 text-sm font-bold">
+              <div className="flex flex-row items-center gap-2">
                 <img
                   src="/assets/images/word-limit.svg"
                   alt="word limit icon"
                   className="h-9 w-9"
                 />
-                <p>{selectedWordLimit}</p>
-              </CardContent>
-              <CardContent className="flex flex-row pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
+                {selectedWordLimit && (
+                  <span>
+                    {getWordsRemaining(emailContent, selectedWordLimit)}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-row items-center gap-2">
                 <img
                   src="/assets/images/time-limit.svg"
                   alt="timer icon"
                   className="h-9 w-9"
                 />
-              </CardContent>
+                <span>
+                  {formatTimeRemaining(timeRemaining, selectedTimeLimit)}
+                </span>
+              </div>
             </div>
           </Card>
 

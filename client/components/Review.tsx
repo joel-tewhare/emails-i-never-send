@@ -11,6 +11,11 @@ import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
 import { AudioLines, Headphones, Mail, Pencil } from 'lucide-react'
 import LoadingBars from './LoadingBars'
+import {
+  getWordCount,
+  getWordsRemaining,
+  isWordLimitReached,
+} from '@/lib/utils'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
@@ -25,7 +30,15 @@ export default function Review() {
   const handleEmailRewriteChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setEmailRewrite(e.target.value)
+    const newValue = e.target.value
+    // Prevent typing if word limit is reached
+    if (
+      emailReviewData?.wordLimit &&
+      getWordCount(newValue) > emailReviewData.wordLimit
+    ) {
+      return
+    }
+    setEmailRewrite(newValue)
   }
 
   //Retrieves email data from query cache or localStorage. Keeps data fresh
@@ -457,21 +470,34 @@ export default function Review() {
 
           <Card className="max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
-              <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
-                <img
-                  src="/assets/images/word-limit.svg"
-                  alt="word limit icon"
-                  className="h-8 w-8"
-                />
-                <p>{emailReviewData.wordLimit}</p>
-              </CardContent>
+              <div className="flex flex-row items-center gap-4 pb-3 pr-4 pt-2 text-sm font-bold">
+                <div className="flex flex-row items-center gap-2">
+                  <img
+                    src="/assets/images/word-limit.svg"
+                    alt="word limit icon"
+                    className="h-8 w-8"
+                  />
+                  {emailReviewData.wordLimit && (
+                    <span>
+                      {getWordsRemaining(
+                        emailRewrite,
+                        emailReviewData.wordLimit,
+                      )}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </Card>
 
           <Textarea
             value={emailRewrite}
             onChange={handleEmailRewriteChange}
-            className="mb-8 h-80 max-w-xl px-2 py-2 text-sm"
+            disabled={isWordLimitReached(
+              emailRewrite,
+              emailReviewData?.wordLimit,
+            )}
+            className="mb-8 h-80 max-w-xl px-2 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Rewrite your email here..."
           />
 
