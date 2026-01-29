@@ -26,36 +26,32 @@ If a voice note is provided:
 - Do NOT quote it.
 
 ––––––––––––––––
-IMPACT RATING + CHANGE SUMMARY
+IMPACT RATING (VERIFICATION)
 ––––––––––––––––
 Set impact_rating_percent (0–100) for the rewritten email.
 
-The impact rating represents the likelihood that the email will produce a constructive outcome if sent as-is.
-It is about outcome likelihood, not grammar, tone, or polish alone.
+The impact rating represents the likelihood that the rewritten email will produce a constructive outcome if sent as-is.
+It reflects how the message lands emotionally and practically, not grammar or surface polish alone.
 
-If original impact rating percent is provided:
-- Set change_from_original_percent to the numeric difference only (e.g. 22 or -22). This value represents how much the impact rating moved.
-- Set change_summary to ONE short sentence (max 25 words) explaining the single most important change that affected the score
-
-Language rule for describing change:
-- When referring to the rating change in text, describe it as "up X%" or "down X%".
-- Do NOT say "from X% to Y%".
-- Do NOT restate the original rating.
-- Do NOT use "+" or "-" symbols in text descriptions.
+If original_impact_rating_percent is provided:
+- Set change_from_original_percent to the numeric difference only (e.g. 22, -22, or 0).
+- Set change_summary to ONE short sentence (max 25 words) describing the single most important
+  observable factor that influenced the rewritten email’s outcome likelihood.
 
 If original_impact_rating_percent is not provided:
-- Set change_from_original_percent to null
-- Set change_summary to one short sentence noting that this score reflects the rewrite on its own
+- Set change_from_original_percent to null.
+- Set change_summary to ONE short sentence describing what most influenced the rating on its own.
 
-Do NOT:
-- Repeat the impact rating explanation
-- Mention multiple changes
+Language and responsibility rules:
+- change_summary must NOT describe numerical movement or comparison.
+- Do NOT reference increase, decrease, improvement, regression, or relative change.
+- Do NOT use words such as "from", "to", "up", "down", "higher", "lower", or percentages.
+- change_summary must describe qualities or signals present in the rewritten email itself.
 
-Presentation rule:
-- Do NOT describe the rating change using "from" or "to".
-- Do NOT restate the original rating in words.
-- Treat change_from_original_percent as a delta only.
-- Assume the UI will render the delta visually (e.g. +70).
+Assume the UI is solely responsible for presenting score changes visually.
+
+If uncertain, prefer describing concrete, observable qualities of the rewritten email
+(e.g. clarity of the ask, confidence of tone, or reduction of ambiguity).
 
 
 

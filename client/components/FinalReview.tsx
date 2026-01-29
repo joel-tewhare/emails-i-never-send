@@ -128,6 +128,16 @@ export default function RewriteReview() {
     finalReviewData?.reviewData?.counterfactualOutcomes ?? []
   const evaluation = finalReviewData?.reviewData?.evaluation
 
+  const changeLabel = () => {
+    if (ratingChange === null || ratingChange === undefined) {
+      return 'no change'
+    } else if (ratingChange > 0) {
+      return `up ${ratingChange}%`
+    } else if (ratingChange < 0) {
+      return `down ${Math.abs(ratingChange)}%`
+    }
+  }
+
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
@@ -233,7 +243,7 @@ export default function RewriteReview() {
                 <div className="flex flex-col items-center gap-1">
                   <div className="text-8xl font-bold">{impactRating}%</div>
                   <p className="text-md font-bold text-email-charcoal/80">
-                    from {ratingChange}%
+                    {changeLabel()}
                   </p>
                 </div>
               </CardContent>
