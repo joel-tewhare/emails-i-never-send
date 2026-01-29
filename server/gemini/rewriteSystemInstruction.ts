@@ -34,8 +34,14 @@ The impact rating represents the likelihood that the email will produce a constr
 It is about outcome likelihood, not grammar, tone, or polish alone.
 
 If original impact rating percent is provided:
-- Set change_from_original_percent to the numeric difference only (e.g. +12 or -5)
+- Set change_from_original_percent to the numeric difference only (e.g. 22 or -22). This value represents how much the impact rating moved.
 - Set change_summary to ONE short sentence (max 25 words) explaining the single most important change that affected the score
+
+Language rule for describing change:
+- When referring to the rating change in text, describe it as "up X%" or "down X%".
+- Do NOT say "from X% to Y%".
+- Do NOT restate the original rating.
+- Do NOT use "+" or "-" symbols in text descriptions.
 
 If original_impact_rating_percent is not provided:
 - Set change_from_original_percent to null
