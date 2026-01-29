@@ -10,11 +10,19 @@ import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
 import { AudioLines, Headphones, Mail, Pencil } from 'lucide-react'
+import LoadingBars from './LoadingBars'
+import {
+  getWordCount,
+  getWordsRemaining,
+  isWordLimitReached,
+} from '@/lib/utils'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const audioBlobRef = useRef<Blob | null>(null)
+  const loadingElementRef = useRef<HTMLDivElement>(null)
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -22,7 +30,15 @@ export default function Review() {
   const handleEmailRewriteChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setEmailRewrite(e.target.value)
+    const newValue = e.target.value
+    // Prevent typing if word limit is reached
+    if (
+      emailReviewData?.wordLimit &&
+      getWordCount(newValue) > emailReviewData.wordLimit
+    ) {
+      return
+    }
+    setEmailRewrite(newValue)
   }
 
   //Retrieves email data from query cache or localStorage. Keeps data fresh
@@ -57,6 +73,7 @@ export default function Review() {
   const ttsMutation = useMutation({
     mutationFn: (text: string) => generateTtsAudio(text),
     onSuccess: (audioBlob) => {
+      audioBlobRef.current = audioBlob
       setAudioUrl((prev) => {
         if (prev) {
           URL.revokeObjectURL(prev)
@@ -126,7 +143,12 @@ export default function Review() {
         wordLimit,
       ),
     onSuccess: (data) => {
+      // Store final review result in query cache for persistence
       queryClient.setQueryData(['finalReview'], data)
+
+      // Store in local storage to access if page is refreshed
+      localStorage.setItem('finalReview', JSON.stringify(data))
+      window.scrollTo(0, 0)
       navigate('/final')
     },
   })
@@ -137,13 +159,23 @@ export default function Review() {
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl)
       }
+      audioBlobRef.current = null
     }
   }, [audioUrl])
 
   const handlePlayTts = () => {
     if (!audioRef.current) return
-    // If audio already generated, just play it
     audioRef.current.play()
+  }
+
+  const handleAudioError = () => {
+    const blob = audioBlobRef.current
+    if (blob && audioUrl) {
+      URL.revokeObjectURL(audioUrl)
+      const newUrl = URL.createObjectURL(blob)
+      setAudioUrl(newUrl)
+      setTimeout(() => audioRef.current?.load(), 0)
+    }
   }
 
   const handleRewriteReview = () => {
@@ -157,6 +189,16 @@ export default function Review() {
       wordLimit: emailReviewData.wordLimit,
     })
   }
+
+  // Scroll loading overlay to center when pending
+  useEffect(() => {
+    if (rewriteReviewMutation.isPending) {
+      loadingElementRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [rewriteReviewMutation.isPending])
 
   if (!emailReviewData) {
     return <div>Missing review data</div>
@@ -178,8 +220,14 @@ export default function Review() {
   return (
     <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
-          <p className="text-email-charcoal">Getting your final review...</p>
+        <div
+          ref={loadingElementRef}
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-email-grey/60 backdrop-blur-md"
+        >
+          <LoadingBars />
+          <p className="mt-4 font-semibold text-email-charcoal">
+            Getting your final review...
+          </p>
         </div>
       )}
 
@@ -191,8 +239,8 @@ export default function Review() {
         </Card>
         <div className="mx-6 md:mx-0">
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
-            You&apos;ve got a great set of tools to help you review your first
-            draft and simulate outcomes:
+            Here, you can explore how your first draft might land and what
+            outcomes it could create:
           </p>
           <ol className="max-w-2xl pb-12 text-left text-2xl font-bold">
             <li className="mb-4 flex items-start gap-3">
@@ -269,6 +317,7 @@ export default function Review() {
                     src={audioUrl}
                     controls
                     className="w-full"
+                    onError={handleAudioError}
                   />
                 )}
               </div>
@@ -309,7 +358,9 @@ export default function Review() {
 
             <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
               <CardHeader className="p-2 text-center text-lg">
-                <CardTitle className="text-2xl">If you sent as is...</CardTitle>
+                <CardTitle className="text-2xl">
+                  If you sent this email...
+                </CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
                 {counterfactualOutcomes.length > 0 ? (
@@ -423,21 +474,34 @@ export default function Review() {
 
           <Card className="max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
-              <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
-                <img
-                  src="/assets/images/word-limit.svg"
-                  alt="word limit icon"
-                  className="h-8 w-8"
-                />
-                <p>{emailReviewData.wordLimit}</p>
-              </CardContent>
+              <div className="flex flex-row items-center gap-4 pb-3 pr-4 pt-2 text-sm font-bold">
+                <div className="flex flex-row items-center gap-2">
+                  <img
+                    src="/assets/images/word-limit.svg"
+                    alt="word limit icon"
+                    className="h-8 w-8"
+                  />
+                  {emailReviewData.wordLimit && (
+                    <span>
+                      {getWordsRemaining(
+                        emailRewrite,
+                        emailReviewData.wordLimit,
+                      )}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </Card>
 
           <Textarea
             value={emailRewrite}
             onChange={handleEmailRewriteChange}
-            className="mb-8 h-80 max-w-xl px-2 py-2 text-sm"
+            disabled={isWordLimitReached(
+              emailRewrite,
+              emailReviewData?.wordLimit,
+            )}
+            className="mb-8 h-80 max-w-xl px-2 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Rewrite your email here..."
           />
 

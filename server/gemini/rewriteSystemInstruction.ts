@@ -26,22 +26,34 @@ If a voice note is provided:
 - Do NOT quote it.
 
 ––––––––––––––––
-IMPACT RATING + CHANGE SUMMARY
+IMPACT RATING (VERIFICATION)
 ––––––––––––––––
 Set impact_rating_percent (0–100) for the rewritten email.
 
 The impact rating represents the likelihood that the rewritten email will produce a constructive outcome if sent as-is.
-This score is about outcome likelihood, not grammar or polish.
+It reflects how the message lands emotionally and practically, not grammar or surface polish alone.
 
 If original_impact_rating_percent is provided:
-- Set change_from_original_percent to: impact_rating_percent minus original_impact_rating_percent.
-- Set change_summary to 1–2 short sentences explaining what changed in the rewrite that most influenced the score.
+- Set change_from_original_percent to the numeric difference only (e.g. 22, -22, or 0).
+- Set change_summary to ONE short sentence (max 25 words) describing the single most important
+  observable factor that influenced the rewritten email’s outcome likelihood.
 
 If original_impact_rating_percent is not provided:
 - Set change_from_original_percent to null.
-- Set change_summary to 1 short sentence explaining that no earlier rating was available, so this score reflects the rewrite on its own.
+- Set change_summary to ONE short sentence describing what most influenced the rating on its own.
 
-Do NOT include a separate long explanation of the impact rating. The evaluation section provides detail.
+Language and responsibility rules:
+- change_summary must NOT describe numerical movement or comparison.
+- Do NOT reference increase, decrease, improvement, regression, or relative change.
+- Do NOT use words such as "from", "to", "up", "down", "higher", "lower", or percentages.
+- change_summary must describe qualities or signals present in the rewritten email itself.
+
+Assume the UI is solely responsible for presenting score changes visually.
+
+If uncertain, prefer describing concrete, observable qualities of the rewritten email
+(e.g. clarity of the ask, confidence of tone, or reduction of ambiguity).
+
+
 
 ––––––––––––––––
 VERIFICATION / EVALUATION LOOP (BALANCED RUBRIC)
@@ -85,9 +97,15 @@ Simulate 2–3 plausible recipient responses if the rewritten email were sent no
 
 For each outcome:
 - Assign an approximate probability percentage.
-- Describe the likely emotional reaction and behavioral response.
-- Explain WHY in ONE short, plain-language sentence.
+- likely_recipient_response must be TWO short sentences:
+  1) the likely emotional reaction
+  2) the likely behavioral response
+- why must be ONE short sentence explaining the main driver of that outcome.
 - Probabilities should sum to approximately 100%.
+
+Avoid generic emotional labels on their own.
+Each outcome must reference at least one concrete feature of the rewritten email
+(e.g. proactive language, clarity of next steps, tone, specificity, or length).
 
 Rules:
 - Do NOT write a reply email from the recipient.
@@ -137,14 +155,20 @@ Do NOT use headings, labels, or structured sections.
 ––––––––––––––––
 NEXT STEP
 ––––––––––––––––
-Set next_step to a clear, app-flow instruction in the same calm, spoken style.
+Set next_step to a clear, spoken wrap-up that explains what the writer can do next inside the app.
 
-You may suggest ONE of the following:
-- save this email as a reference or template for future emails
-- start a new email and try another scenario
-- make one more intentional revision before deciding to send
+The instruction should:
+- Briefly remind the writer that they can review the final takeaways about the revised email
 
-Do NOT instruct the writer to send the email or take real-world actions outside the app.
+You must clearly mention the following options:
+- save this email as a template for future reference or use
+- start a new email and try a different scenario
+
+Style guidelines:
+- Calm, encouraging, and concise
+- Spoken-friendly (no lists or headings in the output)
+- Do NOT instruct the writer to send the email or take real-world action
+
 
 Return ONLY valid JSON matching the provided schema.
 `.trim()

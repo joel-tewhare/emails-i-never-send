@@ -14,11 +14,47 @@ import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
-import { useState, useRef, ChangeEvent } from 'react'
+import { useState, useRef, useEffect, ChangeEvent } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
 import VoiceNote from './VoiceNote'
+import { SetupAnswers } from '@/models/setup'
+import {
+  getWordCount,
+  getWordsRemaining,
+  isWordLimitReached,
+  getTimeLimitMinutes,
+  formatTimeRemaining,
+  isTimeLimitReached,
+} from '@/lib/utils'
+import LoadingBars from './LoadingBars'
+
+export const SESSION_STARTER = {
+  priority: [
+    'Being clear, even if it feels firm',
+    'Preserving warmth, even if some things stay unsaid',
+  ],
+  avoid: [
+    'Being misunderstood',
+    'Sounding defensive',
+    'Escalating tension',
+    'Creating false expectations',
+  ],
+  tone: [
+    'Calm and steady',
+    'Direct and pragmatic',
+    'Careful and considerate',
+    'Honest but restrained',
+  ],
+} as const
+
+const groundingDocPlaceholder =
+  'e.g. I want the language to sound like how I normally speak.'
+const groundingDocMaxLength = 300
+
+type StarterAction = 'skip' | 'continue'
 
 export default function Compose() {
   const queryClient = useQueryClient()
@@ -37,6 +73,17 @@ export default function Compose() {
   const [emailContent, setEmailContent] = useState<string>('')
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [voiceNoteKey, setVoiceNoteKey] = useState(0)
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
+  const [isTimerActive, setIsTimerActive] = useState(false)
+  const [hasStartedTyping, setHasStartedTyping] = useState(false)
+  const [setupAnswers, setSetupAnswers] = useState<SetupAnswers | null>(null)
+  const [groundingDoc, setGroundingDoc] = useState<string | null>(null)
+  const [showSurvey, setShowSurvey] = useState(true)
+  const [pendingSurveyAction, setPendingSurveyAction] =
+    useState<StarterAction | null>(null)
+  const [surveyPriority, setSurveyPriority] = useState('')
+  const [surveyAvoid, setSurveyAvoid] = useState('')
+  const [surveyTone, setSurveyTone] = useState('')
 
   const handleScenarioChange = (value: string) => {
     setSelectedScenarioId(Number(value))
@@ -55,7 +102,41 @@ export default function Compose() {
   }
 
   const handleEmailContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setEmailContent(e.target.value)
+    // Prevent typing if time limit reached
+    if (isTimeLimitReached(timeRemaining)) {
+      return
+    }
+
+    const newValue = e.target.value
+    // Prevent typing if word limit is reached
+    if (selectedWordLimit && getWordCount(newValue) > selectedWordLimit) {
+      return
+    }
+    setEmailContent(newValue)
+  }
+
+  const resetSurveyState = () => {
+    setSurveyPriority('')
+    setSurveyAvoid('')
+    setSurveyTone('')
+    setGroundingDoc(null)
+  }
+
+  const buildSetupAnswers = (): SetupAnswers | null => {
+    if (!surveyPriority && !surveyAvoid && !surveyTone) {
+      return null
+    }
+
+    return {
+      priority: { choice: surveyPriority },
+      avoid: { choice: surveyAvoid },
+      tone: { choice: surveyTone },
+    }
+  }
+
+  const handleSurveyAction = (action: StarterAction) => {
+    setPendingSurveyAction(action)
+    setShowSurvey(false)
   }
 
   const {
@@ -103,6 +184,7 @@ export default function Compose() {
 
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
   const promptSectionRef = useRef<HTMLDivElement>(null)
+  const loadingElementRef = useRef<HTMLDivElement>(null)
 
   const reviewMutation = useMutation({
     mutationFn: ({
@@ -110,12 +192,24 @@ export default function Compose() {
       promptText,
       audioBlob,
       wordLimit,
+      setupAnswers,
+      groundingDoc,
     }: {
       emailContent: string
       promptText: string
       audioBlob: Blob | null
       wordLimit: number
-    }) => getEmailReview(emailContent, promptText, audioBlob, wordLimit),
+      setupAnswers: SetupAnswers | null
+      groundingDoc: string | null
+    }) =>
+      getEmailReview(
+        emailContent,
+        promptText,
+        audioBlob,
+        wordLimit,
+        setupAnswers,
+        groundingDoc,
+      ),
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
@@ -126,6 +220,49 @@ export default function Compose() {
       navigate('/review')
     },
   })
+
+  // Scroll loading overlay to center when pending
+  useEffect(() => {
+    if (reviewMutation.isPending) {
+      loadingElementRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [reviewMutation.isPending])
+
+  // Start timer when user first types
+  useEffect(() => {
+    const selectedTimeLimit = timeLimitsData?.find(
+      (timeLimit) => timeLimit.id === selectedTimeLimitId,
+    )?.timeLimit
+
+    if (emailContent.length > 0 && !hasStartedTyping) {
+      setHasStartedTyping(true)
+      const minutes = getTimeLimitMinutes(selectedTimeLimit)
+      if (minutes !== null) {
+        setIsTimerActive(true)
+        setTimeRemaining(minutes * 60)
+      }
+    }
+  }, [emailContent, hasStartedTyping, selectedTimeLimitId, timeLimitsData])
+
+  // Timer effect - counts down when active
+  useEffect(() => {
+    if (!isTimerActive || timeRemaining === null) return
+
+    const interval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev === null || prev <= 1) {
+          setIsTimerActive(false)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isTimerActive, timeRemaining])
 
   const handleGetPrompt = async () => {
     if (selectedScenarioId && selectedMoodId) {
@@ -143,6 +280,15 @@ export default function Compose() {
     }
   }
 
+  // Calculate selected limits (using optional chaining for safety before data loads)
+  const selectedWordLimit = wordLimitsData?.find(
+    (wordLimit) => wordLimit.id === selectedWordLimitId,
+  )?.wordLimit
+
+  const selectedTimeLimit = timeLimitsData?.find(
+    (timeLimit) => timeLimit.id === selectedTimeLimitId,
+  )?.timeLimit
+
   const handleReviewEmail = () => {
     if (selectedPrompt && emailContent !== '') {
       reviewMutation.mutate({
@@ -150,6 +296,8 @@ export default function Compose() {
         promptText: selectedPrompt,
         audioBlob,
         wordLimit: selectedWordLimit ?? 250,
+        setupAnswers,
+        groundingDoc,
       })
     }
   }
@@ -171,21 +319,170 @@ export default function Compose() {
     return <div>No data available</div>
   }
 
-  const selectedWordLimit = wordLimitsData.find(
-    (wordLimit) => wordLimit.id === selectedWordLimitId,
-  )?.wordLimit
-
   const isReviewPending = reviewMutation.isPending
 
   return (
     <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
-        <div className="fixed absolute inset-0 inset-0 z-50 flex flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
-          <p className="text-email-charcoal">Preparing your review...</p>
+        <div
+          ref={loadingElementRef}
+          className="fixed absolute inset-0 inset-0 z-50 flex flex-col items-center justify-center bg-email-grey/60 backdrop-blur-md"
+        >
+          <LoadingBars />
+          <p className="mt-4 font-semibold text-email-charcoal">
+            Preparing your review...
+          </p>
         </div>
       )}
 
       <div className="flex flex-col items-center justify-center">
+        {/* Session Starter row */}
+        <AnimatePresence
+          mode="wait"
+          onExitComplete={() => {
+            // this runs AFTER the fade-out finishes
+            if (pendingSurveyAction === 'skip') {
+              setSetupAnswers(null)
+              resetSurveyState()
+            }
+
+            if (pendingSurveyAction === 'continue') {
+              setSetupAnswers(buildSetupAnswers())
+            }
+
+            setPendingSurveyAction(null)
+          }}
+        >
+          {showSurvey && (
+            <motion.div
+              key="session-starter"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="mx-auto mb-8 w-full max-w-6xl"
+            >
+              <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-charcoal/10 px-6 py-8">
+                <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
+                  {/* Column 1: title and skip */}
+                  <div className="flex flex-col items-center justify-center text-center md:flex-[1.25]">
+                    <h2 className="font-serif text-xl font-bold text-email-charcoal md:text-2xl">
+                      Session Starter
+                    </h2>
+                    <p className="mt-2 text-sm text-email-charcoal/80">
+                      How do you want to approach this session? A few questions
+                      to help your coach understand your needs.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleSurveyAction('skip')}
+                      className="mt-3 text-sm text-email-charcoal/70 underline underline-offset-2 hover:text-email-charcoal"
+                    >
+                      Skip for now
+                    </button>
+                  </div>
+                  {/* Column 2: Priority */}
+                  <div className="flex flex-1 flex-col space-y-3">
+                    <Label className="font-semibold text-email-charcoal">
+                      What are you prioritising most going into this session?
+                    </Label>
+                    <div className="flex flex-col space-y-2">
+                      {SESSION_STARTER.priority.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSurveyPriority(opt)}
+                          className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
+                            surveyPriority === opt
+                              ? 'bg-email-mint text-email-charcoal'
+                              : surveyPriority
+                                ? 'bg-white/90 text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Column 3: Avoid */}
+                  <div className="flex flex-1 flex-col space-y-3">
+                    <Label className="font-semibold text-email-charcoal">
+                      What are you most trying to avoid?
+                    </Label>
+                    <div className="flex flex-col space-y-2">
+                      {SESSION_STARTER.avoid.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSurveyAvoid(opt)}
+                          className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
+                            surveyAvoid === opt
+                              ? 'bg-email-mint text-email-charcoal'
+                              : surveyAvoid
+                                ? 'bg-white/90 text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Column 4: Tone */}
+                  <div className="flex flex-1 flex-col space-y-3">
+                    <Label className="font-semibold text-email-charcoal">
+                      What tone are you focusing on?
+                    </Label>
+                    <div className="flex flex-col space-y-2">
+                      {SESSION_STARTER.tone.map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSurveyTone(opt)}
+                          className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
+                            surveyTone === opt
+                              ? 'bg-email-mint text-email-charcoal'
+                              : surveyTone
+                                ? 'bg-white/90 text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Grounding doc: width of 2nd–3rd columns, centred */}
+                  <div className="flex flex-col space-y-2 pt-2 md:col-span-2 md:col-start-2">
+                    <Label className="font-semibold text-email-charcoal">
+                      Anything else you want your coach to keep in mind while
+                      reviewing
+                    </Label>
+                    <Textarea
+                      value={groundingDoc ?? ''}
+                      onChange={(e) => setGroundingDoc(e.target.value || null)}
+                      placeholder={groundingDocPlaceholder}
+                      maxLength={groundingDocMaxLength}
+                      className="min-h-10 w-full resize-y bg-email-white px-3 py-2.5 text-sm"
+                    />
+                  </div>
+                  {/* Submit at end of row, corner of section */}
+                  <div className="flex items-end justify-end pt-2 md:col-span-1 md:col-start-4">
+                    <Button
+                      type="button"
+                      onClick={() => handleSurveyAction('continue')}
+                      className="rounded-xl bg-email-charcoal px-6 text-email-white hover:bg-email-charcoal/90"
+                    >
+                      Continue
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Big header */}
         <Card className="my-8 max-w-72 rounded-none border-none p-2 text-center">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
@@ -199,7 +496,7 @@ export default function Compose() {
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
               <p className="max-w-72 text-center text-2xl font-bold md:text-right">
-                Set the scene for your writing your email.
+                Set the scene for your email.
               </p>
             </div>
             <div className="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row">
@@ -285,7 +582,7 @@ export default function Compose() {
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
               <p className="max-w-72 text-center text-2xl font-bold md:text-right">
-                Set your preferred writing conditions.
+                Set your preferred conditions.
               </p>
             </div>
             <div className="flex flex-col flex-wrap items-center justify-center gap-8 md:flex-row">
@@ -385,7 +682,7 @@ export default function Compose() {
               className="m-4 flex items-center justify-center rounded-xl bg-email-charcoal px-6 py-7 text-xl font-semibold text-email-white hover:shadow-md disabled:opacity-50"
             >
               {isPendingPrompts || !selectedWordLimit || !selectedTimeLimitId
-                ? 'Choose Options'
+                ? 'Get Prompt'
                 : 'Get Prompt'}
             </Button>
           </div>
@@ -411,27 +708,38 @@ export default function Compose() {
           <Textarea
             value={emailContent}
             onChange={handleEmailContentChange}
-            className="h-80 w-full border-2 border-email-charcoal px-3 py-3 text-sm"
+            disabled={
+              isWordLimitReached(emailContent, selectedWordLimit) ||
+              isTimeLimitReached(timeRemaining)
+            }
+            className="h-80 w-full border-2 border-email-charcoal px-3 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Start writing your email here..."
           />
 
           <Card className="w-full rounded-none border-none">
-            <div className="flex flex-row justify-end">
-              <CardContent className="flex flex-row pb-3 pl-3 pr-4 pt-2 text-sm font-bold">
+            <div className="flex flex-row items-center justify-end gap-4 pb-3 pr-4 pt-2 text-sm font-bold">
+              <div className="flex flex-row items-center gap-2">
                 <img
                   src="/assets/images/word-limit.svg"
                   alt="word limit icon"
                   className="h-9 w-9"
                 />
-                <p>{selectedWordLimit}</p>
-              </CardContent>
-              <CardContent className="flex flex-row pb-3 pl-3 pr-12 pt-2 text-sm font-bold">
+                {selectedWordLimit && (
+                  <span>
+                    {getWordsRemaining(emailContent, selectedWordLimit)}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-row items-center gap-2">
                 <img
                   src="/assets/images/time-limit.svg"
                   alt="timer icon"
                   className="h-9 w-9"
                 />
-              </CardContent>
+                <span>
+                  {formatTimeRemaining(timeRemaining, selectedTimeLimit)}
+                </span>
+              </div>
             </div>
           </Card>
 
