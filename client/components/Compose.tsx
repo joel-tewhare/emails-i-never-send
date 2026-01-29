@@ -14,13 +14,14 @@ import { getScenarios } from '../apis/scenarios'
 import { getMoods } from '../apis/moods'
 import { getWordLimits } from '../apis/word-limits'
 import { getTimeLimits } from '../apis/time-limits'
-import { useState, useRef, ChangeEvent } from 'react'
+import { useState, useRef, useEffect, ChangeEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { usePrompt } from '../hooks/usePrompt'
 import { getEmailReview } from '../apis/email-review'
 import { useNavigate } from 'react-router'
 import VoiceNote from './VoiceNote'
 import { SetupAnswers } from '@/models/setup'
+import LoadingBars from './LoadingBars'
 
 export const SESSION_STARTER = {
   priority: [
@@ -162,6 +163,7 @@ export default function Compose() {
 
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null)
   const promptSectionRef = useRef<HTMLDivElement>(null)
+  const loadingElementRef = useRef<HTMLDivElement>(null)
 
   const reviewMutation = useMutation({
     mutationFn: ({
@@ -197,6 +199,16 @@ export default function Compose() {
       navigate('/review')
     },
   })
+
+  // Scroll loading overlay to center when pending
+  useEffect(() => {
+    if (reviewMutation.isPending) {
+      loadingElementRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [reviewMutation.isPending])
 
   const handleGetPrompt = async () => {
     if (selectedScenarioId && selectedMoodId) {
@@ -253,8 +265,14 @@ export default function Compose() {
   return (
     <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
-        <div className="fixed absolute inset-0 inset-0 z-50 flex flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
-          <p className="text-email-charcoal">Preparing your review...</p>
+        <div
+          ref={loadingElementRef}
+          className="fixed absolute inset-0 inset-0 z-50 flex flex-col items-center justify-center bg-email-grey/60 backdrop-blur-md"
+        >
+          <LoadingBars />
+          <p className="mt-4 font-semibold text-email-charcoal">
+            Preparing your review...
+          </p>
         </div>
       )}
 

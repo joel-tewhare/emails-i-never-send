@@ -10,12 +10,14 @@ import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
 import { AudioLines, Headphones, Mail, Pencil } from 'lucide-react'
+import LoadingBars from './LoadingBars'
 
 export default function Review() {
   const [emailRewrite, setEmailRewrite] = useState<string>('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
   const audioBlobRef = useRef<Blob | null>(null)
+  const loadingElementRef = useRef<HTMLDivElement>(null)
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -171,6 +173,16 @@ export default function Review() {
     })
   }
 
+  // Scroll loading overlay to center when pending
+  useEffect(() => {
+    if (rewriteReviewMutation.isPending) {
+      loadingElementRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [rewriteReviewMutation.isPending])
+
   if (!emailReviewData) {
     return <div>Missing review data</div>
   }
@@ -191,8 +203,14 @@ export default function Review() {
   return (
     <div className="relative min-h-screen w-full bg-email-grey p-4">
       {isReviewPending && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-email-grey/60 backdrop-blur-sm">
-          <p className="text-email-charcoal">Getting your final review...</p>
+        <div
+          ref={loadingElementRef}
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-email-grey/60 backdrop-blur-md"
+        >
+          <LoadingBars />
+          <p className="mt-4 font-semibold text-email-charcoal">
+            Getting your final review...
+          </p>
         </div>
       )}
 

@@ -41,7 +41,7 @@ export default function LoadingBars({
                 height: `${barHeight}px`,
               }}
               animate={{
-                opacity: [0.65, 1, 0.65],
+                opacity: [0.9, 1, 0.9],
                 scaleX: [1, 1.02, 1],
                 boxShadow: [
                   `0 0 0px ${color.glow}40`,
