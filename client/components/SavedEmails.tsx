@@ -1,3 +1,4 @@
+//This is a work in progress component and considered a future feature
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getEmailById, getSavedEmails } from '../apis/saved-emails'
 import { getPromptById } from '../apis/prompts'
