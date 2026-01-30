@@ -21,6 +21,7 @@ export default {
           gold: '#FFC857',
           mauve: '#C08CCF',
           mint: '#6FD3C1',
+          stone: '#C0C4D0',
           white: '#FFFFFF',
         },
         background: 'hsl(var(--background))',

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
-import { AudioLines, X } from 'lucide-react'
+import { Headphones, X } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -104,11 +104,6 @@ export default function RewriteReview() {
     }
   }, [audioUrl])
 
-  const handlePlayTts = () => {
-    if (!audioRef.current) return
-    audioRef.current.play()
-  }
-
   const handleAudioError = () => {
     const blob = audioBlobRef.current
     if (blob && audioUrl) {
@@ -167,36 +162,14 @@ export default function RewriteReview() {
           className="my-12 hidden h-96 md:block"
         />
 
-        <Card className="mx-4 my-12 h-96 w-96 rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
-          <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-            <CardTitle className="mb-10 mt-8 text-center">
-              {!audioUrl && ttsMutation.isPending && (
-                <span className="text-3xl text-email-charcoal/80">
-                  Loading review audio…
-                </span>
-              )}
-
-              {!audioUrl && ttsMutation.isError && (
-                <span className="text-3xl text-email-charcoal">
-                  Couldn&apos;t generate audio. See review notes below
-                </span>
-              )}
-
-              {audioUrl && (
-                <span className="mx-1 text-3xl text-email-charcoal">
-                  <span className="italic">Listen</span> to your final review:
-                </span>
-              )}
-            </CardTitle>
-            <div className="flex flex-col items-center gap-4 pb-4">
+        <Card className="mx-4 my-12 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal">
+          <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
+            <div className="flex flex-col items-center gap-4">
               {ttsMutation.isPending && (
-                <button
-                  disabled
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal opacity-50"
+                <Headphones
+                  className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
                   aria-label="Loading audio"
-                >
-                  <span className="text-lg font-bold">...</span>
-                </button>
+                />
               )}
 
               {ttsMutation.isError && !ttsMutation.isPending && (
@@ -206,19 +179,37 @@ export default function RewriteReview() {
               )}
 
               {audioUrl && !ttsMutation.isPending && (
-                <button
-                  onClick={handlePlayTts}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80"
-                  aria-label="Play audio review"
+                <div
+                  className="flex h-16 w-16 items-center justify-center text-email-charcoal"
+                  aria-hidden
                 >
-                  <AudioLines
-                    className="my-6 h-16 w-16"
-                    fill="email-charcoal"
-                  />
-                </button>
+                  <Headphones className="my-6 h-16 w-16" />
+                </div>
               )}
-              {audioUrl && (
-                // eslint-disable-next-line jsx-a11y/media-has-caption
+
+              <CardTitle className="mt-8 text-center">
+                {!audioUrl && ttsMutation.isPending && (
+                  <span className="text-3xl text-email-charcoal/80">
+                    Loading review audio…
+                  </span>
+                )}
+
+                {!audioUrl && ttsMutation.isError && (
+                  <span className="text-3xl text-email-charcoal">
+                    Couldn&apos;t generate audio. See review notes below
+                  </span>
+                )}
+
+                {audioUrl && (
+                  <span className="mx-1 text-3xl text-email-charcoal">
+                    <span className="italic">Listen</span> to your final review:
+                  </span>
+                )}
+              </CardTitle>
+            </div>
+            {audioUrl && (
+              <div className="mt-auto pt-4">
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <audio
                   ref={audioRef}
                   src={audioUrl}
@@ -226,16 +217,16 @@ export default function RewriteReview() {
                   className="w-full"
                   onError={handleAudioError}
                 />
-              )}
-            </div>
+              </div>
+            )}
           </CardHeader>
         </Card>
       </div>
 
       {impactRating !== null && audioUrl && (
-        <div className="m-10 flex w-full flex-col items-center justify-center gap-1 px-4 md:px-0">
-          <div className="flex flex-row items-center justify-center gap-4">
-            <Card className="mb-8 max-w-xl rounded-none border-none">
+        <div className="m-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 px-4 md:px-0">
+          <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
+            <Card className="mb-4 shrink-0 rounded-none border-none">
               <CardHeader className="pl-3 pt-2 text-2xl font-bold">
                 <CardTitle>Impact Rating:</CardTitle>
               </CardHeader>
@@ -249,13 +240,13 @@ export default function RewriteReview() {
               </CardContent>
             </Card>
             {ratingChangeExplanation && (
-              <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
+              <p className="text-md min-w-0 flex-1 text-left text-email-charcoal/80">
                 {ratingChangeExplanation}
               </p>
             )}
           </div>
 
-          <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
+          <Card className="w-full max-w-2xl rounded-lg border-2 border-dashed border-email-charcoal p-4 text-email-charcoal md:p-2">
             <CardHeader className="p-2 text-center text-lg">
               <CardTitle className="text-2xl">
                 If you sent this email...
@@ -304,28 +295,28 @@ export default function RewriteReview() {
           </div>
         </Card>
         {/* Left column: absolute on md so it matches right column height; half width */}
-        <Card className="order-1 m-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:flex-none">
+        <Card className="order-1 m-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-email-stone/70 text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:flex-none">
           <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 pt-0">
             <Tabs
               defaultValue="evaluation"
               className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden px-3"
             >
-              <TabsList className="grid w-full shrink-0 grid-cols-3 gap-0 p-3">
+              <TabsList className="grid w-full shrink-0 grid-cols-3 gap-0 bg-transparent p-3">
                 <TabsTrigger
                   value="evaluation"
-                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
                 >
                   Evaluation
                 </TabsTrigger>
                 <TabsTrigger
                   value="notes"
-                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
                 >
                   Review Notes
                 </TabsTrigger>
                 <TabsTrigger
                   value="takeaways"
-                  className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
                 >
                   Final Takeaways
                 </TabsTrigger>
@@ -333,18 +324,19 @@ export default function RewriteReview() {
 
               <TabsContent
                 value="evaluation"
-                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+                className="mt-8 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
               >
-                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 text-sm">
+                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2 text-sm">
                   {evaluation ? (
                     <div className="space-y-4">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold">Result:</span>
+                      <div className="flex justify-center">
+                      <div className="inline-flex flex-col items-center gap-1 rounded border border-solid border-email-charcoal bg-white px-8 py-2">
+                        <span className="text-xl font-semibold">Result:</span>
                         <span
                           className={
                             evaluation.overallResult === 'pass'
-                              ? 'font-medium text-green-700'
-                              : 'font-medium text-amber-700'
+                              ? 'text-3xl font-semibold text-green-700'
+                              : 'text-3xl font-semibold text-amber-700'
                           }
                         >
                           {evaluation.overallResult === 'pass'
@@ -352,6 +344,7 @@ export default function RewriteReview() {
                             : 'Needs work'}
                         </span>
                       </div>
+                    </div>
                       <div className="flex flex-col gap-1">
                         <span className="font-semibold">Scores:</span>
                         <ul className="list-none space-y-0.5 text-email-charcoal/90">
@@ -409,9 +402,9 @@ export default function RewriteReview() {
 
               <TabsContent
                 value="notes"
-                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+                className="mt-8 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
               >
-                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 text-sm leading-relaxed">
+                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2 text-sm leading-relaxed">
                   {reviewParagraphs.map((para, index) => (
                     <p key={index} className="mb-3">
                       {para.trim()}
@@ -422,9 +415,9 @@ export default function RewriteReview() {
 
               <TabsContent
                 value="takeaways"
-                className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+                className="mt-8 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
               >
-                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4">
+                <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2">
                   {reflections.length > 0 ? (
                     <div className="space-y-4 text-sm leading-relaxed">
                       {reflections.map((reflection, index) => (

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
-import { AudioLines, Headphones, Mail, Pencil } from 'lucide-react'
+import { Headphones, Mail, Pencil } from 'lucide-react'
 import LoadingBars from './LoadingBars'
 import {
   getWordCount,
@@ -163,11 +163,6 @@ export default function Review() {
     }
   }, [audioUrl])
 
-  const handlePlayTts = () => {
-    if (!audioRef.current) return
-    audioRef.current.play()
-  }
-
   const handleAudioError = () => {
     const blob = audioBlobRef.current
     if (blob && audioUrl) {
@@ -262,37 +257,14 @@ export default function Review() {
         </div>
 
         <div className="flex flex-row flex-wrap items-center justify-center">
-          <Card className="m-8 h-80 max-w-sm rounded-none border-2 border-dashed border-email-charcoal bg-email-white p-4 text-email-charcoal">
-            <CardHeader className="justify-center pl-3 pt-4 font-serif text-lg">
-              <CardTitle className="mb-10 p-1 text-center">
-                {!audioUrl && ttsMutation.isPending && (
-                  <span className="text-2xl text-email-charcoal/80">
-                    Loading review audio…
-                  </span>
-                )}
-
-                {!audioUrl && ttsMutation.isError && (
-                  <span className="text-2xl text-email-charcoal">
-                    Couldn&apos;t generate audio. See review notes below
-                  </span>
-                )}
-
-                {audioUrl && (
-                  <span className="mx-1 text-3xl text-email-charcoal">
-                    Key <span className="italic">takeaways</span> from your
-                    email:
-                  </span>
-                )}
-              </CardTitle>
-              <div className="flex flex-col items-center gap-4 pb-4">
+          <Card className="bg-email-stone/70 min-w-sm m-8 flex h-80 max-w-sm flex-col rounded-lg p-4 text-email-charcoal">
+            <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
+              <div className="flex flex-col items-center gap-4">
                 {ttsMutation.isPending && (
-                  <button
-                    disabled
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal opacity-50"
+                  <Headphones
+                    className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
                     aria-label="Loading audio"
-                  >
-                    <span className="text-lg font-bold">...</span>
-                  </button>
+                  />
                 )}
 
                 {ttsMutation.isError && !ttsMutation.isPending && (
@@ -302,16 +274,38 @@ export default function Review() {
                 )}
 
                 {audioUrl && !ttsMutation.isPending && (
-                  <button
-                    onClick={handlePlayTts}
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-email-white text-email-charcoal hover:bg-email-white/80"
-                    aria-label="Play audio review"
+                  <div
+                    className="flex h-16 w-16 items-center justify-center text-email-charcoal"
+                    aria-hidden
                   >
-                    <AudioLines className="h-16 w-16" fill="email-charcoal" />
-                  </button>
+                    <Headphones className="h-16 w-16" />
+                  </div>
                 )}
-                {audioUrl && (
-                  // eslint-disable-next-line jsx-a11y/media-has-caption
+
+                <CardTitle className="p-1 text-center">
+                  {!audioUrl && ttsMutation.isPending && (
+                    <span className="text-2xl text-email-charcoal/80">
+                      Loading review audio…
+                    </span>
+                  )}
+
+                  {!audioUrl && ttsMutation.isError && (
+                    <span className="text-2xl text-email-charcoal">
+                      Couldn&apos;t generate audio. See review notes below
+                    </span>
+                  )}
+
+                  {audioUrl && (
+                    <span className="mx-1 text-3xl text-email-charcoal">
+                      Key <span className="italic">takeaways</span> from your
+                      email:
+                    </span>
+                  )}
+                </CardTitle>
+              </div>
+              {audioUrl && (
+                <div className="mt-auto pt-4">
+                  {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                   <audio
                     ref={audioRef}
                     src={audioUrl}
@@ -319,8 +313,8 @@ export default function Review() {
                     className="w-full"
                     onError={handleAudioError}
                   />
-                )}
-              </div>
+                </div>
+              )}
             </CardHeader>
           </Card>
 
@@ -337,9 +331,9 @@ export default function Review() {
         </div>
 
         {impactRating !== null && audioUrl && (
-          <div className="m-10 flex w-full flex-col items-center justify-center gap-1">
-            <div className="flex flex-row items-center justify-center gap-4">
-              <Card className="mb-8 max-w-xl rounded-none border-none">
+          <div className="m-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2">
+            <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
+              <Card className="mb-4 shrink-0 rounded-none border-none">
                 <CardHeader className="pl-3 pt-2 text-2xl font-bold">
                   <CardTitle>Impact Rating:</CardTitle>
                 </CardHeader>
@@ -350,13 +344,13 @@ export default function Review() {
                 </CardContent>
               </Card>
               {impactDefinition && (
-                <p className="text-md m-1 text-right text-email-charcoal/80 md:max-w-md">
+                <p className="text-md min-w-0 flex-1 text-left text-email-charcoal/80">
                   {impactDefinition}
                 </p>
               )}
             </div>
 
-            <Card className="w-full max-w-2xl rounded-none border-none p-4 text-email-charcoal md:p-2">
+            <Card className="w-full max-w-2xl rounded-lg border-2 border-dashed border-email-charcoal p-4 text-email-charcoal md:p-2">
               <CardHeader className="p-2 text-center text-lg">
                 <CardTitle className="text-2xl">
                   If you sent this email...
@@ -395,26 +389,26 @@ export default function Review() {
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
         <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
-          <Card className="h-[40rem] max-w-md rounded-none border-2 border-dashed border-email-charcoal bg-email-white text-email-charcoal">
+          <Card className="h-[40rem] max-w-md rounded-lg bg-email-stone/70 text-email-charcoal">
             <CardContent>
               <Tabs defaultValue="review" className="mt-0 w-full">
-                <TabsList className="grid w-full grid-cols-2 gap-0 p-3">
+                <TabsList className="grid w-full grid-cols-2 gap-0 bg-transparent p-3">
                   <TabsTrigger
                     value="review"
-                    className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                    className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
                   >
                     Review Notes
                   </TabsTrigger>
                   <TabsTrigger
                     value="suggestions"
-                    className="bg-email-white p-2 text-center text-email-charcoal data-[state=active]:bg-email-mint data-[state=active]:font-bold"
+                    className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
                   >
                     Reflections
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="review" className="mt-4">
-                  <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-8 text-sm leading-relaxed">
+                <TabsContent value="review" className="mt-8">
+                  <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-4 text-sm leading-relaxed">
                     {reviewParagraphs.map((para, index) => (
                       <p key={index} className="mb-3">
                         {para.trim()}
@@ -427,8 +421,8 @@ export default function Review() {
                   </ScrollArea>
                 </TabsContent>
 
-                <TabsContent value="suggestions" className="mt-4">
-                  <ScrollArea className="h-[calc(39rem-4rem)] p-3 px-4">
+                <TabsContent value="suggestions" className="mt-8">
+                  <ScrollArea className="h-[calc(39rem-4rem)] p-3 px-4 pt-2">
                     {leveragePoints.length > 0 ? (
                       <div className="space-y-4 text-sm leading-relaxed">
                         {leveragePoints.map((leveragePoint, index) => (

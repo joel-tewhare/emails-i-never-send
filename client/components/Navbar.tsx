@@ -4,6 +4,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu'
+import { ArrowLeft } from 'lucide-react'
 import { useLocation } from 'react-router'
 
 export default function Navbar() {
@@ -20,9 +21,10 @@ export default function Navbar() {
                 {showStartNewEmail && (
                   <NavigationMenuLink
                     href="/compose"
-                    className="text-md flex w-28 flex-wrap rounded-md bg-email-charcoal px-4 py-2 font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 active:bg-email-charcoal/20 md:w-auto md:text-xl"
+                    className="flex items-center gap-1.5 text-sm text-email-charcoal/80 transition-colors hover:text-email-charcoal"
                   >
-                    {'< start a new email'}
+                    <ArrowLeft className="h-4 w-4" />
+                    start over
                   </NavigationMenuLink>
                 )}
               </NavigationMenuItem>
