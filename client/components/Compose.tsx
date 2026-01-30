@@ -362,7 +362,7 @@ export default function Compose() {
               transition={{ duration: 0.25, ease: 'easeOut' }}
               className="mx-auto mb-8 w-full max-w-6xl"
             >
-              <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-charcoal/10 px-6 py-8">
+              <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-[#C0C4D0]/70 px-6 py-8">
                 <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
                   {/* Column 1: title and skip */}
                   <div className="flex flex-col items-center justify-center text-center md:flex-[1.25]">
@@ -394,10 +394,10 @@ export default function Compose() {
                           onClick={() => setSurveyPriority(opt)}
                           className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
                             surveyPriority === opt
-                              ? 'bg-email-mint text-email-charcoal'
+                              ? 'bg-email-charcoal/90 text-email-white'
                               : surveyPriority
                                 ? 'bg-white/90 text-email-charcoal/50'
-                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-email-charcoal/90 hover:text-email-white'
                           }`}
                         >
                           {opt}
@@ -418,10 +418,10 @@ export default function Compose() {
                           onClick={() => setSurveyAvoid(opt)}
                           className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
                             surveyAvoid === opt
-                              ? 'bg-email-mint text-email-charcoal'
+                              ? 'bg-email-charcoal/90 text-email-white'
                               : surveyAvoid
                                 ? 'bg-white/90 text-email-charcoal/50'
-                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-email-charcoal/90 hover:text-email-white'
                           }`}
                         >
                           {opt}
@@ -442,10 +442,10 @@ export default function Compose() {
                           onClick={() => setSurveyTone(opt)}
                           className={`w-full rounded-md border border-input px-3 py-2.5 text-left text-sm shadow-sm transition-colors hover:border-email-charcoal/70 ${
                             surveyTone === opt
-                              ? 'bg-email-mint text-email-charcoal'
+                              ? 'bg-email-charcoal/90 text-email-white'
                               : surveyTone
                                 ? 'bg-white/90 text-email-charcoal/50'
-                                : 'bg-white/80 text-email-charcoal hover:bg-white/90 hover:text-email-charcoal/50'
+                                : 'bg-white/80 text-email-charcoal hover:bg-email-charcoal/90 hover:text-email-white'
                           }`}
                         >
                           {opt}
