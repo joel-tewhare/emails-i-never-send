@@ -407,8 +407,8 @@ export default function Review() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="review" className="mt-4">
-                  <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-8 text-sm leading-relaxed">
+                <TabsContent value="review" className="mt-8">
+                  <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-4 text-sm leading-relaxed">
                     {reviewParagraphs.map((para, index) => (
                       <p key={index} className="mb-3">
                         {para.trim()}
@@ -421,8 +421,8 @@ export default function Review() {
                   </ScrollArea>
                 </TabsContent>
 
-                <TabsContent value="suggestions" className="mt-4">
-                  <ScrollArea className="h-[calc(39rem-4rem)] p-3 px-4">
+                <TabsContent value="suggestions" className="mt-8">
+                  <ScrollArea className="h-[calc(39rem-4rem)] p-3 px-4 pt-2">
                     {leveragePoints.length > 0 ? (
                       <div className="space-y-4 text-sm leading-relaxed">
                         {leveragePoints.map((leveragePoint, index) => (
