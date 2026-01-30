@@ -308,7 +308,13 @@ export default function Compose() {
     isPendingWordLimits ||
     isPendingTimeLimits
   ) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-email-grey">
+        <div className="flex flex-col items-center justify-center">
+          <LoadingBars />
+        </div>
+      </div>
+    )
   }
 
   if (scenariosError || moodsError || wordLimitsError || timeLimitsError) {
