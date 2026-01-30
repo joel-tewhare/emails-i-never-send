@@ -360,7 +360,7 @@ export default function Compose() {
               transition={{ duration: 0.25, ease: 'easeOut' }}
               className="mx-auto mb-8 w-full max-w-6xl"
             >
-              <div className="bg-email-stone/70 flex min-h-[340px] flex-col gap-6 rounded-lg px-6 py-8">
+              <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-stone/70 px-6 py-8 shadow-md shadow-email-charcoal/25">
                 <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
                   {/* Column 1: title and skip */}
                   <div className="flex flex-col items-center justify-center text-center md:flex-[1.25]">
