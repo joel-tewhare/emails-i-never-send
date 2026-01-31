@@ -18,6 +18,10 @@ import {
 } from '@/lib/utils'
 
 export default function Review() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const [emailRewrite, setEmailRewrite] = useState<string>('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -148,7 +152,6 @@ export default function Review() {
 
       // Store in local storage to access if page is refreshed
       localStorage.setItem('finalReview', JSON.stringify(data))
-      window.scrollTo(0, 0)
       navigate('/final')
     },
   })
@@ -213,7 +216,7 @@ export default function Review() {
   const isReviewPending = rewriteReviewMutation.isPending
 
   return (
-    <div className="relative min-h-screen w-full bg-email-grey p-4">
+    <div className="relative min-h-screen w-full bg-email-grey px-4 pt-8 pb-12 md:p-4">
       {isReviewPending && (
         <div
           ref={loadingElementRef}
@@ -226,13 +229,13 @@ export default function Review() {
         </div>
       )}
 
-      <div className="flex flex-col items-center justify-center">
-        <Card className="my-8 max-w-96 rounded-none border-none p-2 text-center">
+      <div className="flex flex-col items-center justify-center gap-10 md:gap-6">
+        <Card className="my-4 max-w-96 rounded-none border-none p-2 text-center md:my-8">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
             Let&apos;s <span className="italic">review.</span>
           </CardHeader>
         </Card>
-        <div className="mx-6 md:mx-0">
+        <div className="mx-4 text-center md:mx-0 md:text-left">
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
             Here, you can explore how your first draft might land and what
             outcomes it could create:
@@ -256,8 +259,8 @@ export default function Review() {
           </ol>
         </div>
 
-        <div className="flex flex-row flex-wrap items-center justify-center">
-          <Card className="bg-email-stone/70 min-w-sm m-8 flex h-80 max-w-sm flex-col rounded-lg p-4 text-email-charcoal">
+        <div className="flex flex-row flex-wrap items-center justify-center gap-10 px-2 md:gap-4 md:px-0">
+          <Card className="bg-email-stone/70 min-w-sm m-4 flex h-80 max-w-sm flex-col rounded-lg p-4 text-email-charcoal md:m-8">
             <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
               <div className="flex flex-col items-center gap-4">
                 {ttsMutation.isPending && (
@@ -331,7 +334,7 @@ export default function Review() {
         </div>
 
         {impactRating !== null && audioUrl && (
-          <div className="m-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2">
+          <div className="mx-4 my-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 md:m-10">
             <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
               <Card className="mb-4 shrink-0 rounded-none border-none">
                 <CardHeader className="pl-3 pt-2 text-2xl font-bold">
@@ -387,7 +390,7 @@ export default function Review() {
         )}
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 md:flex-row">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-2 md:flex-row md:gap-2 md:px-0">
         <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
           <Card className="h-[40rem] max-w-md rounded-lg bg-email-stone/70 text-email-charcoal">
             <CardContent>

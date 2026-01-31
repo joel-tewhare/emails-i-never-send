@@ -9,6 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router'
 
 export default function RewriteReview() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
   const audioBlobRef = useRef<Blob | null>(null)
@@ -135,14 +139,14 @@ export default function RewriteReview() {
   }
 
   return (
-    <div className="mt-16 flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center">
-        <Card className="my-8 max-w-96 rounded-none border-none p-2 text-center">
+    <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-email-grey px-4 pt-8 pb-12 md:px-6 md:pt-16 md:pb-6">
+      <div className="flex flex-col items-center justify-center gap-10 md:gap-6">
+        <Card className="my-4 max-w-96 rounded-none border-none p-2 text-center md:my-8">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
             <span className="italic">Final</span> word.
           </CardHeader>
         </Card>
-        <div className="mx-6 md:mx-0">
+        <div className="mx-2 text-center md:mx-0 md:text-left">
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
             You made it.
           </p>
@@ -155,14 +159,14 @@ export default function RewriteReview() {
         </div>
       </div>
 
-      <div className="flex flex-row">
+      <div className="flex flex-col items-center gap-10 md:flex-row md:gap-0">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
           className="my-12 hidden h-96 md:block"
         />
 
-        <Card className="mx-4 my-12 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal">
+        <Card className="my-6 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:mx-4 md:my-12">
           <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
             <div className="flex flex-col items-center gap-4">
               {ttsMutation.isPending && (
@@ -224,7 +228,7 @@ export default function RewriteReview() {
       </div>
 
       {impactRating !== null && audioUrl && (
-        <div className="m-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 px-4 md:px-0">
+        <div className="mx-4 my-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 md:m-10 md:my-6 md:px-0">
           <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
             <Card className="mb-4 shrink-0 rounded-none border-none">
               <CardHeader className="pl-3 pt-2 text-2xl font-bold">
@@ -282,9 +286,9 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <div className="mx-4 my-4 flex w-full max-w-6xl flex-col gap-4 md:relative md:mx-auto">
+      <div className="mx-4 my-10 flex w-full max-w-6xl flex-col gap-6 md:relative md:mx-auto md:my-4 md:gap-4">
         {/* Right column first so its content height sets the row height on desktop */}
-        <Card className="order-2 m-4 flex flex-1 flex-col rounded-none border-none bg-email-white py-6 pl-12 pr-12 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)]">
+        <Card className="order-2 m-4 flex flex-1 flex-col rounded-none border-none bg-email-grey py-6 pl-12 pr-12 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)]">
           <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
             <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
               Your Final Email
@@ -304,19 +308,19 @@ export default function RewriteReview() {
               <TabsList className="grid w-full shrink-0 grid-cols-3 gap-0 bg-transparent p-3">
                 <TabsTrigger
                   value="evaluation"
-                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
+                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
                 >
                   Evaluation
                 </TabsTrigger>
                 <TabsTrigger
                   value="notes"
-                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
+                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
                 >
                   Review Notes
                 </TabsTrigger>
                 <TabsTrigger
                   value="takeaways"
-                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
+                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
                 >
                   Final Takeaways
                 </TabsTrigger>
@@ -328,15 +332,14 @@ export default function RewriteReview() {
               >
                 <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2 text-sm">
                   {evaluation ? (
-                    <div className="space-y-4">
-                      <div className="flex justify-center">
-                      <div className="inline-flex flex-col items-center gap-1 rounded border border-solid border-email-charcoal bg-white px-8 py-2">
-                        <span className="text-xl font-semibold">Result:</span>
+                    <div className="space-y-6">
+                      <div className="inline-block rounded-lg bg-email-white px-4 py-3 text-left font-serif text-lg">
+                        <span className="text-email-charcoal">Result: </span>
                         <span
                           className={
                             evaluation.overallResult === 'pass'
-                              ? 'text-3xl font-semibold text-green-700'
-                              : 'text-3xl font-semibold text-amber-700'
+                              ? 'text-green-700'
+                              : 'text-amber-700'
                           }
                         >
                           {evaluation.overallResult === 'pass'
@@ -344,35 +347,41 @@ export default function RewriteReview() {
                             : 'Needs work'}
                         </span>
                       </div>
-                    </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold">Scores:</span>
-                        <ul className="list-none space-y-0.5 text-email-charcoal/90">
-                          <li>Clarity: {evaluation.scores.clarity}%</li>
-                          <li>Tone: {evaluation.scores.toneRespect}%</li>
-                          <li>Directness: {evaluation.scores.directness}%</li>
-                          <li>Efficiency: {evaluation.scores.efficiency}%</li>
+                      <div className="flex flex-col gap-1 pl-4">
+                        <ul className="list-none space-y-0.5 text-sm text-email-charcoal/90">
+                          <li>
+                            <span className="font-bold">Clarity:</span>{' '}
+                            {evaluation.scores.clarity}%
+                          </li>
+                          <li>
+                            <span className="font-bold">Tone:</span>{' '}
+                            {evaluation.scores.toneRespect}%
+                          </li>
+                          <li>
+                            <span className="font-bold">Directness:</span>{' '}
+                            {evaluation.scores.directness}%
+                          </li>
+                          <li>
+                            <span className="font-bold">Efficiency:</span>{' '}
+                            {evaluation.scores.efficiency}%
+                          </li>
                         </ul>
                       </div>
                       {evaluation.checks?.length > 0 && (
-                        <div className="flex flex-col gap-2">
-                          <span className="font-semibold">Checks:</span>
+                        <div className="rounded-lg border border-solid border-email-charcoal bg-email-white p-5">
                           <ul className="space-y-2">
                             {evaluation.checks.map((c, i) => (
-                              <li
-                                key={i}
-                                className="border-l-2 border-email-charcoal/20 pl-2"
-                              >
+                              <li key={i}>
                                 <span
                                   className={
                                     c.passed
-                                      ? 'text-green-700'
-                                      : 'text-amber-700'
+                                      ? 'font-serif text-green-700'
+                                      : 'font-serif text-amber-700'
                                   }
                                 >
                                   {c.passed ? '✓' : '✗'}
                                 </span>{' '}
-                                {c.check}
+                                <span className="font-serif">{c.check}</span>
                                 <p className="mt-0.5 text-xs text-email-charcoal/70">
                                   {c.why}
                                 </p>
@@ -383,7 +392,7 @@ export default function RewriteReview() {
                       )}
                       {evaluation.keyDrivers?.length > 0 && (
                         <div className="flex flex-col gap-2">
-                          <span className="font-semibold">Key drivers:</span>
+                          <span className="block text-center font-semibold">Key drivers:</span>
                           <ul className="list-disc space-y-0.5 pl-4 text-email-charcoal/90">
                             {evaluation.keyDrivers.map((driver, i) => (
                               <li key={i}>{driver}</li>
@@ -471,7 +480,7 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <div className="mb-12 mt-8 flex flex-row gap-4">
+      <div className="mb-12 mt-10 flex flex-row flex-wrap justify-center gap-6 px-4 md:mt-8 md:justify-start md:gap-4 md:px-0">
         <Button
           onClick={() => setShowSaveModal(true)}
           className="flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20"
