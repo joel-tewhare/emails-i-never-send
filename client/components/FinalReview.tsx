@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
-import { Headphones, X } from 'lucide-react'
+import { Play, X } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -54,16 +54,19 @@ export default function RewriteReview() {
     onSuccess: (audioBlob) => {
       audioBlobRef.current = audioBlob
       setAudioUrl((prev) => {
-        if (prev) URL.revokeObjectURL(prev)
+        if (prev) {
+          URL.revokeObjectURL(prev)
+        }
         return URL.createObjectURL(audioBlob)
       })
     },
   })
 
-  useEffect(() => {
-    const review = finalReviewData?.reviewData
-    if (!review) return
+  const handleGenerateAudio = () => {
+    if (!finalReviewData?.reviewData) return
+    if (audioUrl || ttsMutation.isPending) return
 
+    const review = finalReviewData.reviewData
     const paragraphs = review.coachReviewParagraphs ?? []
     const reflections = review.spokenReflectionsSummary?.trim()
     const nextStep = review.nextStep?.trim()
@@ -82,21 +85,11 @@ export default function RewriteReview() {
       parts.push(nextStep)
     }
 
-    const mainReviewText = parts.join('\n\n')
+    const text = parts.join('\n\n')
+    if (!text) return
 
-    if (!mainReviewText) return //text doesn't exist
-    if (audioUrl) return //audio is already generated
-    if (ttsMutation.isPending) return //audio is being generating
-
-    ttsMutation.mutate(mainReviewText)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    finalReviewData?.reviewData?.coachReviewParagraphs,
-    finalReviewData?.reviewData?.nextStep,
-    finalReviewData?.reviewData?.spokenReflectionsSummary,
-    audioUrl,
-    ttsMutation.isPending,
-  ])
+    ttsMutation.mutate(text)
+  }
 
   // Cleanup audio URL on unmount
   useEffect(() => {
@@ -139,7 +132,7 @@ export default function RewriteReview() {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-email-grey px-4 pt-8 pb-12 md:px-6 md:pt-16 md:pb-6">
+    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-x-hidden bg-email-grey px-4 pb-12 pt-8 md:px-6 md:pb-6 md:pt-16">
       <div className="flex flex-col items-center justify-center gap-10 md:gap-6">
         <Card className="my-4 max-w-96 rounded-none border-none p-2 text-center md:my-8">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
@@ -159,57 +152,64 @@ export default function RewriteReview() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-10 md:flex-row md:gap-0">
+      <div className="flex flex-col items-center justify-center gap-6 px-2 md:flex-row md:flex-nowrap md:gap-0">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
           className="my-12 hidden h-96 md:block"
         />
 
-        <Card className="my-6 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:mx-4 md:my-12">
-          <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
-            <div className="flex flex-col items-center gap-4">
+        <Card className="my-6 flex h-96 w-full max-w-[24rem] flex-col overflow-hidden rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:mx-4 md:my-12 md:w-[24rem] md:shrink-0">
+          <CardHeader className="flex flex-1 flex-col justify-between pt-8 font-serif text-lg">
+            <div className="mx-auto flex w-full min-w-0 max-w-[16rem] flex-col items-center justify-center gap-4 overflow-hidden px-0 pt-8 text-center">
+              {!audioUrl && !ttsMutation.isPending && (
+                <Button
+                  onClick={handleGenerateAudio}
+                  className="flex h-auto min-w-0 max-w-full flex-col items-center gap-3 whitespace-normal bg-transparent py-0 hover:bg-transparent"
+                >
+                  <Play
+                    className="h-16 w-16 shrink-0 text-email-charcoal"
+                    aria-label="Load audio"
+                  />
+                  <p className="w-full min-w-0 max-w-full break-words text-3xl font-bold text-email-charcoal/90">
+                    Click here to listen to your final review
+                  </p>
+                </Button>
+              )}
+
               {ttsMutation.isPending && (
-                <Headphones
-                  className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
-                  aria-label="Loading audio"
-                />
+                <>
+                  <Play
+                    className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
+                    aria-label="Loading audio"
+                  />
+                  <span className="w-full min-w-0 max-w-full break-words text-2xl text-email-charcoal/80 md:text-3xl">
+                    Loading review audio…
+                  </span>
+                </>
               )}
 
               {ttsMutation.isError && !ttsMutation.isPending && (
-                <div className="flex items-center justify-center px-4 text-center text-sm text-email-charcoal/70">
-                  Audio unavailable at this time (Gemini tier limits)
+                <div className="flex w-full min-w-0 flex-col items-center gap-4">
+                  <span className="w-full min-w-0 max-w-full break-words text-2xl text-email-charcoal md:text-3xl">
+                    Couldn&apos;t generate audio. See review notes below
+                  </span>
                 </div>
               )}
 
               {audioUrl && !ttsMutation.isPending && (
-                <div
-                  className="flex h-16 w-16 items-center justify-center text-email-charcoal"
-                  aria-hidden
-                >
-                  <Headphones className="my-6 h-16 w-16" />
-                </div>
-              )}
-
-              <CardTitle className="mt-8 text-center">
-                {!audioUrl && ttsMutation.isPending && (
-                  <span className="text-3xl text-email-charcoal/80">
-                    Loading review audio…
-                  </span>
-                )}
-
-                {!audioUrl && ttsMutation.isError && (
-                  <span className="text-3xl text-email-charcoal">
-                    Couldn&apos;t generate audio. See review notes below
-                  </span>
-                )}
-
-                {audioUrl && (
-                  <span className="mx-1 text-3xl text-email-charcoal">
+                <>
+                  <div
+                    className="flex h-16 w-16 shrink-0 items-center justify-center text-email-charcoal"
+                    aria-hidden
+                  >
+                    <Play className="h-16 w-16" />
+                  </div>
+                  <span className="w-full min-w-0 max-w-full break-words text-2xl font-bold text-email-charcoal md:text-3xl">
                     <span className="italic">Listen</span> to your final review:
                   </span>
-                )}
-              </CardTitle>
+                </>
+              )}
             </div>
             {audioUrl && (
               <div className="mt-auto pt-4">
@@ -227,9 +227,9 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      {impactRating !== null && audioUrl && (
-        <div className="mx-4 my-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 md:m-10 md:my-6 md:px-0">
-          <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
+      {impactRating !== null && (
+        <div className="mx-4 my-10 flex w-full min-w-0 max-w-2xl flex-col items-center justify-center gap-6 md:m-10 md:my-6 md:gap-2 md:px-0">
+          <div className="flex w-full min-w-0 max-w-[38rem] flex-col items-center gap-4 px-2 md:flex-row md:gap-2 md:px-0">
             <Card className="mb-4 shrink-0 rounded-none border-none">
               <CardHeader className="pl-3 pt-2 text-2xl font-bold">
                 <CardTitle>Impact Rating:</CardTitle>
@@ -244,7 +244,7 @@ export default function RewriteReview() {
               </CardContent>
             </Card>
             {ratingChangeExplanation && (
-              <p className="text-md min-w-0 flex-1 text-left text-email-charcoal/80">
+              <p className="text-md min-w-0 flex-1 text-center text-email-charcoal/80 md:text-left">
                 {ratingChangeExplanation}
               </p>
             )}
@@ -270,7 +270,7 @@ export default function RewriteReview() {
                         </div>
                       </div>
 
-                      <p className="text-left text-sm italic leading-relaxed text-email-charcoal/80">
+                      <p className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80">
                         {outcome.likelyRecipientResponse}
                       </p>
                     </div>
@@ -286,9 +286,9 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <div className="mx-4 my-10 flex w-full max-w-6xl flex-col gap-6 md:relative md:mx-auto md:my-4 md:gap-4">
+      <div className="mx-4 my-10 flex w-full max-w-6xl flex-col items-center gap-6 px-2 md:relative md:mx-auto md:my-4 md:items-stretch md:gap-4 md:px-0">
         {/* Right column first so its content height sets the row height on desktop */}
-        <Card className="order-2 m-4 flex flex-1 flex-col rounded-none border-none bg-email-grey py-6 pl-12 pr-12 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)]">
+        <Card className="order-2 m-4 flex w-full min-w-0 max-w-xl flex-1 flex-col rounded-none border-none bg-email-grey px-4 py-6 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)] md:max-w-none md:pl-12 md:pr-12">
           <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
             <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
               Your Final Email
@@ -299,13 +299,13 @@ export default function RewriteReview() {
           </div>
         </Card>
         {/* Left column: absolute on md so it matches right column height; half width */}
-        <Card className="order-1 m-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-email-stone/70 text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:flex-none">
+        <Card className="order-1 m-4 flex min-h-0 w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-lg bg-email-stone/70 text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:max-w-none md:flex-none">
           <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 pt-0">
             <Tabs
               defaultValue="evaluation"
               className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden px-3"
             >
-              <TabsList className="grid w-full shrink-0 grid-cols-3 gap-0 bg-transparent p-3">
+              <TabsList className="grid w-full shrink-0 grid-cols-2 gap-2 bg-transparent p-3 md:grid-cols-3 md:gap-0">
                 <TabsTrigger
                   value="evaluation"
                   className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
@@ -320,7 +320,7 @@ export default function RewriteReview() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="takeaways"
-                  className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
+                  className="col-span-2 rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white md:col-span-1"
                 >
                   Final Takeaways
                 </TabsTrigger>
@@ -328,7 +328,7 @@ export default function RewriteReview() {
 
               <TabsContent
                 value="evaluation"
-                className="mt-8 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+                className="mb-12 mt-24 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden md:mt-8"
               >
                 <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2 text-sm">
                   {evaluation ? (
@@ -392,7 +392,9 @@ export default function RewriteReview() {
                       )}
                       {evaluation.keyDrivers?.length > 0 && (
                         <div className="flex flex-col gap-2">
-                          <span className="block text-center font-semibold">Key drivers:</span>
+                          <span className="block text-center font-semibold">
+                            Key drivers:
+                          </span>
                           <ul className="list-disc space-y-0.5 pl-4 text-email-charcoal/90">
                             {evaluation.keyDrivers.map((driver, i) => (
                               <li key={i}>{driver}</li>
@@ -411,7 +413,7 @@ export default function RewriteReview() {
 
               <TabsContent
                 value="notes"
-                className="mt-8 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+                className="mb-12 mt-24 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
               >
                 <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2 text-sm leading-relaxed">
                   {reviewParagraphs.map((para, index) => (
@@ -424,7 +426,7 @@ export default function RewriteReview() {
 
               <TabsContent
                 value="takeaways"
-                className="mt-8 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
+                className="mb-12 mt-24 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
               >
                 <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2">
                   {reflections.length > 0 ? (

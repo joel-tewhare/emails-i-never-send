@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
-import { Headphones, Mail, Pencil } from 'lucide-react'
+import { Mail, Pencil, Play } from 'lucide-react'
 import LoadingBars from './LoadingBars'
 import {
   getWordCount,
@@ -30,20 +30,6 @@ export default function Review() {
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-
-  const handleEmailRewriteChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    const newValue = e.target.value
-    // Prevent typing if word limit is reached
-    if (
-      emailReviewData?.wordLimit &&
-      getWordCount(newValue) > emailReviewData.wordLimit
-    ) {
-      return
-    }
-    setEmailRewrite(newValue)
-  }
 
   //Retrieves email data from query cache or localStorage. Keeps data fresh
   const { data: emailReviewData } = useQuery<EmailReview>({
@@ -87,43 +73,44 @@ export default function Review() {
     },
   })
 
-  useEffect(() => {
-    const review = emailReviewData?.reviewData
-    if (!review) return
+  const handleGenerateAudio = () => {
+    if (!emailReviewData?.reviewData) return
+    if (audioUrl || ttsMutation.isPending) return
 
-    const paragraphs = review.coachReviewParagraphs ?? []
-    const leveragePointsSummary = review.spokenLeveragePointsSummary?.trim()
-    const nextStep = review.nextStep?.trim()
-
+    const review = emailReviewData.reviewData
     const parts: string[] = []
 
-    if (paragraphs.length > 0) {
-      parts.push(paragraphs.join('\n\n'))
+    if (review.coachReviewParagraphs?.length) {
+      parts.push(review.coachReviewParagraphs.join('\n\n'))
     }
 
-    if (leveragePointsSummary) {
-      parts.push(leveragePointsSummary)
+    if (review.spokenLeveragePointsSummary) {
+      parts.push(review.spokenLeveragePointsSummary.trim())
     }
 
-    if (nextStep) {
-      parts.push(nextStep)
+    if (review.nextStep) {
+      parts.push(review.nextStep.trim())
     }
 
-    const mainReviewText = parts.join('\n\n')
+    const text = parts.join('\n\n')
+    if (!text) return
 
-    if (!mainReviewText) return //text doesn't exist
-    if (audioUrl) return //audio is already generated
-    if (ttsMutation.isPending) return //audio is being generating
+    ttsMutation.mutate(text)
+  }
 
-    ttsMutation.mutate(mainReviewText)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    emailReviewData?.reviewData?.coachReviewParagraphs,
-    emailReviewData?.reviewData?.nextStep,
-    emailReviewData?.reviewData?.spokenLeveragePointsSummary,
-    audioUrl,
-    ttsMutation.isPending,
-  ])
+  const handleEmailRewriteChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newValue = e.target.value
+    // Prevent typing if word limit is reached
+    if (
+      emailReviewData?.wordLimit &&
+      getWordCount(newValue) > emailReviewData.wordLimit
+    ) {
+      return
+    }
+    setEmailRewrite(newValue)
+  }
 
   const rewriteReviewMutation = useMutation({
     mutationFn: ({
@@ -216,7 +203,7 @@ export default function Review() {
   const isReviewPending = rewriteReviewMutation.isPending
 
   return (
-    <div className="relative min-h-screen w-full bg-email-grey px-4 pt-8 pb-12 md:p-4">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-email-grey px-4 pb-12 pt-8 md:p-4">
       {isReviewPending && (
         <div
           ref={loadingElementRef}
@@ -224,7 +211,7 @@ export default function Review() {
         >
           <LoadingBars />
           <p className="mt-4 font-semibold text-email-charcoal">
-            Getting your final review...
+            Sending rewrite for final review...
           </p>
         </div>
       )}
@@ -242,7 +229,7 @@ export default function Review() {
           </p>
           <ol className="max-w-2xl pb-12 text-left text-2xl font-bold">
             <li className="mb-4 flex items-start gap-3">
-              <Headphones className="mt-1 h-6 w-6 shrink-0" />
+              <Play className="mt-1 h-6 w-6 shrink-0" />
               <span>Listen to key takeaways from your AI coach.</span>
             </li>
             <li className="mb-4 flex items-start gap-3">
@@ -259,52 +246,59 @@ export default function Review() {
           </ol>
         </div>
 
-        <div className="flex flex-row flex-wrap items-center justify-center gap-10 px-2 md:gap-4 md:px-0">
-          <Card className="bg-email-stone/70 min-w-sm m-4 flex h-80 max-w-sm flex-col rounded-lg p-4 text-email-charcoal md:m-8">
-            <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
-              <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center justify-center gap-6 px-2 md:flex-row md:flex-nowrap md:gap-4 md:px-0">
+          <Card className="flex h-80 w-full max-w-[24rem] flex-col overflow-hidden rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:m-8 md:w-[24rem] md:shrink-0">
+            <CardHeader className="flex flex-1 flex-col justify-between pt-8 font-serif text-lg">
+              <div className="mx-auto flex w-full min-w-0 max-w-[16rem] flex-col items-center justify-center gap-4 overflow-hidden px-0 pt-2 text-center">
+                {!audioUrl && !ttsMutation.isPending && (
+                  <Button
+                    onClick={handleGenerateAudio}
+                    className="flex h-auto min-w-0 max-w-full flex-col items-center gap-3 whitespace-normal bg-transparent py-0 hover:bg-transparent"
+                  >
+                    <Play
+                      className="h-16 w-16 shrink-0 text-email-charcoal"
+                      aria-label="Load audio"
+                    />
+                    <p className="w-full min-w-0 max-w-full break-words text-2xl font-bold text-email-charcoal/90">
+                      Click here to listen to your AI coach
+                    </p>
+                  </Button>
+                )}
+
                 {ttsMutation.isPending && (
-                  <Headphones
-                    className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
-                    aria-label="Loading audio"
-                  />
+                  <>
+                    <Play
+                      className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
+                      aria-label="Loading audio"
+                    />
+                    <span className="w-full min-w-0 max-w-full break-words text-2xl text-email-charcoal/80">
+                      Loading review audio…
+                    </span>
+                  </>
                 )}
 
                 {ttsMutation.isError && !ttsMutation.isPending && (
-                  <div className="flex items-center justify-center px-16 text-center text-sm text-email-charcoal/70">
-                    Audio unavailable at this time (Gemini tier limits)
+                  <div className="flex w-full min-w-0 flex-col items-center gap-4">
+                    <span className="w-full min-w-0 max-w-full break-words text-2xl text-email-charcoal">
+                      Couldn&apos;t generate audio. See review notes below
+                    </span>
                   </div>
                 )}
 
                 {audioUrl && !ttsMutation.isPending && (
-                  <div
-                    className="flex h-16 w-16 items-center justify-center text-email-charcoal"
-                    aria-hidden
-                  >
-                    <Headphones className="h-16 w-16" />
-                  </div>
-                )}
-
-                <CardTitle className="p-1 text-center">
-                  {!audioUrl && ttsMutation.isPending && (
-                    <span className="text-2xl text-email-charcoal/80">
-                      Loading review audio…
-                    </span>
-                  )}
-
-                  {!audioUrl && ttsMutation.isError && (
-                    <span className="text-2xl text-email-charcoal">
-                      Couldn&apos;t generate audio. See review notes below
-                    </span>
-                  )}
-
-                  {audioUrl && (
-                    <span className="mx-1 text-3xl text-email-charcoal">
+                  <>
+                    <div
+                      className="flex h-16 w-16 shrink-0 items-center justify-center text-email-charcoal"
+                      aria-hidden
+                    >
+                      <Play className="h-16 w-16" />
+                    </div>
+                    <span className="w-full min-w-0 max-w-full break-words text-2xl font-bold text-email-charcoal md:text-3xl">
                       Key <span className="italic">takeaways</span> from your
                       email:
                     </span>
-                  )}
-                </CardTitle>
+                  </>
+                )}
               </div>
               {audioUrl && (
                 <div className="mt-auto pt-4">
@@ -321,7 +315,7 @@ export default function Review() {
             </CardHeader>
           </Card>
 
-          <Card className="h-80 max-w-xl overflow-y-auto rounded-none bg-email-mint p-3">
+          <Card className="h-80 w-full max-w-xl overflow-y-auto rounded-none bg-email-mint p-3 md:min-w-[20rem] md:shrink-0">
             <ScrollArea className="h-68 p-3 text-sm italic">
               <p className="mb-3 font-semibold">What you wrote:</p>
               {originalParagraphs.map((para, index) => (
@@ -333,9 +327,9 @@ export default function Review() {
           </Card>
         </div>
 
-        {impactRating !== null && audioUrl && (
-          <div className="mx-4 my-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 md:m-10">
-            <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
+        {impactRating !== null && (
+          <div className="mx-4 my-10 flex w-full min-w-0 max-w-2xl flex-col items-center justify-center gap-6 md:m-10 md:gap-2">
+            <div className="flex w-full min-w-0 max-w-[38rem] flex-col items-center gap-4 px-2 md:flex-row md:gap-2 md:px-0">
               <Card className="mb-4 shrink-0 rounded-none border-none">
                 <CardHeader className="pl-3 pt-2 text-2xl font-bold">
                   <CardTitle>Impact Rating:</CardTitle>
@@ -347,7 +341,7 @@ export default function Review() {
                 </CardContent>
               </Card>
               {impactDefinition && (
-                <p className="text-md min-w-0 flex-1 text-left text-email-charcoal/80">
+                <p className="text-md min-w-0 flex-1 text-center text-email-charcoal/80 md:text-left">
                   {impactDefinition}
                 </p>
               )}
@@ -373,7 +367,7 @@ export default function Review() {
                           </div>
                         </div>
 
-                        <p className="text-left text-sm italic leading-relaxed text-email-charcoal/80">
+                        <p className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80">
                           {outcome.likelyRecipientResponse}
                         </p>
                       </div>
@@ -390,21 +384,21 @@ export default function Review() {
         )}
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-2 md:flex-row md:gap-2 md:px-0">
-        <div className="m-4 flex w-full flex-col space-y-4 md:w-96">
-          <Card className="h-[40rem] max-w-md rounded-lg bg-email-stone/70 text-email-charcoal">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 md:flex-row md:items-stretch md:gap-2 md:px-0">
+        <div className="m-4 flex w-full max-w-md flex-col space-y-4 md:w-96 md:max-w-none">
+          <Card className="h-[40rem] w-full max-w-md rounded-lg bg-email-stone/70 text-email-charcoal">
             <CardContent>
               <Tabs defaultValue="review" className="mt-0 w-full">
                 <TabsList className="grid w-full grid-cols-2 gap-0 bg-transparent p-3">
                   <TabsTrigger
                     value="review"
-                    className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
+                    className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
                   >
                     Review Notes
                   </TabsTrigger>
                   <TabsTrigger
                     value="suggestions"
-                    className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:text-email-white data-[state=active]:font-bold"
+                    className="rounded-md border border-input bg-white/80 p-2 text-center text-email-charcoal shadow-sm transition-colors hover:border-email-charcoal/70 hover:bg-email-charcoal/90 hover:text-email-white data-[state=active]:border-email-charcoal/70 data-[state=active]:bg-email-charcoal/90 data-[state=active]:font-bold data-[state=active]:text-email-white"
                   >
                     Reflections
                   </TabsTrigger>
@@ -457,8 +451,8 @@ export default function Review() {
             </CardContent>
           </Card>
         </div>
-        <div className="w-full flex-1">
-          <Card className="mb-8 max-w-xl border-none p-3">
+        <div className="flex w-full min-w-0 max-w-xl flex-1 flex-col items-center md:max-w-none md:items-stretch">
+          <Card className="mb-8 w-full max-w-xl border-none p-3">
             <CardHeader className="mb-4 w-52 border-2 border-email-charcoal p-2 text-center font-serif">
               <CardTitle className="text-xl">
                 <span className="italic">Prompt</span> reminder:
@@ -469,7 +463,7 @@ export default function Review() {
             </CardContent>
           </Card>
 
-          <Card className="max-w-xl rounded-none bg-email-white">
+          <Card className="w-full max-w-xl rounded-none bg-email-white">
             <div className="flex flex-row justify-end">
               <div className="flex flex-row items-center gap-4 pb-3 pr-4 pt-2 text-sm font-bold">
                 <div className="flex flex-row items-center gap-2">
@@ -498,11 +492,11 @@ export default function Review() {
               emailRewrite,
               emailReviewData?.wordLimit,
             )}
-            className="mb-8 h-80 max-w-xl px-2 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            className="mb-8 h-80 w-full max-w-xl px-2 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Rewrite your email here..."
           />
 
-          <Card className="h-16 max-w-xl border-none">
+          <Card className="h-16 w-full max-w-xl border-none">
             <div className="flex h-full flex-row items-center justify-end">
               <CardContent className="pr-6 pt-2 text-sm font-bold">
                 <Button

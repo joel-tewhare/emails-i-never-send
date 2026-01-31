@@ -141,6 +141,9 @@ export default function Compose() {
   const handleSurveyAction = (action: StarterAction) => {
     setPendingSurveyAction(action)
     setShowSurvey(false)
+    if (action === 'continue') {
+      window.scrollTo(0, 0)
+    }
   }
 
   const {
@@ -759,7 +762,7 @@ export default function Compose() {
             }}
           />
 
-          <Card className="h-16 w-full border-none">
+          <Card className="mt-10 h-16 w-full border-none">
             <div className="flex h-full flex-row items-center justify-end">
               <CardContent className="pr-6 pt-2 text-sm font-bold">
                 <Button
