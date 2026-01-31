@@ -118,7 +118,7 @@ export default function VoiceNote({
         add depth at the review stage.
       </CardContent>
       {/* Controls row - mic, visualizer, re-record button */}
-      <div className="flex flex-row items-center justify-center gap-4 px-3 pb-3">
+      <div className="flex flex-row flex-wrap items-center justify-center gap-4 px-3 pb-3 md:flex-nowrap">
         {recorderStatus === 'idle' && (
           <button
             onClick={startRecording}
@@ -129,31 +129,34 @@ export default function VoiceNote({
         )}
 
         {showRecorder && (
-          <AudioRecorder
-            onRecordingComplete={(blob) => addAudioElement(blob)}
-            recorderControls={recorderControls}
-            showVisualizer={true}
-          />
+          <div className="flex w-full flex-wrap items-center justify-center gap-4 md:w-auto">
+            <AudioRecorder
+              onRecordingComplete={(blob) => addAudioElement(blob)}
+              recorderControls={recorderControls}
+              showVisualizer={true}
+            />
+          </div>
         )}
 
         {recorderStatus === 'recorded' && (
-          <button
-            onClick={reRecord}
-            className="rounded-xl bg-email-charcoal px-6 py-3 text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
-          >
-            Re-record
-          </button>
+          <div className="flex w-full flex-wrap items-center justify-center gap-4 md:w-auto">
+            <button
+              onClick={reRecord}
+              className="rounded-xl bg-email-charcoal px-6 py-3 text-email-white hover:bg-email-charcoal/80 hover:shadow-md"
+            >
+              Re-record
+            </button>
+            {previewUrl && (
+              <div>
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                <audio src={previewUrl} controls />
+              </div>
+            )}
+          </div>
         )}
 
         {recorderStatus === 'finalizing' && (
           <p className="px-3 pb-3">Finalizing...</p>
-        )}
-
-        {previewUrl && (
-          <div className="px-3 pb-3">
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <audio src={previewUrl} controls />
-          </div>
         )}
       </div>
     </Card>
