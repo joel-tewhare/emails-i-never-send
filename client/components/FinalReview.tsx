@@ -139,14 +139,14 @@ export default function RewriteReview() {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-email-grey pt-16">
-      <div className="flex flex-col items-center justify-center">
-        <Card className="my-8 max-w-96 rounded-none border-none p-2 text-center">
+    <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-email-grey px-4 pt-8 pb-12 md:px-6 md:pt-16 md:pb-6">
+      <div className="flex flex-col items-center justify-center gap-10 md:gap-6">
+        <Card className="my-4 max-w-96 rounded-none border-none p-2 text-center md:my-8">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
             <span className="italic">Final</span> word.
           </CardHeader>
         </Card>
-        <div className="mx-6 md:mx-0">
+        <div className="mx-2 text-center md:mx-0 md:text-left">
           <p className="max-w-2xl pb-12 text-center text-2xl font-bold">
             You made it.
           </p>
@@ -159,14 +159,14 @@ export default function RewriteReview() {
         </div>
       </div>
 
-      <div className="flex flex-row">
+      <div className="flex flex-col items-center gap-10 md:flex-row md:gap-0">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
           className="my-12 hidden h-96 md:block"
         />
 
-        <Card className="mx-4 my-12 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal">
+        <Card className="my-6 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:mx-4 md:my-12">
           <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
             <div className="flex flex-col items-center gap-4">
               {ttsMutation.isPending && (
@@ -228,7 +228,7 @@ export default function RewriteReview() {
       </div>
 
       {impactRating !== null && audioUrl && (
-        <div className="m-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 px-4 md:px-0">
+        <div className="mx-4 my-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 md:m-10 md:my-6 md:px-0">
           <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
             <Card className="mb-4 shrink-0 rounded-none border-none">
               <CardHeader className="pl-3 pt-2 text-2xl font-bold">
@@ -286,7 +286,7 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <div className="mx-4 my-4 flex w-full max-w-6xl flex-col gap-4 md:relative md:mx-auto">
+      <div className="mx-4 my-10 flex w-full max-w-6xl flex-col gap-6 md:relative md:mx-auto md:my-4 md:gap-4">
         {/* Right column first so its content height sets the row height on desktop */}
         <Card className="order-2 m-4 flex flex-1 flex-col rounded-none border-none bg-email-grey py-6 pl-12 pr-12 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)]">
           <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
@@ -480,7 +480,7 @@ export default function RewriteReview() {
         </div>
       )}
 
-      <div className="mb-12 mt-8 flex flex-row gap-4">
+      <div className="mb-12 mt-10 flex flex-row flex-wrap justify-center gap-6 px-4 md:mt-8 md:justify-start md:gap-4 md:px-0">
         <Button
           onClick={() => setShowSaveModal(true)}
           className="flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20"

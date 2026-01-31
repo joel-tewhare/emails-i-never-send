@@ -41,7 +41,7 @@ export default function SavedEmails() {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center gap-8 px-4 py-10 md:py-6">
       <Card className="max-w-xxl m-4 rounded-none border-none bg-email-white">
         <div className="flex flex-row justify-center">
           <CardContent className="flex flex-row space-x-2 p-3 text-sm font-bold">

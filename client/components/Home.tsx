@@ -4,12 +4,12 @@ import { Link } from 'react-router'
 
 export default function Home() {
   return (
-    <div className="flex w-full flex-col items-center justify-center bg-email-grey">
-      <div className="mx-6 my-24 h-96 flex-row items-center justify-center gap-4 md:mx-0 md:my-0 md:flex md:h-screen">
+    <div className="flex w-full flex-col items-center justify-center bg-email-grey px-4 pb-12 pt-8 md:px-6 md:pb-0 md:pt-0">
+      <div className="mb-24 mt-20 flex h-96 flex-col items-center justify-center gap-4 md:my-0 md:mb-0 md:h-screen md:flex-row">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="icons graphic"
-          className="block md:hidden"
+          className="block"
         />
         <img
           src="/assets/images/landing-page-text-graphic.svg"
@@ -18,17 +18,17 @@ export default function Home() {
         />
       </div>
 
-      <p className="max-w-4xl pb-12 text-center text-2xl font-bold">
+      <p className="max-w-4xl px-2 pb-10 pt-6 text-center text-2xl font-bold md:pb-12 md:pt-0">
         Emails aren’t always easy.
       </p>
-      <p className="max-w-4xl pb-12 text-center text-2xl font-bold">
+      <p className="max-w-4xl px-2 pb-10 text-center text-2xl font-bold md:pb-12">
         This reflective writing tool uses real-life prompts and AI coaching to
         simulate outcomes and help you build confidence in professional and
         emotional communication.
       </p>
 
-      <div className="m-8 flex flex-row flex-wrap items-center justify-center">
-        <Card className="m-12 flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-blue p-8">
+      <div className="mx-4 my-10 flex flex-col flex-wrap items-center justify-center gap-8 md:mx-8 md:my-6 md:flex-row md:gap-0">
+        <Card className="flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-blue p-8 md:m-12">
           <CardHeader>
             <CardTitle>
               <img
@@ -39,21 +39,21 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
         </Card>
-        <div>
-          <Card className="mb-8 max-w-[400px] rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center">
+        <div className="flex flex-col items-center text-center md:items-start md:text-left">
+          <Card className="mb-4 max-w-[400px] rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center md:mb-8">
             <CardContent className="font-style: p-2 font-serif text-2xl">
               Choose from <span className="italic">everyday</span> scenarios
             </CardContent>
           </Card>
-          <p className="max-w-xl text-left text-lg">
+          <p className="max-w-xl text-lg">
             Prompts drawn from real-life scenarios to help you practise writing
             in a way that feels natural and authentic.
           </p>
         </div>
       </div>
 
-      <div className="m-8 flex flex-row flex-wrap items-center justify-center">
-        <Card className="m-12 flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-mauve p-8">
+      <div className="mx-4 my-10 flex flex-col flex-wrap items-center justify-center gap-8 md:mx-8 md:my-6 md:flex-row md:gap-0">
+        <Card className="flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-mauve p-8 md:m-12">
           <CardHeader>
             <CardTitle>
               <img
@@ -64,22 +64,22 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
         </Card>
-        <div>
-          <Card className="mb-8 max-w-lg rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center">
+        <div className="flex flex-col items-center text-center md:items-start md:text-left">
+          <Card className="mb-4 max-w-lg rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center md:mb-8">
             <CardContent className="font-style: p-2 font-serif text-2xl">
               Prompts for <span className="italic">positive</span> and{' '}
               <span className="italic">negative</span> situations
             </CardContent>
           </Card>
-          <p className="max-w-xl text-left text-lg">
+          <p className="max-w-xl text-lg">
             Practice writing uplifting messaging or try a harder-to-have
             conversation. Relatable topics we all face from time to time.
           </p>
         </div>
       </div>
 
-      <div className="m-8 flex flex-row flex-wrap items-center justify-center">
-        <Card className="m-12 flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-gold p-8">
+      <div className="mx-4 my-10 flex flex-col flex-wrap items-center justify-center gap-8 md:mx-8 md:my-6 md:flex-row md:gap-0">
+        <Card className="flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-gold p-8 md:m-12">
           <CardHeader>
             <CardTitle>
               <img
@@ -90,22 +90,22 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
         </Card>
-        <div>
-          <Card className="mb-8 max-w-md rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center">
+        <div className="flex flex-col items-center text-center md:items-start md:text-left">
+          <Card className="mb-4 max-w-md rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center md:mb-8">
             <CardContent className="font-style: p-2 font-serif text-2xl">
               Add word <span className="italic">limits</span> and time
               <span className="italic"> restrictions</span>
             </CardContent>
           </Card>
-          <p className="max-w-xl text-left text-lg">
+          <p className="max-w-xl text-lg">
             Set word and time limits to help you communicate effectively and
             efficiently.
           </p>
         </div>
       </div>
 
-      <div className="m-8 flex flex-row flex-wrap items-center justify-center">
-        <Card className="m-12 flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-mint p-8">
+      <div className="mx-4 my-10 flex flex-col flex-wrap items-center justify-center gap-8 md:mx-8 md:my-6 md:flex-row md:gap-0">
+        <Card className="flex h-20 w-64 items-center justify-center border-2 border-email-charcoal bg-email-mint p-8 md:m-12">
           <CardHeader>
             <CardTitle>
               <img
@@ -116,13 +116,13 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
         </Card>
-        <div>
-          <Card className="mb-8 max-w-xs rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center">
+        <div className="flex flex-col items-center text-center md:items-start md:text-left">
+          <Card className="mb-4 max-w-xs rounded-none border-2 border-email-charcoal bg-email-white p-2 text-center md:mb-8">
             <CardContent className="font-style: p-2 font-serif text-2xl">
               <span className="italic">Reflect</span> before you revise
             </CardContent>
           </Card>
-          <p className="max-w-xl text-left text-lg">
+          <p className="max-w-xl text-lg">
             Your AI coach rates the impact of your email, sharing key takeaways
             and reflections to help you decide what to change before a final
             review.
@@ -132,7 +132,7 @@ export default function Home() {
 
       <Button
         asChild
-        className="w-42 mb-16 mt-12 flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20"
+        className="w-42 mb-12 mt-10 flex h-14 items-center justify-center rounded-xl bg-email-charcoal px-6 text-lg font-semibold text-email-white shadow-md transition-colors duration-150 hover:bg-email-charcoal/80 hover:shadow-md active:bg-email-white/20 md:mb-16 md:mt-12"
       >
         <Link to="/compose">Get Started Now</Link>
       </Button>

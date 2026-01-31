@@ -21,8 +21,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <div className="flex h-screen flex-row flex-wrap items-center justify-center gap-4">
+    <div className="flex w-full flex-col items-center justify-center px-4 py-10 md:py-6">
+      <div className="flex min-h-0 flex-row flex-wrap items-center justify-center gap-10 py-8 md:h-screen md:gap-4 md:py-6">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="icons graphic"

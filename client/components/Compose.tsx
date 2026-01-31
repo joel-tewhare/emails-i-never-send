@@ -331,7 +331,7 @@ export default function Compose() {
   const isReviewPending = reviewMutation.isPending
 
   return (
-    <div className="relative min-h-screen w-full bg-email-grey p-4">
+    <div className="relative min-h-screen w-full bg-email-grey px-4 pt-8 pb-12 md:p-4">
       {isReviewPending && (
         <div
           ref={loadingElementRef}
@@ -367,7 +367,7 @@ export default function Compose() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="mx-auto mb-8 w-full max-w-6xl"
+              className="mx-auto mb-10 w-full max-w-6xl px-2 md:mb-8 md:px-0"
             >
               <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-stone/70 px-6 py-8 shadow-md shadow-email-charcoal/25">
                 <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
@@ -491,14 +491,14 @@ export default function Compose() {
         </AnimatePresence>
 
         {/* Big header */}
-        <Card className="my-8 max-w-72 rounded-none border-none p-2 text-center">
+        <Card className="my-4 max-w-72 rounded-none border-none p-2 text-center md:my-8">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
             Let&apos;s <span className="italic">write.</span>
           </CardHeader>
         </Card>
 
         {/* Three rows of options */}
-        <div className="mx-auto mb-6 flex w-full max-w-6xl flex-col items-center space-y-6">
+        <div className="mx-auto mb-6 flex w-full max-w-6xl flex-col items-center space-y-10 px-4 md:space-y-6 md:px-0">
           {/* First row: Text box on left, Scenario and Mood on right */}
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
