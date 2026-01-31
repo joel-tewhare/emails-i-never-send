@@ -141,6 +141,9 @@ export default function Compose() {
   const handleSurveyAction = (action: StarterAction) => {
     setPendingSurveyAction(action)
     setShowSurvey(false)
+    if (action === 'continue') {
+      window.scrollTo(0, 0)
+    }
   }
 
   const {
