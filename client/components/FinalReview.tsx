@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
-import { Headphones, X } from 'lucide-react'
+import { Play, X } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -159,57 +159,49 @@ export default function RewriteReview() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-10 md:flex-row md:gap-0">
+      <div className="flex flex-row flex-nowrap items-center justify-center gap-10 overflow-x-auto md:gap-0">
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="tabs group graphic"
           className="my-12 hidden h-96 md:block"
         />
 
-        <Card className="my-6 flex h-96 w-96 flex-col rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:mx-4 md:my-12">
-          <CardHeader className="flex flex-1 flex-col justify-between pl-3 pt-4 font-serif text-lg">
-            <div className="flex flex-col items-center gap-4">
+        <Card className="my-6 flex h-96 w-[24rem] shrink-0 flex-col overflow-hidden rounded-lg bg-email-stone/70 p-4 text-email-charcoal md:mx-4 md:my-12">
+          <CardHeader className="flex flex-1 flex-col justify-between pt-8 font-serif text-lg">
+            <div className="flex min-w-0 w-full flex-col items-center justify-center gap-4 overflow-hidden px-3 pt-2 text-center">
               {ttsMutation.isPending && (
-                <Headphones
-                  className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
-                  aria-label="Loading audio"
-                />
+                <>
+                  <Play
+                    className="h-16 w-16 shrink-0 text-email-charcoal opacity-50"
+                    aria-label="Loading audio"
+                  />
+                  <span className="w-full min-w-0 max-w-full break-words text-2xl text-email-charcoal/80 md:text-3xl">
+                    Loading review audio…
+                  </span>
+                </>
               )}
 
               {ttsMutation.isError && !ttsMutation.isPending && (
-                <div className="flex items-center justify-center px-4 text-center text-sm text-email-charcoal/70">
-                  Audio unavailable at this time (Gemini tier limits)
+                <div className="flex w-full flex-col items-center gap-4">
+                  <span className="w-full min-w-0 max-w-full break-words text-2xl text-email-charcoal md:text-3xl">
+                    Couldn&apos;t generate audio. See review notes below
+                  </span>
                 </div>
               )}
 
               {audioUrl && !ttsMutation.isPending && (
-                <div
-                  className="flex h-16 w-16 items-center justify-center text-email-charcoal"
-                  aria-hidden
-                >
-                  <Headphones className="my-6 h-16 w-16" />
-                </div>
-              )}
-
-              <CardTitle className="mt-8 text-center">
-                {!audioUrl && ttsMutation.isPending && (
-                  <span className="text-3xl text-email-charcoal/80">
-                    Loading review audio…
-                  </span>
-                )}
-
-                {!audioUrl && ttsMutation.isError && (
-                  <span className="text-3xl text-email-charcoal">
-                    Couldn&apos;t generate audio. See review notes below
-                  </span>
-                )}
-
-                {audioUrl && (
-                  <span className="mx-1 text-3xl text-email-charcoal">
+                <>
+                  <div
+                    className="flex h-16 w-16 items-center justify-center text-email-charcoal"
+                    aria-hidden
+                  >
+                    <Play className="h-16 w-16" />
+                  </div>
+                  <span className="w-full min-w-0 max-w-full break-words text-2xl font-bold text-email-charcoal md:text-3xl">
                     <span className="italic">Listen</span> to your final review:
                   </span>
-                )}
-              </CardTitle>
+                </>
+              )}
             </div>
             {audioUrl && (
               <div className="mt-auto pt-4">
@@ -227,7 +219,7 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      {impactRating !== null && audioUrl && (
+      {impactRating !== null && (
         <div className="mx-4 my-10 flex w-full max-w-2xl flex-col items-center justify-center gap-2 md:m-10 md:my-6 md:px-0">
           <div className="flex w-full max-w-[38rem] flex-row items-center gap-2">
             <Card className="mb-4 shrink-0 rounded-none border-none">
