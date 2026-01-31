@@ -57,6 +57,10 @@ const groundingDocMaxLength = 300
 type StarterAction = 'skip' | 'continue'
 
 export default function Compose() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -216,7 +220,6 @@ export default function Compose() {
 
       // Store in local storage to access if page is refreshed
       localStorage.setItem('emailReview', JSON.stringify(data))
-      window.scrollTo(0, 0)
       navigate('/review')
     },
   })

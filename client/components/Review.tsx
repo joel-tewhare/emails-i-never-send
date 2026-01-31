@@ -18,6 +18,10 @@ import {
 } from '@/lib/utils'
 
 export default function Review() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const [emailRewrite, setEmailRewrite] = useState<string>('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -148,7 +152,6 @@ export default function Review() {
 
       // Store in local storage to access if page is refreshed
       localStorage.setItem('finalReview', JSON.stringify(data))
-      window.scrollTo(0, 0)
       navigate('/final')
     },
   })

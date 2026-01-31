@@ -9,6 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router'
 
 export default function RewriteReview() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
   const audioBlobRef = useRef<Blob | null>(null)
