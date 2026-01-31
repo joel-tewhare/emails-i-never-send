@@ -9,11 +9,12 @@ export default function Home() {
         <img
           src="/assets/images/icon-tabs-group-graphic.svg"
           alt="icons graphic"
-          className="hidden md:flex"
+          className="block md:hidden"
         />
         <img
           src="/assets/images/landing-page-text-graphic.svg"
           alt="landing page logo"
+          className="hidden md:block"
         />
       </div>
 

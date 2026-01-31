@@ -44,7 +44,7 @@ export default function Navbar() {
           </NavigationMenu>
         </div>
 
-        <div>
+        <div className="pr-6">
           {!hideGetStarted && (
             <NavigationMenu>
               <NavigationMenuList>
