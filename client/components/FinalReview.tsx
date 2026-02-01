@@ -261,10 +261,13 @@ export default function RewriteReview() {
               {counterfactualOutcomes.length > 0 ? (
                 <div className="space-y-4">
                   <p className="text-sm font-semibold text-email-charcoal/90">
-                    How likely
+                    How likely:
                   </p>
                   {counterfactualOutcomes.map((outcome, index) => (
-                    <div key={index} className="flex flex-row items-start gap-4">
+                    <div
+                      key={index}
+                      className="flex flex-row items-start gap-4"
+                    >
                       <div className="shrink-0">
                         <LikelihoodBar value={outcome.probabilityPercent} />
                       </div>
