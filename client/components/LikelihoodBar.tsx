@@ -7,7 +7,7 @@ export default function LikelihoodBar({ value }: LikelihoodBarProps) {
 
   return (
     <div
-      className="h-2.5 w-28 min-w-[5rem] rounded-full bg-email-stone"
+      className="h-2.5 w-28 min-w-[5rem] rounded-full bg-emerald-500/30 shadow-sm"
       role="progressbar"
       aria-label="Estimated likelihood of a constructive outcome"
       aria-valuenow={clampedValue}

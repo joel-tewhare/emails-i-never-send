@@ -3,7 +3,7 @@ import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
 import { Play, X } from 'lucide-react'
-import LikelihoodBar from './LikelihoodBar'
+import LikelihoodBar from '../components/LikelihoodBar'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -288,19 +288,8 @@ export default function RewriteReview() {
       )}
 
       <div className="mx-4 my-10 flex w-full max-w-6xl flex-col items-center gap-6 px-2 md:relative md:mx-auto md:my-4 md:items-stretch md:gap-4 md:px-0">
-        {/* Right column first so its content height sets the row height on desktop */}
-        <Card className="order-2 m-4 flex w-full min-w-0 max-w-xl flex-1 flex-col rounded-none border-none bg-email-grey px-4 py-6 text-email-charcoal md:ml-[calc(50%+0.5rem)] md:w-[calc(50%-1.5rem)] md:max-w-none md:pl-12 md:pr-12">
-          <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
-            <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
-              Your Final Email
-            </CardTitle>
-          </CardHeader>
-          <div className="min-w-0 whitespace-pre-line text-sm leading-relaxed">
-            {finalReviewData?.finalEmail}
-          </div>
-        </Card>
-        {/* Left column: absolute on md so it matches right column height; half width */}
-        <Card className="order-1 m-4 flex min-h-0 w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-lg bg-email-stone/70 text-email-charcoal md:absolute md:bottom-4 md:left-4 md:top-4 md:w-[calc(50%-0.5rem)] md:max-w-none md:flex-none">
+        {/* Left column (tabbed): in flow, evaluation content sets row height on desktop */}
+        <Card className="order-1 m-4 flex min-h-0 w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-lg bg-email-stone/70 text-email-charcoal md:w-[calc(50%-0.5rem)] md:max-w-none md:flex-none">
           <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 pt-0">
             <Tabs
               defaultValue="evaluation"
@@ -348,25 +337,25 @@ export default function RewriteReview() {
                             : 'Needs work'}
                         </span>
                       </div>
-                      <div className="flex flex-col gap-1 pl-4">
-                        <ul className="list-none space-y-0.5 text-sm text-email-charcoal/90">
-                          <li>
-                            <span className="font-bold">Clarity:</span>{' '}
-                            {evaluation.scores.clarity}%
-                          </li>
-                          <li>
-                            <span className="font-bold">Tone:</span>{' '}
-                            {evaluation.scores.toneRespect}%
-                          </li>
-                          <li>
-                            <span className="font-bold">Directness:</span>{' '}
-                            {evaluation.scores.directness}%
-                          </li>
-                          <li>
-                            <span className="font-bold">Efficiency:</span>{' '}
-                            {evaluation.scores.efficiency}%
-                          </li>
-                        </ul>
+                      <div className="flex flex-col gap-2 pl-4">
+                        <div className="flex flex-col items-start gap-2 text-base text-email-charcoal/90">
+                          <div className="flex items-center gap-3">
+                            <span className="shrink-0 font-bold">Clarity</span>
+                            <LikelihoodBar value={evaluation.scores.clarity} />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="shrink-0 font-bold">Tone</span>
+                            <LikelihoodBar value={evaluation.scores.toneRespect} />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="shrink-0 font-bold">Directness</span>
+                            <LikelihoodBar value={evaluation.scores.directness} />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="shrink-0 font-bold">Efficiency</span>
+                            <LikelihoodBar value={evaluation.scores.efficiency} />
+                          </div>
+                        </div>
                       </div>
                       {evaluation.checks?.length > 0 && (
                         <div className="rounded-lg border border-solid border-email-charcoal bg-email-white p-5">
@@ -459,6 +448,17 @@ export default function RewriteReview() {
               </TabsContent>
             </Tabs>
           </CardContent>
+        </Card>
+        {/* Right column: absolute on md, matches tabbed height; overflow if email is longer */}
+        <Card className="order-2 m-4 flex w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-none border-none bg-email-grey px-4 py-6 text-email-charcoal md:absolute md:top-4 md:bottom-4 md:left-[calc(50%+0.5rem)] md:m-0 md:w-[calc(50%-1.5rem)] md:max-w-none md:flex-none md:pl-12 md:pr-12">
+          <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
+            <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
+              Your Final Email
+            </CardTitle>
+          </CardHeader>
+          <div className="min-h-0 min-w-0 flex-1 overflow-y-auto whitespace-pre-line text-sm leading-relaxed">
+            {finalReviewData?.finalEmail}
+          </div>
         </Card>
       </div>
 
