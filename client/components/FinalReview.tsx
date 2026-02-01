@@ -3,6 +3,7 @@ import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
 import { FinalReview } from '@/models/final-review'
 import { Play, X } from 'lucide-react'
+import LikelihoodBar from './LikelihoodBar'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -259,17 +260,14 @@ export default function RewriteReview() {
             <CardContent className="pt-2">
               {counterfactualOutcomes.length > 0 ? (
                 <div className="space-y-4">
+                  <p className="text-sm font-semibold text-email-charcoal/90">
+                    How likely
+                  </p>
                   {counterfactualOutcomes.map((outcome, index) => (
-                    <div key={index} className="flex items-start gap-2">
-                      <div className="w-24 shrink-0">
-                        <div className="text-4xl font-bold leading-none">
-                          {outcome.probabilityPercent}%
-                        </div>
-                        <div className="mt-1 text-center text-xs font-semibold text-email-charcoal/90">
-                          likely
-                        </div>
+                    <div key={index} className="flex flex-row items-start gap-4">
+                      <div className="shrink-0">
+                        <LikelihoodBar value={outcome.probabilityPercent} />
                       </div>
-
                       <p className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80">
                         {outcome.likelyRecipientResponse}
                       </p>
