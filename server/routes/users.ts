@@ -20,5 +20,4 @@ router.get('/', async (req, res) => {
 })
 
 export default router
-
 //TO DO: setup auth0 and refactor function

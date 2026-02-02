@@ -106,13 +106,11 @@ export default function Compose() {
   }
 
   const handleEmailContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    // Prevent typing if time limit reached
     if (isTimeLimitReached(timeRemaining)) {
       return
     }
 
     const newValue = e.target.value
-    // Prevent typing if word limit is reached
     if (selectedWordLimit && getWordCount(newValue) > selectedWordLimit) {
       return
     }
@@ -182,8 +180,6 @@ export default function Compose() {
     queryFn: getTimeLimits,
   })
 
-  // Custom hook for fetching prompts - only fetches when both IDs are selected
-  // React Query automatically caches based on scenarioId + moodId combination
   const { isPending: isPendingPrompts, refetch: fetchPrompts } = usePrompt(
     selectedScenarioId,
     selectedMoodId,
@@ -220,14 +216,11 @@ export default function Compose() {
     onSuccess: (data) => {
       // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
-
-      // Store in local storage to access if page is refreshed
       localStorage.setItem('emailReview', JSON.stringify(data))
       navigate('/review')
     },
   })
 
-  // Scroll loading overlay to center when pending
   useEffect(() => {
     if (reviewMutation.isPending) {
       loadingElementRef.current?.scrollIntoView({
@@ -237,7 +230,6 @@ export default function Compose() {
     }
   }, [reviewMutation.isPending])
 
-  // Start timer when user first types
   useEffect(() => {
     const selectedTimeLimit = timeLimitsData?.find(
       (timeLimit) => timeLimit.id === selectedTimeLimitId,
@@ -253,7 +245,6 @@ export default function Compose() {
     }
   }, [emailContent, hasStartedTyping, selectedTimeLimitId, timeLimitsData])
 
-  // Timer effect - counts down when active
   useEffect(() => {
     if (!isTimerActive || timeRemaining === null) return
 
@@ -275,7 +266,6 @@ export default function Compose() {
       try {
         const result = await fetchPrompts()
         if (result.data && result.data.length > 0) {
-          // Randomly select a prompt from the array
           const randomIndex = Math.floor(Math.random() * result.data.length)
           setSelectedPrompt(result.data[randomIndex].prompt)
           promptSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -286,7 +276,6 @@ export default function Compose() {
     }
   }
 
-  // Calculate selected limits (using optional chaining for safety before data loads)
   const selectedWordLimit = wordLimitsData?.find(
     (wordLimit) => wordLimit.id === selectedWordLimitId,
   )?.wordLimit
@@ -350,7 +339,6 @@ export default function Compose() {
         <AnimatePresence
           mode="wait"
           onExitComplete={() => {
-            // this runs AFTER the fade-out finishes
             if (pendingSurveyAction === 'skip') {
               setSetupAnswers(null)
               resetSurveyState()
@@ -374,7 +362,6 @@ export default function Compose() {
             >
               <div className="flex min-h-[340px] flex-col gap-6 rounded-lg bg-email-stone/70 px-6 py-8 shadow-md shadow-email-charcoal/25">
                 <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
-                  {/* Column 1: title and skip */}
                   <div className="flex flex-col items-center justify-center text-center md:flex-[1.25]">
                     <h2 className="font-serif text-xl font-bold text-email-charcoal md:text-2xl">
                       Session Starter
@@ -391,7 +378,6 @@ export default function Compose() {
                       Skip for now
                     </button>
                   </div>
-                  {/* Column 2: Priority */}
                   <div className="flex flex-1 flex-col space-y-3">
                     <Label className="font-semibold text-email-charcoal">
                       What are you prioritising most going into this session?
@@ -415,7 +401,6 @@ export default function Compose() {
                       ))}
                     </div>
                   </div>
-                  {/* Column 3: Avoid */}
                   <div className="flex flex-1 flex-col space-y-3">
                     <Label className="font-semibold text-email-charcoal">
                       What are you most trying to avoid?
@@ -439,7 +424,6 @@ export default function Compose() {
                       ))}
                     </div>
                   </div>
-                  {/* Column 4: Tone */}
                   <div className="flex flex-1 flex-col space-y-3">
                     <Label className="font-semibold text-email-charcoal">
                       What tone are you focusing on?
@@ -463,7 +447,6 @@ export default function Compose() {
                       ))}
                     </div>
                   </div>
-                  {/* Grounding doc: width of 2nd–3rd columns, centred */}
                   <div className="flex flex-col space-y-2 pt-2 md:col-span-2 md:col-start-2">
                     <Label className="font-semibold text-email-charcoal">
                       Anything else you want your coach to keep in mind while
@@ -477,7 +460,6 @@ export default function Compose() {
                       className="min-h-10 w-full resize-y bg-email-white px-3 py-2.5 text-sm"
                     />
                   </div>
-                  {/* Submit at end of row, corner of section */}
                   <div className="flex items-end justify-end pt-2 md:col-span-1 md:col-start-4">
                     <Button
                       type="button"
@@ -493,16 +475,13 @@ export default function Compose() {
           )}
         </AnimatePresence>
 
-        {/* Big header */}
         <Card className="my-4 max-w-72 rounded-none border-none p-2 text-center md:my-8">
           <CardHeader className="p-2 font-serif text-8xl md:text-9xl">
             Let&apos;s <span className="italic">write.</span>
           </CardHeader>
         </Card>
 
-        {/* Three rows of options */}
         <div className="mx-auto mb-6 flex w-full max-w-6xl flex-col items-center space-y-10 px-4 md:space-y-6 md:px-0">
-          {/* First row: Text box on left, Scenario and Mood on right */}
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
               <p className="max-w-72 text-center text-2xl font-bold md:text-right">
@@ -588,7 +567,6 @@ export default function Compose() {
             </div>
           </div>
 
-          {/* Second row: Text box on left, Word Limit and Time Limit on right */}
           <div className="flex w-full flex-col flex-wrap items-center justify-center gap-12 md:flex-row">
             <div className="flex min-h-[200px] items-center justify-center">
               <p className="max-w-72 text-center text-2xl font-bold md:text-right">
@@ -678,7 +656,6 @@ export default function Compose() {
             </div>
           </div>
 
-          {/* Third row: Get Prompt button */}
           <div className="flex justify-center">
             <Button
               onClick={handleGetPrompt}
@@ -698,7 +675,6 @@ export default function Compose() {
           </div>
         </div>
 
-        {/* Centered column: Prompt section down to Get Review button */}
         <div
           ref={promptSectionRef}
           className="mx-auto mt-8 flex w-full max-w-xl scroll-mt-4 flex-col items-center"

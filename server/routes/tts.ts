@@ -7,7 +7,6 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 })
 
-// Wrap PCM (16-bit LE) into WAV so the browser can play it
 function pcmToWav(pcm: Buffer, sampleRate = 24000, channels = 1): Buffer {
   const bitsPerSample = 16
   const byteRate = (sampleRate * channels * bitsPerSample) / 8

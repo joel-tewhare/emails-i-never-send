@@ -26,7 +26,6 @@ export async function getEmailReview(
   }
 
   if (audioBlob) {
-    //extension is browser-based, variable checks possible types and adds to form with webm as default
     const extension = audioBlob.type.includes('webm')
       ? 'webm'
       : audioBlob.type.includes('mp4')

@@ -24,7 +24,6 @@ export function getScenarioColor(scenarioId: number): string {
   return colorMap[scenarioId] || 'bg-email-white'
 }
 
-// Word limit helper functions
 export function getWordCount(text: string): number {
   return text.trim() === '' ? 0 : text.trim().split(/\s+/).length
 }
@@ -46,7 +45,6 @@ export function isWordLimitReached(
   return getWordCount(emailContent) >= selectedWordLimit
 }
 
-// Time limit helper functions
 export function getTimeLimitMinutes(
   selectedTimeLimit: string | undefined,
 ): number | null {

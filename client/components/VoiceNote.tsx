@@ -18,7 +18,6 @@ export default function VoiceNote({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>('idle')
 
-  //time and recorder controls
   const MAX_SECONDS = 21
   const recorderControls = useAudioRecorder(
     {
@@ -31,7 +30,6 @@ export default function VoiceNote({
     },
   )
 
-  // Ref to make stopRecording stable in timeout
   const recorderControlsRef = useRef(recorderControls)
   recorderControlsRef.current = recorderControls
 
@@ -40,7 +38,6 @@ export default function VoiceNote({
     stream?.getTracks().forEach((t) => t.stop())
   }
 
-  //clear audio, preview and start recording
   const startRecording = () => {
     onAudioRecorded?.(null)
     setAudio(null)
@@ -54,9 +51,7 @@ export default function VoiceNote({
     recorderControls.startRecording()
   }
 
-  //trigger parent to remount this component (clearing all state)
   const reRecord = () => {
-    // Clean up blob URL before unmounting
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl)
     }
@@ -64,7 +59,6 @@ export default function VoiceNote({
     onReRecord?.()
   }
 
-  //time limit managed, recording stopped with ref once timeout reached
   useEffect(() => {
     if (recorderStatus !== 'recording') {
       return
@@ -88,7 +82,6 @@ export default function VoiceNote({
     }
   }, [])
 
-  //add audio to state, set preview, update status to recorded
   const addAudioElement = (blob: Blob) => {
     setAudio(blob)
     setPreviewUrl((currentUrl) => {
@@ -117,7 +110,6 @@ export default function VoiceNote({
         when they read your email. Voice notes can provide emotional context and
         add depth at the review stage.
       </CardContent>
-      {/* Controls row - mic, visualizer, re-record button */}
       <div className="flex flex-row flex-wrap items-center justify-center gap-4 px-3 pb-3 md:flex-nowrap">
         {recorderStatus === 'idle' && (
           <button

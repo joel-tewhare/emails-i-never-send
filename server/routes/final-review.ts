@@ -28,7 +28,6 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Required data is missing' })
     }
 
-    //Build parts array for user's message
     const parts: Part[] = [
       {
         text: `
@@ -50,7 +49,6 @@ ${wordLimit ?? 250} words
       },
     ]
 
-    //Contents array with role and parts
     const contents: Content[] = [
       {
         role: 'user',
@@ -87,7 +85,6 @@ ${wordLimit ?? 250} words
       })
     }
 
-    // Transform snake_case to camelCase to match model type
     const formattedReview = toCamelCase(reviewJson)
 
     res.json({

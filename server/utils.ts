@@ -1,6 +1,5 @@
 import type { SetupAnswers } from '@/models/setup'
 
-//Transform snake_case object keys to camelCase - useful for converting API responses (ie. from Gemini) to match TypeScript model types
 export default function toCamelCase(data: unknown): unknown {
   if (Array.isArray(data)) {
     return data.map((item) => toCamelCase(item))
@@ -24,7 +23,6 @@ export default function toCamelCase(data: unknown): unknown {
   return transformed
 }
 
-//Format setup text in friendlier bullet point format for ai
 export function buildSessionContextText(
   setup?: SetupAnswers,
   groundingDoc?: string,
