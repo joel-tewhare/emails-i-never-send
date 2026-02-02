@@ -32,7 +32,6 @@ export default function Review() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  //Retrieves email data from query cache or localStorage. Keeps data fresh
   const { data: emailReviewData } = useQuery<EmailReview>({
     queryKey: ['emailReview'],
     queryFn: () => {
@@ -45,7 +44,6 @@ export default function Review() {
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData) as EmailReview
-          // Update cache for future use
           queryClient.setQueryData(['emailReview'], parsedData)
           return parsedData
         } catch (error) {
@@ -58,7 +56,7 @@ export default function Review() {
       throw new Error('No review data found')
     },
     staleTime: Infinity,
-    retry: false, // Don't retry if data is missing
+    retry: false,
   })
 
   const ttsMutation = useMutation({
@@ -103,7 +101,6 @@ export default function Review() {
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const newValue = e.target.value
-    // Prevent typing if word limit is reached
     if (
       emailReviewData?.wordLimit &&
       getWordCount(newValue) > emailReviewData.wordLimit
@@ -135,16 +132,12 @@ export default function Review() {
         wordLimit,
       ),
     onSuccess: (data) => {
-      // Store final review result in query cache for persistence
       queryClient.setQueryData(['finalReview'], data)
-
-      // Store in local storage to access if page is refreshed
       localStorage.setItem('finalReview', JSON.stringify(data))
       navigate('/final')
     },
   })
 
-  // Cleanup audio URL on unmount
   useEffect(() => {
     return () => {
       if (audioUrl) {
@@ -176,7 +169,6 @@ export default function Review() {
     })
   }
 
-  // Scroll loading overlay to center when pending
   useEffect(() => {
     if (rewriteReviewMutation.isPending) {
       loadingElementRef.current?.scrollIntoView({

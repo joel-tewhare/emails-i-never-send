@@ -1,11 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getPrompts } from '../apis/prompts'
 
-/**
- * Custom hook to fetch prompts based on scenario and mood
- * Only fetches when both scenarioId and moodId are provided
- * Uses React Query caching - same params = cached result
- */
 export function usePrompt(scenarioId: number | null, moodId: number | null) {
   return useQuery({
     queryKey: ['prompts', scenarioId, moodId],
@@ -15,6 +10,6 @@ export function usePrompt(scenarioId: number | null, moodId: number | null) {
       }
       return getPrompts(scenarioId, moodId)
     },
-    enabled: Boolean(scenarioId && moodId), // Only fetch when both are selected
+    enabled: Boolean(scenarioId && moodId),
   })
 }

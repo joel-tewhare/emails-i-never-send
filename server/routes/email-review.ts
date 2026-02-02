@@ -13,7 +13,7 @@ const ai = new GoogleGenAI({
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, //10mb limit for audio
+  limits: { fileSize: 10 * 1024 * 1024 },
 })
 
 type TextPart = { text: string }
@@ -60,7 +60,6 @@ router.post('/', upload.single('audio'), async (req, res) => {
       })
     }
 
-    //Build parts array for user's message
     const parts: Part[] = [
       {
         text: `
@@ -88,7 +87,6 @@ ${wordLimit ?? 250} words
       })
     }
 
-    //Contents array with role and parts
     const contents: Content[] = [
       {
         role: 'user',
@@ -125,7 +123,6 @@ ${wordLimit ?? 250} words
       })
     }
 
-    // Transform snake_case to camelCase to match model type
     const formattedReview = toCamelCase(reviewJson)
 
     res.json({

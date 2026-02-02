@@ -1,10 +1,6 @@
 const rootURL = new URL(`/api/v1`, document.body.baseURI)
 
 export async function generateTtsAudio(reviewText: string): Promise<Blob> {
-  // // TTS disabled for free tier - throw error immediately to trigger fallback UI
-  // throw new Error('TTS unavailable (free tier limits)')
-
-  // Original implementation commented out when needed:
   const res = await fetch(`${rootURL}/tts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

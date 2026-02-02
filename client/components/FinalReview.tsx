@@ -21,7 +21,6 @@ export default function RewriteReview() {
 
   const queryClient = useQueryClient()
 
-  //Retrieves final email data from query cache. Keeps data fresh
   const { data: finalReviewData } = useQuery<FinalReview>({
     queryKey: ['finalReview'],
     queryFn: () => {
@@ -34,7 +33,6 @@ export default function RewriteReview() {
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData) as FinalReview
-          // Update cache for future use
           queryClient.setQueryData(['finalReview'], parsedData)
           return parsedData
         } catch (error) {
@@ -47,7 +45,7 @@ export default function RewriteReview() {
       throw new Error('No final review data found')
     },
     staleTime: Infinity,
-    retry: false, // Don't retry if data is missing
+    retry: false,
   })
 
   const ttsMutation = useMutation({
@@ -92,7 +90,6 @@ export default function RewriteReview() {
     ttsMutation.mutate(text)
   }
 
-  // Cleanup audio URL on unmount
   useEffect(() => {
     return () => {
       if (audioUrl) {
@@ -462,7 +459,6 @@ export default function RewriteReview() {
         </Card>
       </div>
 
-      {/* Save Email Modal */}
       {showSaveModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-email-grey/80 backdrop-blur-sm">
           <Card className="relative max-w-md rounded-none border-2 border-email-charcoal bg-email-white p-6">
