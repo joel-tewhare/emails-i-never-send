@@ -214,7 +214,6 @@ export default function Compose() {
         groundingDoc,
       ),
     onSuccess: (data) => {
-      // Store review result in query cache for persistence
       queryClient.setQueryData(['emailReview'], data)
       localStorage.setItem('emailReview', JSON.stringify(data))
       navigate('/review')
@@ -323,7 +322,7 @@ export default function Compose() {
   const isReviewPending = reviewMutation.isPending
 
   return (
-    <div className="relative min-h-screen w-full bg-email-grey px-4 pt-8 pb-12 md:p-4">
+    <div className="relative min-h-screen w-full bg-email-grey px-4 pb-12 pt-8 md:p-4">
       {isReviewPending && (
         <div
           ref={loadingElementRef}
@@ -335,7 +334,6 @@ export default function Compose() {
       )}
 
       <div className="flex flex-col items-center justify-center">
-        {/* Session Starter row */}
         <AnimatePresence
           mode="wait"
           onExitComplete={() => {

@@ -285,7 +285,6 @@ export default function RewriteReview() {
       )}
 
       <div className="mx-4 my-10 flex w-full max-w-6xl flex-col items-center gap-6 px-2 md:relative md:mx-auto md:my-4 md:items-stretch md:gap-4 md:px-0">
-        {/* Left column (tabbed): in flow, evaluation content sets row height on desktop */}
         <Card className="order-1 m-4 flex min-h-0 w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-lg bg-email-stone/70 text-email-charcoal md:w-[calc(50%-0.5rem)] md:max-w-none md:flex-none">
           <CardContent className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 pt-0">
             <Tabs
@@ -342,15 +341,25 @@ export default function RewriteReview() {
                           </div>
                           <div className="flex items-center gap-3">
                             <span className="shrink-0 font-bold">Tone</span>
-                            <LikelihoodBar value={evaluation.scores.toneRespect} />
+                            <LikelihoodBar
+                              value={evaluation.scores.toneRespect}
+                            />
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="shrink-0 font-bold">Directness</span>
-                            <LikelihoodBar value={evaluation.scores.directness} />
+                            <span className="shrink-0 font-bold">
+                              Directness
+                            </span>
+                            <LikelihoodBar
+                              value={evaluation.scores.directness}
+                            />
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="shrink-0 font-bold">Efficiency</span>
-                            <LikelihoodBar value={evaluation.scores.efficiency} />
+                            <span className="shrink-0 font-bold">
+                              Efficiency
+                            </span>
+                            <LikelihoodBar
+                              value={evaluation.scores.efficiency}
+                            />
                           </div>
                         </div>
                       </div>
@@ -446,8 +455,7 @@ export default function RewriteReview() {
             </Tabs>
           </CardContent>
         </Card>
-        {/* Right column: absolute on md, matches tabbed height; overflow if email is longer */}
-        <Card className="order-2 m-4 flex w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-none border-none bg-email-grey px-4 py-6 text-email-charcoal md:absolute md:top-4 md:bottom-4 md:left-[calc(50%+0.5rem)] md:m-0 md:w-[calc(50%-1.5rem)] md:max-w-none md:flex-none md:pl-12 md:pr-12">
+        <Card className="order-2 m-4 flex w-full min-w-0 max-w-xl flex-1 flex-col overflow-hidden rounded-none border-none bg-email-grey px-4 py-6 text-email-charcoal md:absolute md:bottom-4 md:left-[calc(50%+0.5rem)] md:top-4 md:m-0 md:w-[calc(50%-1.5rem)] md:max-w-none md:flex-none md:pl-12 md:pr-12">
           <CardHeader className="shrink-0 justify-center p-0 font-serif text-lg">
             <CardTitle className="mb-3 mt-0 max-w-48 border-2 border-email-charcoal p-2 text-center font-serif">
               Your Final Email

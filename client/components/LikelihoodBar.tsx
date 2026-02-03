@@ -1,5 +1,5 @@
 type LikelihoodBarProps = {
-  value: number // 0–100
+  value: number
 }
 
 export default function LikelihoodBar({ value }: LikelihoodBarProps) {
