@@ -15,6 +15,10 @@ The app follows a simple flow:
 
 Throughout this process, AI output is constrained so the user remains the author.
 
+The diagram below shows how drafts move through the system and where different Gemini models are applied:
+
+![Architectural diagram](screenshots/architectural-diagram.png)
+
 ---
 
 ## Gemini models and reasoning stages
