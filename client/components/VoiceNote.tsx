@@ -18,7 +18,7 @@ export default function VoiceNote({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>('idle')
 
-  const MAX_SECONDS = 21
+  const MAX_SECONDS = 24
   const recorderControls = useAudioRecorder(
     {
       noiseSuppression: true,
@@ -106,7 +106,7 @@ export default function VoiceNote({
       </CardHeader>
       <CardContent className="text-md pb-6 pl-3 pt-2 font-sans">
         <span className="font-bold italic">Optional</span>: Record a short voice
-        note (up to 20 seconds) sharing how you hope the recipient will feel
+        note (around 20 seconds) sharing how you hope the recipient will feel
         when they read your email. Voice notes can provide emotional context and
         add depth at the review stage.
       </CardContent>
