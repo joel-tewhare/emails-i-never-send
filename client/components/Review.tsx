@@ -362,7 +362,9 @@ export default function Review() {
                           <LikelihoodBar value={outcome.probabilityPercent} />
                         </div>
                         <div className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80 [&_p]:mb-0">
-                          <ReactMarkdown>{outcome.likelyRecipientResponse}</ReactMarkdown>
+                          <ReactMarkdown>
+                            {outcome.likelyRecipientResponse}
+                          </ReactMarkdown>
                         </div>
                       </div>
                     ))}
@@ -401,13 +403,17 @@ export default function Review() {
                 <TabsContent value="review" className="mt-8">
                   <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-4 text-sm leading-relaxed">
                     {reviewParagraphs.map((para, index) => (
-                      <div key={index} className="mb-3 [&_p]:mb-2 [&_p:last-child]:mb-0">
+                      <div
+                        key={index}
+                        className="mb-3 [&_p:last-child]:mb-0 [&_p]:mb-2"
+                      >
                         <ReactMarkdown>{para.trim()}</ReactMarkdown>
                       </div>
                     ))}
                     <p>
-                      Consider the reflections and what you could change then,
-                      rewrite your email and submit it for a final review.
+                      There are reflections available to read over. Once
+                      you&apos;re ready, rewrite your email and submit it for a
+                      final review.
                     </p>
                   </ScrollArea>
                 </TabsContent>
@@ -425,13 +431,17 @@ export default function Review() {
                               You wrote:
                             </p>
                             <div className="mb-2 mb-6 italic text-email-charcoal/70 [&_p]:mb-0">
-                              <ReactMarkdown>{leveragePoint.keywordOrPhrase}</ReactMarkdown>
+                              <ReactMarkdown>
+                                {leveragePoint.keywordOrPhrase}
+                              </ReactMarkdown>
                             </div>
                             <p className="mb-1 font-semibold underline">
                               How it influences the reader:
                             </p>
                             <div className="mb-2 [&_p]:mb-0">
-                              <ReactMarkdown>{leveragePoint.influence}</ReactMarkdown>
+                              <ReactMarkdown>
+                                {leveragePoint.influence}
+                              </ReactMarkdown>
                             </div>
                           </div>
                         ))}
