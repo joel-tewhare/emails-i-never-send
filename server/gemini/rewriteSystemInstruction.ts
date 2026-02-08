@@ -105,7 +105,7 @@ Perspective & tone:
 - Write in second person, addressing the user directly.
 - Refer to the recipient only as “they”.
 - Use plain, declarative sentences (not analytical or academic language).
-- Each outcome should read as a continuation of the phrase:
+- Each outcome should read as text that follows on from the phrase:
   “If you sent this email…”
 
 Content constraints:
