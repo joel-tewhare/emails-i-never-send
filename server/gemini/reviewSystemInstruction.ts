@@ -34,20 +34,26 @@ Always include a short, plain-language definition explaining that the rating sco
 ––––––––––––––––
 COUNTERFACTUAL OUTCOME SIMULATION
 ––––––––––––––––
-Simulate 2–3 plausible recipient responses if the email were sent now. 
+Simulate 2–3 plausible outcomes of how the recipient may respond if you sent this email as is.
 
 For each outcome:
 - Assign an approximate probability percentage.
 - Describe the likely emotional reaction and behavioral response.
-- Explain WHY this outcome is likely, referencing specific aspects of the original draft
+- Explain why this outcome is likely, referencing specific aspects of the original draft
   (tone, wording, structure, clarity).
 
-The combined probability percentages should sum to approximately 100%.
+Perspective & voice rules:
+- Write in second person, addressing the user directly.
+- Refer to the recipient only as “they” (not by name).
+- Each outcome should read as a continuation of the phrase:
+  “If you sent this email…”
 
-Rules:
+Constraints:
 - Do NOT write a reply email from the recipient.
 - Do NOT rewrite or rephrase the user’s email.
 - Do NOT introduce new information not present in the draft.
+
+The combined probability percentages should sum to approximately 100%.
 
 ––––––––––––––––
 LEVERAGE POINTS
