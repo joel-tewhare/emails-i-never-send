@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { generateTtsAudio } from '../apis/tts'
 import { useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { FinalReview } from '@/models/final-review'
 import { Play, X } from 'lucide-react'
 import LikelihoodBar from '../components/LikelihoodBar'
@@ -242,9 +243,9 @@ export default function RewriteReview() {
               </CardContent>
             </Card>
             {ratingChangeExplanation && (
-              <p className="text-md min-w-0 flex-1 text-center text-email-charcoal/80 md:text-left">
-                {ratingChangeExplanation}
-              </p>
+              <div className="text-md min-w-0 flex-1 text-center text-email-charcoal/80 md:text-left [&_p]:mb-0">
+                <ReactMarkdown>{ratingChangeExplanation}</ReactMarkdown>
+              </div>
             )}
           </div>
 
@@ -268,9 +269,9 @@ export default function RewriteReview() {
                       <div className="shrink-0">
                         <LikelihoodBar value={outcome.probabilityPercent} />
                       </div>
-                      <p className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80">
-                        {outcome.likelyRecipientResponse}
-                      </p>
+                      <div className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80 [&_p]:mb-0">
+                        <ReactMarkdown>{outcome.likelyRecipientResponse}</ReactMarkdown>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -377,10 +378,12 @@ export default function RewriteReview() {
                                 >
                                   {c.passed ? '✓' : '✗'}
                                 </span>{' '}
-                                <span className="font-serif">{c.check}</span>
-                                <p className="mt-0.5 text-xs text-email-charcoal/70">
-                                  {c.why}
-                                </p>
+                                <div className="inline font-serif [&_p]:mb-0 [&_p]:inline">
+                                  <ReactMarkdown>{c.check}</ReactMarkdown>
+                                </div>
+                                <div className="mt-0.5 text-xs text-email-charcoal/70 [&_p]:mb-0">
+                                  <ReactMarkdown>{c.why}</ReactMarkdown>
+                                </div>
                               </li>
                             ))}
                           </ul>
@@ -391,9 +394,11 @@ export default function RewriteReview() {
                           <span className="block text-center font-semibold">
                             Key drivers:
                           </span>
-                          <ul className="list-disc space-y-0.5 pl-4 text-email-charcoal/90">
+                          <ul className="list-disc space-y-0.5 pl-4 text-email-charcoal/90 [&_p]:mb-0">
                             {evaluation.keyDrivers.map((driver, i) => (
-                              <li key={i}>{driver}</li>
+                              <li key={i}>
+                                <ReactMarkdown>{driver}</ReactMarkdown>
+                              </li>
                             ))}
                           </ul>
                         </div>
@@ -413,9 +418,9 @@ export default function RewriteReview() {
               >
                 <div className="min-h-0 flex-1 overflow-y-auto p-3 px-4 pt-2 text-sm leading-relaxed">
                   {reviewParagraphs.map((para, index) => (
-                    <p key={index} className="mb-3">
-                      {para.trim()}
-                    </p>
+                    <div key={index} className="mb-3 [&_p]:mb-2 [&_p:last-child]:mb-0">
+                      <ReactMarkdown>{para.trim()}</ReactMarkdown>
+                    </div>
                   ))}
                 </div>
               </TabsContent>
@@ -435,13 +440,15 @@ export default function RewriteReview() {
                           <p className="mb-1 font-semibold italic">
                             You wrote:
                           </p>
-                          <p className="mb-2 mb-6 italic text-email-charcoal/70">
-                            {reflection.keywordOrPhrase}
-                          </p>
+                          <div className="mb-2 mb-6 italic text-email-charcoal/70 [&_p]:mb-0">
+                            <ReactMarkdown>{reflection.keywordOrPhrase}</ReactMarkdown>
+                          </div>
                           <p className="mb-1 font-semibold underline">
                             How it influences the reader:
                           </p>
-                          <p className="mb-2">{reflection.influence}</p>
+                          <div className="mb-2 [&_p]:mb-0">
+                            <ReactMarkdown>{reflection.influence}</ReactMarkdown>
+                          </div>
                         </div>
                       ))}
                     </div>

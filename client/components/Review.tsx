@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
+import ReactMarkdown from 'react-markdown'
 import { Button } from '@/components/ui/button'
 import { getFinalReview } from '../apis/final-review'
 import { generateTtsAudio } from '../apis/tts'
@@ -334,9 +335,9 @@ export default function Review() {
                 </CardContent>
               </Card>
               {impactDefinition && (
-                <p className="text-md min-w-0 flex-1 text-center text-email-charcoal/80 md:text-left">
-                  {impactDefinition}
-                </p>
+                <div className="text-md min-w-0 flex-1 text-center text-email-charcoal/80 md:text-left [&_p]:mb-0">
+                  <ReactMarkdown>{impactDefinition}</ReactMarkdown>
+                </div>
               )}
             </div>
 
@@ -360,9 +361,11 @@ export default function Review() {
                         <div className="shrink-0">
                           <LikelihoodBar value={outcome.probabilityPercent} />
                         </div>
-                        <p className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80">
-                          {outcome.likelyRecipientResponse}
-                        </p>
+                        <div className="min-w-0 flex-1 break-words text-left text-sm italic leading-relaxed text-email-charcoal/80 [&_p]:mb-0">
+                          <ReactMarkdown>
+                            {outcome.likelyRecipientResponse}
+                          </ReactMarkdown>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -400,13 +403,17 @@ export default function Review() {
                 <TabsContent value="review" className="mt-8">
                   <ScrollArea className="h-[calc(37rem-4rem)] px-4 pt-4 text-sm leading-relaxed">
                     {reviewParagraphs.map((para, index) => (
-                      <p key={index} className="mb-3">
-                        {para.trim()}
-                      </p>
+                      <div
+                        key={index}
+                        className="mb-3 [&_p:last-child]:mb-0 [&_p]:mb-2"
+                      >
+                        <ReactMarkdown>{para.trim()}</ReactMarkdown>
+                      </div>
                     ))}
                     <p>
-                      Consider the reflections and what you could change then,
-                      rewrite your email and submit it for a final review.
+                      There are reflections available to read over. Once
+                      you&apos;re ready, rewrite your email and submit it for a
+                      final review.
                     </p>
                   </ScrollArea>
                 </TabsContent>
@@ -423,13 +430,19 @@ export default function Review() {
                             <p className="mb-1 font-semibold italic">
                               You wrote:
                             </p>
-                            <p className="mb-2 mb-6 italic text-email-charcoal/70">
-                              {leveragePoint.keywordOrPhrase}
-                            </p>
+                            <div className="mb-2 mb-6 italic text-email-charcoal/70 [&_p]:mb-0">
+                              <ReactMarkdown>
+                                {leveragePoint.keywordOrPhrase}
+                              </ReactMarkdown>
+                            </div>
                             <p className="mb-1 font-semibold underline">
                               How it influences the reader:
                             </p>
-                            <p className="mb-2">{leveragePoint.influence}</p>
+                            <div className="mb-2 [&_p]:mb-0">
+                              <ReactMarkdown>
+                                {leveragePoint.influence}
+                              </ReactMarkdown>
+                            </div>
                           </div>
                         ))}
                       </div>
